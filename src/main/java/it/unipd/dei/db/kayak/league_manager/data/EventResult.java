@@ -11,6 +11,19 @@ public class EventResult {
 	private int fraction;
 	private String actionDescription;
 
+	public EventResult(long eventID, long matchUpID, String actionName,
+			PlayerMatchUpInfo playerInfo, int instant, int fraction,
+			String actionDescription) {
+		super();
+		this.eventID = eventID;
+		this.matchUpID = matchUpID;
+		this.actionName = actionName;
+		this.playerInfo = playerInfo;
+		this.instant = instant;
+		this.fraction = fraction;
+		this.actionDescription = actionDescription;
+	}
+
 	public String getCompactString() {
 		String time;
 		switch (fraction) {
@@ -29,5 +42,33 @@ public class EventResult {
 
 		return "" + instant + " " + time + " " + actionDescription + " "
 				+ playerInfo.getCompactString();
+	}
+
+	public long getEventID() {
+		return eventID;
+	}
+
+	public long getMatchUpID() {
+		return matchUpID;
+	}
+
+	public String getActionName() {
+		return actionName;
+	}
+
+	public PlayerMatchUpInfo getPlayerInfo() {
+		return playerInfo;
+	}
+
+	public int getInstant() {
+		return instant;
+	}
+
+	public int getFraction() {
+		return fraction;
+	}
+
+	public String getActionDescription() {
+		return actionDescription;
 	}
 }

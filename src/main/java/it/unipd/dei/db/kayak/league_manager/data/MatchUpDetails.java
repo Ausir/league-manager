@@ -15,6 +15,23 @@ public class MatchUpDetails {
 	private List<PlayerMatchUpInfo> hostLineUp;
 	private List<PlayerMatchUpInfo> guestLineUp;
 
+	public MatchUpDetails(long lineUpHostID, long lineUpGuestID,
+			String pitchName, long locationID, MatchUpResult result,
+			String locationName, List<EventResult> eventList,
+			List<PlayerMatchUpInfo> hostLineUp,
+			List<PlayerMatchUpInfo> guestLineUp) {
+		super();
+		this.lineUpHostID = lineUpHostID;
+		this.lineUpGuestID = lineUpGuestID;
+		this.pitchName = pitchName;
+		this.locationID = locationID;
+		this.result = result;
+		this.locationName = locationName;
+		this.eventList = eventList;
+		this.hostLineUp = hostLineUp;
+		this.guestLineUp = guestLineUp;
+	}
+
 	public String getCompactString() {
 		String ret = result.getCompactString() + " " + locationName + "\n";
 		ret += "Host lineup:\n";
@@ -30,5 +47,41 @@ public class MatchUpDetails {
 		}
 
 		return ret;
+	}
+
+	public long getLineUpHostID() {
+		return lineUpHostID;
+	}
+
+	public long getLineUpGuestID() {
+		return lineUpGuestID;
+	}
+
+	public String getPitchName() {
+		return pitchName;
+	}
+
+	public long getLocationID() {
+		return locationID;
+	}
+
+	public MatchUpResult getResult() {
+		return result;
+	}
+
+	public String getLocationName() {
+		return locationName;
+	}
+
+	public List<EventResult> getEventList() {
+		return eventList;
+	}
+
+	public List<PlayerMatchUpInfo> getHostLineUp() {
+		return hostLineUp;
+	}
+
+	public List<PlayerMatchUpInfo> getGuestLineUp() {
+		return guestLineUp;
 	}
 }
