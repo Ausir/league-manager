@@ -11,25 +11,25 @@ public class Plays {
 	// FOREIGN KEY (lineup_guest) REFERENCES lm.LineUp (id)
 	// );
 	private long matchID;
-	private long lineupHost;
-	private long lineupGuest;
+	private long lineupHostID;
+	private long lineupGuestID;
 
-	public Plays(long matchID, long lineupHost, long lineupGuest) {
+	public Plays(long matchID, long lineupHostID, long lineupGuestID) {
 		super();
 		this.matchID = matchID;
-		this.lineupHost = lineupHost;
-		this.lineupGuest = lineupGuest;
+		this.lineupHostID = lineupHostID;
+		this.lineupGuestID = lineupGuestID;
 	}
 
-	public long getMatchID() {
+	public long getMatchUpID() {
 		return matchID;
 	}
 
-	public long getLineupHost() {
-		return lineupHost;
+	public long getLineupHostID() {
+		return lineupHostID;
 	}
 
-	public long getLineupGuest() {
-		return lineupGuest;
+	public long getLineUpGuestID() {
+		return lineupGuestID;
 	}
 }

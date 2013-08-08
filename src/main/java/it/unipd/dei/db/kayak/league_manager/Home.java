@@ -41,6 +41,18 @@ public class Home {
 				.getContent());
 	}
 
+	public void showPlayerCareerView(int playerID) {
+		mainAreaLayout.removeAllComponents();
+		// mainAreaLayout.addComponent(new TournamentCalendarViewer(tournament)
+		// .getContent());
+	}
+
+	public void showClubDetailsView(int clubID) {
+		mainAreaLayout.removeAllComponents();
+		// mainAreaLayout.addComponent(new TournamentCalendarViewer(tournament)
+		// .getContent());
+	}
+
 	public void showMatchUpDetailsSubWindow(int matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
 			// System.out.println("opening of MatchUpDetailsSubWindow "

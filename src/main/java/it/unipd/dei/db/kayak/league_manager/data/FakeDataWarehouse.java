@@ -25,13 +25,123 @@ public class FakeDataWarehouse {
 	private static ArrayList<Event> events;
 
 	public static List<Tournament> getMostRecentTournaments() {
-		return tournaments;
+		List<Tournament> ret = new ArrayList<Tournament>(5);
+		for (int i = 0; i < 5 && i < tournaments.size(); i++) {
+			ret.add(tournaments.get(i));
+		}
+		return ret;
+	}
+
+	public static PlayerCareerInfo getPlayerCareerInfo(int playerID) {
+		Player pl = null;
+		for (Player current : players) {
+			if (current.getID() == playerID) {
+				pl = current;
+				break;
+			}
+		}
+
+		// List<Ownership> playerOwnerships = new ArrayList<Ownership>();
+		List<OwnershipResult> playerOwnershipResults = new ArrayList<OwnershipResult>();
+		for (Ownership current : ownerships) {
+			if (current.getPlayerID() == playerID) {
+				// playerOwnerships.add(current);
+				String clubName = null;
+				for (Club c : clubs) {
+					if (c.getID() == current.getClubID()) {
+						clubName = c.getShortName();
+						break;
+					}
+				}
+
+				playerOwnershipResults.add(new OwnershipResult(current.getID(),
+						playerID, current.getClubID(), clubName, current
+								.getStartDate(), current.getEndDate(), current
+								.isBorrowed()));
+			}
+		}
+
+		// List<Event> playerEvents = new ArrayList<Event>();
+		List<EventResult> playerEventResults = new ArrayList<EventResult>();
+
+		// ArrayList<EventResult> eventResults = new ArrayList<EventResult>();
+		for (Event current : events) {
+			for (OwnershipResult o : playerOwnershipResults) {
+				if (current.getOwnershipID() == o.getOwnershipID()) {
+					Action a = null;
+					for (Action cA : actions) {
+						if (cA.getName() == current.getAction()) {
+							a = cA;
+							break;
+						}
+					}
+
+					// MatchUp mUp = null;
+					// for (MatchUp m : matchUps) {
+					// if (m.getID() == current.getMatchUpID()) {
+					// mUp = m;
+					// break;
+					// }
+					// }
+
+					long lineUpID = 0;
+
+					for (Plays p : plays) {
+						if (p.getMatchUpID() == current.getMatchUpID()) {
+							for (LineUp l : lineUps) {
+								if (l.getClubID() == o.getClubID()) {
+									if (l.getID() == p.getLineupHostID()) {
+										lineUpID = l.getID();
+									} else if (l.getID() == p
+											.getLineUpGuestID()) {
+										lineUpID = l.getID();
+									}
+								}
+							}
+							break;
+						}
+					}
+
+					CallsUp cUp = null;
+					for (CallsUp c : callsUps) {
+						if (c.getLineupID() == lineUpID) {
+							cUp = c;
+							break;
+						}
+					}
+
+					PlayerMatchUpInfo pInfo = null;
+					pInfo = new PlayerMatchUpInfo(playerID,
+							current.getMatchUpID(), o.getOwnershipID(),
+							pl.getFirstName() + " " + pl.getLastName(),
+							o.getClubName(), cUp.getPlayerNumber());
+
+					EventResult res = new EventResult(current.getID(),
+							current.getMatchUpID(), a.getName(), pInfo,
+							current.getInstant(), current.getFraction(),
+							a.getDisplayName());
+
+					playerEventResults.add(res);
+
+					break;
+				}
+			}
+
+			// eventResults.add(new EventResult(current.getId(), current
+			// .getMatchUpID(), current.getAction(), pInfo, current
+			// .getInstant(), current.getFraction(), a.getDisplayName()));
+		}
+
+		PlayerCareerInfo ret = new PlayerCareerInfo(playerID, pl,
+				playerEventResults, playerOwnershipResults);
+
+		return ret;
 	}
 
 	public static MatchUpDetails getMatchUpDetails(int matchUpID) {
 		MatchUp mUp = null;
 		for (MatchUp current : matchUps) {
-			if (current.getId() == matchUpID) {
+			if (current.getID() == matchUpID) {
 				mUp = current;
 				break;
 			}
@@ -39,7 +149,7 @@ public class FakeDataWarehouse {
 
 		MatchDay mDay = null;
 		for (MatchDay current : matchDays) {
-			if (current.getId() == mUp.getMatchDayID()) {
+			if (current.getID() == mUp.getMatchDayID()) {
 				mDay = current;
 				break;
 			}
@@ -47,17 +157,18 @@ public class FakeDataWarehouse {
 
 		Plays play = null;
 		for (Plays current : plays) {
-			if (current.getMatchID() == mUp.getId()) {
+			if (current.getMatchUpID() == mUp.getID()) {
 				play = current;
+				break;
 			}
 		}
 
 		LineUp hostLineUp = null;
 		LineUp guestLineUp = null;
 		for (LineUp current : lineUps) {
-			if (current.getId() == play.getLineupHost()) {
+			if (current.getID() == play.getLineupHostID()) {
 				hostLineUp = current;
-			} else if (current.getId() == play.getLineupGuest()) {
+			} else if (current.getID() == play.getLineUpGuestID()) {
 				guestLineUp = current;
 			}
 		}
@@ -65,9 +176,9 @@ public class FakeDataWarehouse {
 		Club hostClub = null;
 		Club guestClub = null;
 		for (Club current : clubs) {
-			if (current.getId() == hostLineUp.getClubID()) {
+			if (current.getID() == hostLineUp.getClubID()) {
 				hostClub = current;
-			} else if (current.getId() == guestLineUp.getClubID()) {
+			} else if (current.getID() == guestLineUp.getClubID()) {
 				guestClub = current;
 			}
 		}
@@ -79,13 +190,13 @@ public class FakeDataWarehouse {
 		ArrayList<Ownership> guestOwnerships = new ArrayList<Ownership>();
 		ArrayList<Player> guestPlayers = new ArrayList<Player>();
 		for (CallsUp current : callsUps) {
-			if (current.getLineupID() == hostLineUp.getId()) {
+			if (current.getLineupID() == hostLineUp.getID()) {
 				hostCallsUp.add(current);
 				for (Ownership o : ownerships) {
-					if (o.getId() == current.getOwnershipID()) {
+					if (o.getID() == current.getOwnershipID()) {
 						hostOwnerships.add(o);
 						for (Player p : players) {
-							if (p.getId() == o.getPlayerID()) {
+							if (p.getID() == o.getPlayerID()) {
 								hostPlayers.add(p);
 								break;
 							}
@@ -93,13 +204,13 @@ public class FakeDataWarehouse {
 						break;
 					}
 				}
-			} else if (current.getLineupID() == guestLineUp.getId()) {
+			} else if (current.getLineupID() == guestLineUp.getID()) {
 				guestCallsUp.add(current);
 				for (Ownership o : ownerships) {
-					if (o.getId() == current.getOwnershipID()) {
+					if (o.getID() == current.getOwnershipID()) {
 						guestOwnerships.add(o);
 						for (Player p : players) {
-							if (p.getId() == o.getPlayerID()) {
+							if (p.getID() == o.getPlayerID()) {
 								guestPlayers.add(p);
 								break;
 							}
@@ -112,14 +223,14 @@ public class FakeDataWarehouse {
 
 		ArrayList<Event> mUpEvents = new ArrayList<Event>();
 		for (Event current : events) {
-			if (current.getMatchUpID() == mUp.getId()) {
+			if (current.getMatchUpID() == mUp.getID()) {
 				mUpEvents.add(current);
 			}
 		}
 
 		Location location = null;
 		for (Location current : locations) {
-			if (current.getId() == mDay.getLocationID()) {
+			if (current.getID() == mDay.getLocationID()) {
 				location = current;
 				break;
 			}
@@ -128,16 +239,16 @@ public class FakeDataWarehouse {
 		Pitch pitch = null;
 		for (Pitch current : pitches) {
 			if (current.getName() == mUp.getPitchName()
-					&& current.getLocationID() == location.getId()) {
+					&& current.getLocationID() == location.getID()) {
 				pitch = current;
 				break;
 			}
 		}
 
-		MatchUpResult matchUpResult = new MatchUpResult(mUp.getId(),
-				mDay.getId(), mUp.getTournamentPhaseName(),
+		MatchUpResult matchUpResult = new MatchUpResult(mUp.getID(),
+				mDay.getID(), mUp.getTournamentPhaseName(),
 				mUp.getTournamentName(), mUp.getTournamentPhaseYear(),
-				hostClub.getId(), guestClub.getId(), mUp.getStartDate(),
+				hostClub.getID(), guestClub.getID(), mUp.getStartDate(),
 				hostClub.getShortName(), guestClub.getShortName(),
 				mUp.getGoalsHost(), mUp.getGoalsGuest(), mUp.getStartTime());
 
@@ -146,8 +257,8 @@ public class FakeDataWarehouse {
 			Player current = hostPlayers.get(i);
 			// Ownership o = hostOwnerships.get(i);
 			CallsUp cUp = hostCallsUp.get(i);
-			hostPlayerInfos.add(new PlayerMatchUpInfo(current.getId(), mUp
-					.getId(), hostClub.getId(), current.getFirstName() + " "
+			hostPlayerInfos.add(new PlayerMatchUpInfo(current.getID(), mUp
+					.getID(), hostClub.getID(), current.getFirstName() + " "
 					+ current.getLastName(), hostClub.getShortName(), cUp
 					.getPlayerNumber()));
 		}
@@ -157,8 +268,8 @@ public class FakeDataWarehouse {
 			Player current = guestPlayers.get(i);
 			// Ownership o = hostOwnerships.get(i);
 			CallsUp cUp = guestCallsUp.get(i);
-			guestPlayerInfos.add(new PlayerMatchUpInfo(current.getId(), mUp
-					.getId(), guestClub.getId(), current.getFirstName() + " "
+			guestPlayerInfos.add(new PlayerMatchUpInfo(current.getID(), mUp
+					.getID(), guestClub.getID(), current.getFirstName() + " "
 					+ current.getLastName(), guestClub.getShortName(), cUp
 					.getPlayerNumber()));
 		}
@@ -169,17 +280,20 @@ public class FakeDataWarehouse {
 			for (Action cA : actions) {
 				if (cA.getName() == current.getAction()) {
 					a = cA;
+					break;
 				}
 			}
+
 			Ownership o = null;
 			for (Ownership cO : ownerships) {
-				if (cO.getId() == current.getOwnership()) {
+				if (cO.getID() == current.getOwnershipID()) {
 					o = cO;
 					break;
 				}
 			}
+
 			PlayerMatchUpInfo pInfo = null;
-			if (o.getClubID() == hostClub.getId()) {
+			if (o.getClubID() == hostClub.getID()) {
 				for (PlayerMatchUpInfo cPI : hostPlayerInfos) {
 					if (cPI.getPlayerID() == o.getPlayerID()) {
 						pInfo = cPI;
@@ -195,13 +309,13 @@ public class FakeDataWarehouse {
 				}
 			}
 
-			eventResults.add(new EventResult(current.getId(), current
+			eventResults.add(new EventResult(current.getID(), current
 					.getMatchUpID(), current.getAction(), pInfo, current
 					.getInstant(), current.getFraction(), a.getDisplayName()));
 		}
 
-		MatchUpDetails details = new MatchUpDetails(hostLineUp.getId(),
-				guestLineUp.getId(), pitch.getName(), location.getId(),
+		MatchUpDetails details = new MatchUpDetails(hostLineUp.getID(),
+				guestLineUp.getID(), pitch.getName(), location.getID(),
 				matchUpResult, location.getName(), eventResults,
 				hostPlayerInfos, guestPlayerInfos);
 
@@ -217,9 +331,9 @@ public class FakeDataWarehouse {
 				MatchUp mUp = matchUps.get(i);
 				MatchDay mDay = matchDays.get(i / 2);
 				Plays pl = plays.get(i);
-				int hostID = (int) lineUps.get((int) pl.getLineupHost())
+				int hostID = (int) lineUps.get((int) pl.getLineupHostID())
 						.getClubID();
-				int guestID = (int) lineUps.get((int) pl.getLineupGuest())
+				int guestID = (int) lineUps.get((int) pl.getLineUpGuestID())
 						.getClubID();
 
 				ret.add(new MatchUpResult(i, mUp.getMatchDayID(), mUp

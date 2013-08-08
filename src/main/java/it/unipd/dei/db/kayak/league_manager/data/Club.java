@@ -25,7 +25,7 @@ public class Club {
 		this.address = address;
 	}
 
-	public long getId() {
+	public long getID() {
 		return id;
 	}
 

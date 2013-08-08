@@ -27,11 +27,11 @@ public class Event {
 	private int instant;
 	private int fraction;
 	private String action;
-	private long ownership;
+	private long ownershipID;
 	private String secretaryEmail;
 
 	public Event(long id, long matchUpID, boolean editable, Date insertionTime,
-			int instant, int fraction, String action, long ownership,
+			int instant, int fraction, String action, long ownershipID,
 			String secretaryEmail) {
 		super();
 		this.id = id;
@@ -41,11 +41,11 @@ public class Event {
 		this.instant = instant;
 		this.fraction = fraction;
 		this.action = action;
-		this.ownership = ownership;
+		this.ownershipID = ownershipID;
 		this.secretaryEmail = secretaryEmail;
 	}
 
-	public long getId() {
+	public long getID() {
 		return id;
 	}
 
@@ -73,8 +73,8 @@ public class Event {
 		return action;
 	}
 
-	public long getOwnership() {
-		return ownership;
+	public long getOwnershipID() {
+		return ownershipID;
 	}
 
 	public String getSecretaryEmail() {

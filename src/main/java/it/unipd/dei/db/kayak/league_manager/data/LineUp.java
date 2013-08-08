@@ -36,7 +36,7 @@ public class LineUp {
 		this.clubID = clubID;
 	}
 
-	public long getId() {
+	public long getID() {
 		return id;
 	}
 

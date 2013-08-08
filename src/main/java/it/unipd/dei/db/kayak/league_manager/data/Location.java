@@ -18,7 +18,7 @@ public class Location {
 		this.name = name;
 	}
 
-	public long getId() {
+	public long getID() {
 		return id;
 	}
 

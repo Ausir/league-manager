@@ -23,7 +23,7 @@ public class Player {
 		this.birthday = birthday;
 	}
 
-	public long getId() {
+	public long getID() {
 		return id;
 	}
 

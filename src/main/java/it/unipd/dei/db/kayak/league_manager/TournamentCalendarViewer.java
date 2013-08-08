@@ -2,7 +2,6 @@ package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
-import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 
@@ -101,7 +100,7 @@ public class TournamentCalendarViewer {
 		VerticalLayout phaseBody = null;
 		int mUpResIdx = 0;
 		MatchUpResult mUpRes;
-		Label mUpResLabel;
+		// Label mUpResLabel;
 
 		for (; mDayIdx < matchDays.size(); mDayIdx++) {
 			mDay = matchDays.get(mDayIdx);
@@ -123,7 +122,7 @@ public class TournamentCalendarViewer {
 			tPhaseName = "";
 			for (; mUpResIdx < matchUpResults.size(); mUpResIdx++) {
 				mUpRes = matchUpResults.get(mUpResIdx);
-				if (mUpRes.getMatchDayID() != mDay.getId()) {
+				if (mUpRes.getMatchDayID() != mDay.getID()) {
 					break;
 				}
 				if (tPhaseName != mUpRes.getTournamentPhaseName()) {
@@ -144,6 +143,7 @@ public class TournamentCalendarViewer {
 				final MatchUpResult fmUpRes = mUpRes;
 				Button mUpResBtn = new Button(mUpRes.getCompactString(),
 						new ClickListener() {
+							private static final long serialVersionUID = 9042873981140452659L;
 							// MatchUpDetails details = FakeDataWarehouse
 							// .getMatchUpDetails((int) fmUpRes
 							// .getMatchUpID());

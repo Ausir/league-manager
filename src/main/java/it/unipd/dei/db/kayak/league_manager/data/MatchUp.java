@@ -49,7 +49,7 @@ public class MatchUp {
 	private String referee1;
 	private String refereee2;
 	private String pitchName;
-	private long pitchLocation;
+	private long pitchLocationID;
 	private int goalsHost;
 	private int goalsGuest;
 
@@ -58,7 +58,7 @@ public class MatchUp {
 			int tournamentPhaseYear, String lineman1, String lineman2,
 			String timekeeper1, String timekeeper2, String scorekeeper,
 			String referee1, String refereee2, String pitchName,
-			long pitchLocation, int goalsHost, int goalsGuest) {
+			long pitchLocationID, int goalsHost, int goalsGuest) {
 		super();
 		this.id = id;
 		this.startTime = startTime;
@@ -75,12 +75,12 @@ public class MatchUp {
 		this.referee1 = referee1;
 		this.refereee2 = refereee2;
 		this.pitchName = pitchName;
-		this.pitchLocation = pitchLocation;
+		this.pitchLocationID = pitchLocationID;
 		this.goalsHost = goalsHost;
 		this.goalsGuest = goalsGuest;
 	}
 
-	public long getId() {
+	public long getID() {
 		return id;
 	}
 
@@ -140,8 +140,8 @@ public class MatchUp {
 		return pitchName;
 	}
 
-	public long getPitchLocation() {
-		return pitchLocation;
+	public long getPitchLocationID() {
+		return pitchLocationID;
 	}
 
 	public int getGoalsHost() {

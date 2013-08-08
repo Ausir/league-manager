@@ -42,7 +42,7 @@ public class MatchDay {
 		this.tournamentYear = tournamentYear;
 	}
 
-	public String getId() {
+	public String getID() {
 		return id;
 	}
 

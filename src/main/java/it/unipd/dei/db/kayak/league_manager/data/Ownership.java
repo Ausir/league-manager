@@ -31,7 +31,7 @@ public class Ownership {
 		this.endDate = endDate;
 	}
 
-	public long getId() {
+	public long getID() {
 		return id;
 	}
 
