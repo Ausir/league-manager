@@ -2,6 +2,7 @@ package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
+import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 
@@ -11,12 +12,18 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class TournamentCalendarViewer {
 	// private fields
 	private VerticalLayout mainLayout;
+	private ArrayList<VerticalLayout> dayLayoutList;
+
 	@SuppressWarnings("unused")
 	private Tournament tournament;
 	private List<MatchUpResult> matchUpResults;
@@ -80,6 +87,7 @@ public class TournamentCalendarViewer {
 
 	private void setUpContent() {
 		mainLayout = new VerticalLayout();
+		dayLayoutList = new ArrayList<VerticalLayout>();
 
 		int mDayIdx = 0;
 		MatchDay mDay;
@@ -110,6 +118,7 @@ public class TournamentCalendarViewer {
 			dayBody.setMargin(new MarginInfo(false, false, false, true));
 			dayLayout.addComponent(dayBody);
 			mainLayout.addComponent(dayLayout);
+			dayLayoutList.add(dayLayout);
 
 			tPhaseName = "";
 			for (; mUpResIdx < matchUpResults.size(); mUpResIdx++) {
@@ -130,8 +139,27 @@ public class TournamentCalendarViewer {
 					dayBody.addComponent(phaseLayout);
 				}
 
-				mUpResLabel = new Label(mUpRes.getCompactString());
-				phaseBody.addComponent(mUpResLabel);
+				// mUpResLabel = new Label(mUpRes.getCompactString());
+				// phaseBody.addComponent(mUpResLabel);
+				final MatchUpResult fmUpRes = mUpRes;
+				Button mUpResBtn = new Button(mUpRes.getCompactString(),
+						new ClickListener() {
+							// MatchUpDetails details = FakeDataWarehouse
+							// .getMatchUpDetails((int) fmUpRes
+							// .getMatchUpID());
+							// MatchUpDetailsSubWindow detailsWindow = new
+							// MatchUpDetailsSubWindow(
+							// details);
+							int matchUpID = (int) fmUpRes.getMatchUpID();
+
+							@Override
+							public void buttonClick(ClickEvent event) {
+								Home home = ((MyVaadinUI) UI.getCurrent())
+										.getHome();
+								home.showMatchUpDetailsSubWindow(matchUpID);
+							}
+						});
+				phaseBody.addComponent(mUpResBtn);
 			}
 		}
 

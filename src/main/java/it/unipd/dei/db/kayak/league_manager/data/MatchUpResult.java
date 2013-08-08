@@ -1,7 +1,7 @@
 package it.unipd.dei.db.kayak.league_manager.data;
 
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.sql.Time;
 
 public class MatchUpResult {
 	// IDs (db) for the referenced tables
@@ -18,13 +18,13 @@ public class MatchUpResult {
 	private String teamGuestName;
 	private int teamHostGoals;
 	private int teamGuestGoals;
-	private Timestamp time;
+	private Time time;
 
 	public MatchUpResult(long matchUpID, String matchDayID,
 			String tournamentPhaseName, String tournamentName,
-			long tournamentYear, long clubHostID, long clubGuestID,
-			Date date, String teamHostName, String teamGuestName, int teamHostGoals,
-			int teamGuestGoals, Timestamp time) {
+			long tournamentYear, long clubHostID, long clubGuestID, Date date,
+			String teamHostName, String teamGuestName, int teamHostGoals,
+			int teamGuestGoals, Time time) {
 		super();
 		this.matchUpID = matchUpID;
 		this.matchDayID = matchDayID;
@@ -33,7 +33,7 @@ public class MatchUpResult {
 		this.tournamentYear = tournamentYear;
 		this.clubHostID = clubHostID;
 		this.clubGuestID = clubGuestID;
-		this.date=date;
+		this.date = date;
 		this.teamHostName = teamHostName;
 		this.teamGuestName = teamGuestName;
 		this.teamHostGoals = teamHostGoals;
@@ -73,7 +73,7 @@ public class MatchUpResult {
 	public long getClubGuestID() {
 		return clubGuestID;
 	}
-	
+
 	public Date getDate() {
 		return date;
 	}
@@ -94,7 +94,7 @@ public class MatchUpResult {
 		return teamGuestGoals;
 	}
 
-	public Timestamp getTime() {
+	public Time getTime() {
 		return time;
 	}
 }

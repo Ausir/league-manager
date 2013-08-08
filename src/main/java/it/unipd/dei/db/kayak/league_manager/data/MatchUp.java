@@ -1,6 +1,7 @@
 package it.unipd.dei.db.kayak.league_manager.data;
 
 import java.sql.Date;
+import java.sql.Time;
 
 public class MatchUp {
 	// CREATE TABLE lm.MatchUp ( -- MATCH is a reserved SQL keyword
@@ -35,6 +36,7 @@ public class MatchUp {
 	// );
 	private long id;
 	private Date startDate;
+	private Time startTime;
 	private String matchDayID;
 	private String tournamentPhaseName;
 	private String tournamentName;
@@ -51,7 +53,7 @@ public class MatchUp {
 	private int goalsHost;
 	private int goalsGuest;
 
-	public MatchUp(long id, Date startDate, String matchDayID,
+	public MatchUp(long id, Date startDate, Time startTime, String matchDayID,
 			String tournamentPhaseName, String tournamentName,
 			int tournamentPhaseYear, String lineman1, String lineman2,
 			String timekeeper1, String timekeeper2, String scorekeeper,
@@ -59,6 +61,7 @@ public class MatchUp {
 			long pitchLocation, int goalsHost, int goalsGuest) {
 		super();
 		this.id = id;
+		this.startTime = startTime;
 		this.startDate = startDate;
 		this.matchDayID = matchDayID;
 		this.tournamentPhaseName = tournamentPhaseName;
@@ -83,6 +86,10 @@ public class MatchUp {
 
 	public Date getStartDate() {
 		return startDate;
+	}
+
+	public Time getStartTime() {
+		return startTime;
 	}
 
 	public String getMatchDayID() {

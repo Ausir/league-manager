@@ -1,9 +1,12 @@
 package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
+import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -11,6 +14,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class Home {
@@ -22,9 +26,48 @@ public class Home {
 	private VerticalLayout leftBar;
 	private VerticalLayout mainAreaLayout;
 
+	private Map<Integer, MatchUpDetailsSubWindow> matchUpDetailsSubWindows;
+
 	// constructor
 	public Home() {
+		matchUpDetailsSubWindows = new HashMap<Integer, MatchUpDetailsSubWindow>();
+
 		this.setUpContent();
+	}
+
+	public void showTournamentCalendarView(Tournament tournament) {
+		mainAreaLayout.removeAllComponents();
+		mainAreaLayout.addComponent(new TournamentCalendarViewer(tournament)
+				.getContent());
+	}
+
+	public void showMatchUpDetailsSubWindow(int matchUpID) {
+		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
+			// System.out.println("opening of MatchUpDetailsSubWindow "
+			// + matchUpID);
+			MatchUpDetails details = FakeDataWarehouse
+					.getMatchUpDetails(matchUpID);
+			MatchUpDetailsSubWindow detailsWindow = new MatchUpDetailsSubWindow(
+					details);
+			matchUpDetailsSubWindows.put(matchUpID, detailsWindow);
+			UI.getCurrent().addWindow(detailsWindow.getWindow());
+		}
+	}
+
+	// public void closeMatchUpDetailsSubWindow(int matchUpID) {
+	// if (matchUpDetailsSubWindows.containsKey(matchUpID)) {
+	// UI.getCurrent().removeWindow(
+	// matchUpDetailsSubWindows.get(matchUpID).getWindow());
+	// matchUpDetailsSubWindows.remove(matchUpID);
+	// }
+	// }
+
+	public void closedMatchUpDetailsSubWindow(int matchUpID) {
+		if (matchUpDetailsSubWindows.containsKey(matchUpID)) {
+			// System.out.println("close event of MatchUpDetailsSubWindow "
+			// + matchUpID);
+			matchUpDetailsSubWindows.remove(matchUpID);
+		}
 	}
 
 	private void setUpContent() {
@@ -68,10 +111,7 @@ public class Home {
 						private static final long serialVersionUID = -1853835079781595641L;
 
 						public void buttonClick(ClickEvent event) {
-							mainAreaLayout.removeAllComponents();
-							mainAreaLayout
-									.addComponent(new TournamentCalendarViewer(
-											t).getContent());
+							showTournamentCalendarView(t);
 						}
 					}));
 		}

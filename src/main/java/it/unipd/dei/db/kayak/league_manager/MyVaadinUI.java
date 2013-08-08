@@ -8,6 +8,7 @@ import com.vaadin.ui.UI;
  */
 @SuppressWarnings("serial")
 public class MyVaadinUI extends UI {
+	private Home home;
 
 	@Override
 	public void init(VaadinRequest request) {
@@ -26,7 +27,13 @@ public class MyVaadinUI extends UI {
 		// Notification.show("The time is " + new Date());
 		// }
 		// }));
-		Home home = new Home();
+		
+		home = new Home();
+		
 		this.setContent(home.getContent());
+	}
+	
+	public Home getHome() {
+		return home;
 	}
 }

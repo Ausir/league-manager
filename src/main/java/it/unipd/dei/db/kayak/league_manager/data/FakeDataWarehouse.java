@@ -1,7 +1,7 @@
 package it.unipd.dei.db.kayak.league_manager.data;
 
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +28,186 @@ public class FakeDataWarehouse {
 		return tournaments;
 	}
 
+	public static MatchUpDetails getMatchUpDetails(int matchUpID) {
+		MatchUp mUp = null;
+		for (MatchUp current : matchUps) {
+			if (current.getId() == matchUpID) {
+				mUp = current;
+				break;
+			}
+		}
+
+		MatchDay mDay = null;
+		for (MatchDay current : matchDays) {
+			if (current.getId() == mUp.getMatchDayID()) {
+				mDay = current;
+				break;
+			}
+		}
+
+		Plays play = null;
+		for (Plays current : plays) {
+			if (current.getMatchID() == mUp.getId()) {
+				play = current;
+			}
+		}
+
+		LineUp hostLineUp = null;
+		LineUp guestLineUp = null;
+		for (LineUp current : lineUps) {
+			if (current.getId() == play.getLineupHost()) {
+				hostLineUp = current;
+			} else if (current.getId() == play.getLineupGuest()) {
+				guestLineUp = current;
+			}
+		}
+
+		Club hostClub = null;
+		Club guestClub = null;
+		for (Club current : clubs) {
+			if (current.getId() == hostLineUp.getClubID()) {
+				hostClub = current;
+			} else if (current.getId() == guestLineUp.getClubID()) {
+				guestClub = current;
+			}
+		}
+
+		ArrayList<CallsUp> hostCallsUp = new ArrayList<CallsUp>();
+		ArrayList<Ownership> hostOwnerships = new ArrayList<Ownership>();
+		ArrayList<Player> hostPlayers = new ArrayList<Player>();
+		ArrayList<CallsUp> guestCallsUp = new ArrayList<CallsUp>();
+		ArrayList<Ownership> guestOwnerships = new ArrayList<Ownership>();
+		ArrayList<Player> guestPlayers = new ArrayList<Player>();
+		for (CallsUp current : callsUps) {
+			if (current.getLineupID() == hostLineUp.getId()) {
+				hostCallsUp.add(current);
+				for (Ownership o : ownerships) {
+					if (o.getId() == current.getOwnershipID()) {
+						hostOwnerships.add(o);
+						for (Player p : players) {
+							if (p.getId() == o.getPlayerID()) {
+								hostPlayers.add(p);
+								break;
+							}
+						}
+						break;
+					}
+				}
+			} else if (current.getLineupID() == guestLineUp.getId()) {
+				guestCallsUp.add(current);
+				for (Ownership o : ownerships) {
+					if (o.getId() == current.getOwnershipID()) {
+						guestOwnerships.add(o);
+						for (Player p : players) {
+							if (p.getId() == o.getPlayerID()) {
+								guestPlayers.add(p);
+								break;
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		ArrayList<Event> mUpEvents = new ArrayList<Event>();
+		for (Event current : events) {
+			if (current.getMatchUpID() == mUp.getId()) {
+				mUpEvents.add(current);
+			}
+		}
+
+		Location location = null;
+		for (Location current : locations) {
+			if (current.getId() == mDay.getLocationID()) {
+				location = current;
+				break;
+			}
+		}
+
+		Pitch pitch = null;
+		for (Pitch current : pitches) {
+			if (current.getName() == mUp.getPitchName()
+					&& current.getLocationID() == location.getId()) {
+				pitch = current;
+				break;
+			}
+		}
+
+		MatchUpResult matchUpResult = new MatchUpResult(mUp.getId(),
+				mDay.getId(), mUp.getTournamentPhaseName(),
+				mUp.getTournamentName(), mUp.getTournamentPhaseYear(),
+				hostClub.getId(), guestClub.getId(), mUp.getStartDate(),
+				hostClub.getShortName(), guestClub.getShortName(),
+				mUp.getGoalsHost(), mUp.getGoalsGuest(), mUp.getStartTime());
+
+		ArrayList<PlayerMatchUpInfo> hostPlayerInfos = new ArrayList<PlayerMatchUpInfo>();
+		for (int i = 0; i < hostPlayers.size(); i++) {
+			Player current = hostPlayers.get(i);
+			// Ownership o = hostOwnerships.get(i);
+			CallsUp cUp = hostCallsUp.get(i);
+			hostPlayerInfos.add(new PlayerMatchUpInfo(current.getId(), mUp
+					.getId(), hostClub.getId(), current.getFirstName() + " "
+					+ current.getLastName(), hostClub.getShortName(), cUp
+					.getPlayerNumber()));
+		}
+
+		ArrayList<PlayerMatchUpInfo> guestPlayerInfos = new ArrayList<PlayerMatchUpInfo>();
+		for (int i = 0; i < guestPlayers.size(); i++) {
+			Player current = guestPlayers.get(i);
+			// Ownership o = hostOwnerships.get(i);
+			CallsUp cUp = guestCallsUp.get(i);
+			guestPlayerInfos.add(new PlayerMatchUpInfo(current.getId(), mUp
+					.getId(), guestClub.getId(), current.getFirstName() + " "
+					+ current.getLastName(), guestClub.getShortName(), cUp
+					.getPlayerNumber()));
+		}
+
+		ArrayList<EventResult> eventResults = new ArrayList<EventResult>();
+		for (Event current : mUpEvents) {
+			Action a = null;
+			for (Action cA : actions) {
+				if (cA.getName() == current.getAction()) {
+					a = cA;
+				}
+			}
+			Ownership o = null;
+			for (Ownership cO : ownerships) {
+				if (cO.getId() == current.getOwnership()) {
+					o = cO;
+					break;
+				}
+			}
+			PlayerMatchUpInfo pInfo = null;
+			if (o.getClubID() == hostClub.getId()) {
+				for (PlayerMatchUpInfo cPI : hostPlayerInfos) {
+					if (cPI.getPlayerID() == o.getPlayerID()) {
+						pInfo = cPI;
+						break;
+					}
+				}
+			} else {
+				for (PlayerMatchUpInfo cPI : guestPlayerInfos) {
+					if (cPI.getPlayerID() == o.getPlayerID()) {
+						pInfo = cPI;
+						break;
+					}
+				}
+			}
+
+			eventResults.add(new EventResult(current.getId(), current
+					.getMatchUpID(), current.getAction(), pInfo, current
+					.getInstant(), current.getFraction(), a.getDisplayName()));
+		}
+
+		MatchUpDetails details = new MatchUpDetails(hostLineUp.getId(),
+				guestLineUp.getId(), pitch.getName(), location.getId(),
+				matchUpResult, location.getName(), eventResults,
+				hostPlayerInfos, guestPlayerInfos);
+
+		return details;
+	}
+
 	@SuppressWarnings("deprecation")
 	public static List<MatchUpResult> getTournamentMatchUpResults(
 			String tournamentName, long tournamentYear) {
@@ -47,10 +227,7 @@ public class FakeDataWarehouse {
 						tournamentYear, hostID, guestID, mDay.getStartDate(),
 						clubs.get(hostID).getShortName(), clubs.get(guestID)
 								.getShortName(), mUp.getGoalsHost(), mUp
-								.getGoalsGuest(), new Timestamp(mDay
-								.getStartDate().getYear(), mDay.getStartDate()
-								.getMonth(), mDay.getStartDate().getDate(),
-								16 + i, 0, 0, 0)));
+								.getGoalsGuest(), new Time(16 + i, 0, 0)));
 			}
 		} else if (tournamentName == "Tournament2") {
 			MatchUp mUp = matchUps.get(3);
@@ -61,9 +238,7 @@ public class FakeDataWarehouse {
 					tournamentYear, hostID, guestID, mDay.getStartDate(), clubs
 							.get(hostID).getShortName(), clubs.get(guestID)
 							.getShortName(), mUp.getGoalsHost(), mUp
-							.getGoalsGuest(), new Timestamp(mDay.getStartDate()
-							.getYear(), mDay.getStartDate().getMonth(), mDay
-							.getStartDate().getDate(), 16, 0, 0, 0)));
+							.getGoalsGuest(), new Time(16, 0, 0)));
 		}
 
 		return ret;
@@ -180,25 +355,25 @@ public class FakeDataWarehouse {
 		matchDays.add(new MatchDay("finals2", 1, new Date(113, 5, 20),
 				new Date(113, 5, 20), 1, 1, "Tournament2", 2013));
 
-		matchUps.add(new MatchUp(0, new Date(113, 5, 13), "semifinals1",
-				"Semi-Final", "Tournament1", 2013, "lineman1", "lineman2",
-				"timekeeper1", "timekeeper2", "scorekeeper", "referee1",
-				"refereee2", "Nargothrond Water Stadium", 0, 1, 0));
+		matchUps.add(new MatchUp(0, new Date(113, 5, 13), new Time(16, 0, 0),
+				"semifinals1", "Semi-Final", "Tournament1", 2013, "lineman1",
+				"lineman2", "timekeeper1", "timekeeper2", "scorekeeper",
+				"referee1", "refereee2", "Nargothrond Water Stadium", 0, 1, 0));
 		plays.add(new Plays(0, 0, 6));
-		matchUps.add(new MatchUp(1, new Date(113, 5, 13), "semifinals1",
-				"Semi-Final", "Tournament1", 2013, "lineman1", "lineman2",
-				"timekeeper1", "timekeeper2", "scorekeeper", "referee1",
-				"refereee2", "Nargothrond Water Stadium", 0, 0, 1));
+		matchUps.add(new MatchUp(1, new Date(113, 5, 13), new Time(17, 0, 0),
+				"semifinals1", "Semi-Final", "Tournament1", 2013, "lineman1",
+				"lineman2", "timekeeper1", "timekeeper2", "scorekeeper",
+				"referee1", "refereee2", "Nargothrond Water Stadium", 0, 0, 1));
 		plays.add(new Plays(1, 7, 3));
-		matchUps.add(new MatchUp(2, new Date(113, 5, 14), "finals1", "Final",
-				"Tournament1", 2013, "lineman1", "lineman2", "timekeeper1",
-				"timekeeper2", "scorekeeper", "referee1", "refereee2",
-				"Nargothrond Water Stadium", 0, 1, 0));
+		matchUps.add(new MatchUp(2, new Date(113, 5, 14), new Time(18, 0, 0),
+				"finals1", "Final", "Tournament1", 2013, "lineman1",
+				"lineman2", "timekeeper1", "timekeeper2", "scorekeeper",
+				"referee1", "refereee2", "Nargothrond Water Stadium", 0, 1, 0));
 		plays.add(new Plays(2, 4, 2));
-		matchUps.add(new MatchUp(3, new Date(113, 5, 20), "finals2", "Final",
-				"Tournament2", 2013, "lineman1", "lineman2", "timekeeper1",
-				"timekeeper2", "scorekeeper", "referee1", "refereee2",
-				"Gondolin Water Stadium", 0, 1, 0));
+		matchUps.add(new MatchUp(3, new Date(113, 5, 20), new Time(16, 0, 0),
+				"finals2", "Final", "Tournament2", 2013, "lineman1",
+				"lineman2", "timekeeper1", "timekeeper2", "scorekeeper",
+				"referee1", "refereee2", "Gondolin Water Stadium", 0, 1, 0));
 		plays.add(new Plays(3, 5, 2));
 
 		actions.add(new Action("goal", "goal"));

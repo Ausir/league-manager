@@ -1,5 +1,10 @@
 package it.unipd.dei.db.kayak.league_manager.data;
 
+import it.unipd.dei.db.kayak.league_manager.data_utils.EventResultTimeComparator;
+import it.unipd.dei.db.kayak.league_manager.data_utils.PlayerMatchUpInfoLineUpComparator;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MatchUpDetails {
@@ -27,9 +32,13 @@ public class MatchUpDetails {
 		this.locationID = locationID;
 		this.result = result;
 		this.locationName = locationName;
-		this.eventList = eventList;
-		this.hostLineUp = hostLineUp;
-		this.guestLineUp = guestLineUp;
+		this.eventList = new ArrayList<EventResult>(eventList);
+		Collections.sort(this.eventList, new EventResultTimeComparator());
+		PlayerMatchUpInfoLineUpComparator playerComp = new PlayerMatchUpInfoLineUpComparator();
+		this.hostLineUp = new ArrayList<PlayerMatchUpInfo>(hostLineUp);
+		Collections.sort(this.hostLineUp, playerComp);
+		this.guestLineUp = new ArrayList<PlayerMatchUpInfo>(guestLineUp);
+		Collections.sort(this.guestLineUp, playerComp);
 	}
 
 	public String getCompactString() {
