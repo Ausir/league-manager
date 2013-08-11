@@ -33,7 +33,7 @@ public class MatchUpDetails {
 		this.result = result;
 		this.locationName = locationName;
 		this.eventList = new ArrayList<EventResult>(eventList);
-		Collections.sort(this.eventList, new EventResultTimeComparator());
+		Collections.sort(this.eventList, new EventResultTimeComparator(false));
 		PlayerMatchUpInfoLineUpComparator playerComp = new PlayerMatchUpInfoLineUpComparator();
 		this.hostLineUp = new ArrayList<PlayerMatchUpInfo>(hostLineUp);
 		Collections.sort(this.hostLineUp, playerComp);

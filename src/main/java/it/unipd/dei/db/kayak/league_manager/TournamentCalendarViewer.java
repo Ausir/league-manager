@@ -86,6 +86,8 @@ public class TournamentCalendarViewer {
 
 	private void setUpContent() {
 		mainLayout = new VerticalLayout();
+		mainLayout.setMargin(new MarginInfo(true, true, true, true));
+		
 		dayLayoutList = new ArrayList<VerticalLayout>();
 
 		int mDayIdx = 0;

@@ -393,14 +393,14 @@ public class FakeDataWarehouse {
 
 		int PLAYERS_NUM = 60;
 		for (int i = 0; i < PLAYERS_NUM; i++) {
-			Player p = new Player(i, "player" + i, "player" + i, new Date(1990,
-					5, 1 + (i + 1) % 30));
+			Player p = new Player(i, "player" + i + "FirstName", "player" + i
+					+ "LastName", new Date(98, 5, 1 + (i + 1) % 30));
 			players.add(p);
 			int clubID = i / (PLAYERS_NUM / CLUBS_NUM);
 			// int lineupID = 2 * clubID;
-			ownerships.add(new Ownership(i, i, clubID, false, p.getBirthday(),
-					new Date(System.currentTimeMillis() + 1000 * 3600 * 24
-							* 365)));
+			ownerships.add(new Ownership(i, i, clubID, false, new Date(110, 5,
+					1 + (i + 1) % 30), new Date(System.currentTimeMillis()
+					+ 1000 * 3600 * 24 * 365)));
 		}
 
 		for (int i = 0; i < CLUBS_NUM; i++) {

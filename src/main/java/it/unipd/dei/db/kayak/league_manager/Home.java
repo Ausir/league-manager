@@ -2,6 +2,8 @@ package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
+import it.unipd.dei.db.kayak.league_manager.data.Player;
+import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 
 import java.util.HashMap;
@@ -27,10 +29,12 @@ public class Home {
 	private VerticalLayout mainAreaLayout;
 
 	private Map<Integer, MatchUpDetailsSubWindow> matchUpDetailsSubWindows;
+	private Map<Integer, PlayerCareerInfoSubWindow> playerCareerInfoSubWindows;
 
 	// constructor
 	public Home() {
 		matchUpDetailsSubWindows = new HashMap<Integer, MatchUpDetailsSubWindow>();
+		playerCareerInfoSubWindows = new HashMap<Integer, PlayerCareerInfoSubWindow>();
 
 		this.setUpContent();
 	}
@@ -39,12 +43,6 @@ public class Home {
 		mainAreaLayout.removeAllComponents();
 		mainAreaLayout.addComponent(new TournamentCalendarViewer(tournament)
 				.getContent());
-	}
-
-	public void showPlayerCareerView(int playerID) {
-		mainAreaLayout.removeAllComponents();
-		// mainAreaLayout.addComponent(new TournamentCalendarViewer(tournament)
-		// .getContent());
 	}
 
 	public void showClubDetailsView(int clubID) {
@@ -79,6 +77,33 @@ public class Home {
 			// System.out.println("close event of MatchUpDetailsSubWindow "
 			// + matchUpID);
 			matchUpDetailsSubWindows.remove(matchUpID);
+		}
+	}
+
+	public void showPlayerCareerInfoSubWindow(int playerID) {
+		if (!playerCareerInfoSubWindows.containsKey(playerID)) {
+			Player player = null;
+			for (Player p : FakeDataWarehouse.getPlayers()) {
+				if (p.getID() == playerID) {
+					player = p;
+					break;
+				}
+			}
+			PlayerCareerInfo playerInfo = FakeDataWarehouse
+					.getPlayerCareerInfo(playerID);
+			PlayerCareerInfoSubWindow playerWindow = new PlayerCareerInfoSubWindow(
+					player, playerInfo);
+
+			playerCareerInfoSubWindows.put(playerID, playerWindow);
+			UI.getCurrent().addWindow(playerWindow.getWindow());
+		}
+	}
+
+	public void closedPlayerCareerInfoSubWindow(int playerID) {
+		if (playerCareerInfoSubWindows.containsKey(playerID)) {
+			// System.out.println("close event of MatchUpDetailsSubWindow "
+			// + matchUpID);
+			playerCareerInfoSubWindows.remove(playerID);
 		}
 	}
 

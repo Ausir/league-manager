@@ -5,6 +5,9 @@ import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerMatchUpInfo;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
@@ -29,6 +32,9 @@ public class MatchUpDetailsSubWindow {
 		MatchUpResult mRes = matchUpDetails.getResult();
 
 		window = new Window();
+		window.setCaption(matchUpDetails.getResult().getFullyQualifiedName());
+		window.setHeight("300px");
+		window.setWidth("450px");
 
 		TabSheet tabs = new TabSheet();
 
@@ -100,12 +106,34 @@ public class MatchUpDetailsSubWindow {
 		lineUpsGuestLayout.addComponent(guestClubLabel);
 
 		for (PlayerMatchUpInfo playerInfo : matchUpDetails.getHostLineUp()) {
-			lineUpsHostLayout.addComponent(new Label(playerInfo
-					.getCompactString()));
+			// lineUpsHostLayout.addComponent(new Label(playerInfo
+			// .getCompactString()));
+			final int playerID = (int) playerInfo.getPlayerID();
+			lineUpsHostLayout.addComponent(new Button(playerInfo.getNumber()
+					+ " " + playerInfo.getPlayerName(), new ClickListener() {
+				private static final long serialVersionUID = -8353847524980785433L;
+
+				@Override
+				public void buttonClick(ClickEvent event) {
+					Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+					home.showPlayerCareerInfoSubWindow(playerID);
+				}
+			}));
 		}
 		for (PlayerMatchUpInfo playerInfo : matchUpDetails.getGuestLineUp()) {
-			lineUpsGuestLayout.addComponent(new Label(playerInfo
-					.getCompactString()));
+			// lineUpsGuestLayout.addComponent(new Label(playerInfo
+			// .getCompactString()));
+			final int playerID = (int) playerInfo.getPlayerID();
+			lineUpsGuestLayout.addComponent(new Button(playerInfo.getNumber()
+					+ " " + playerInfo.getPlayerName(), new ClickListener() {
+				private static final long serialVersionUID = -8353847524980785433L;
+
+				@Override
+				public void buttonClick(ClickEvent event) {
+					Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+					home.showPlayerCareerInfoSubWindow(playerID);
+				}
+			}));
 		}
 
 		lineUpsSplitter.addComponent(leftSpacer2);

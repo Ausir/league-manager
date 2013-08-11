@@ -46,6 +46,13 @@ public class MatchUpResult {
 				+ teamGuestGoals + " " + time;
 	}
 
+	public String getFullyQualifiedName() {
+		return this.getTournamentName() + " " + this.getTournamentYear()
+				+ " - " + this.getTournamentPhaseName() + ": "
+				+ this.getTeamHostName() + " " + this.getTeamHostGoals() + " "
+				+ this.getTeamGuestName() + " " + this.getTeamGuestGoals();
+	}
+
 	public long getMatchUpID() {
 		return matchUpID;
 	}
