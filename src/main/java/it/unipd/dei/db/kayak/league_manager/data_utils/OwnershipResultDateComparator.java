@@ -4,7 +4,7 @@ import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
 
 import java.util.Comparator;
 
-public class OwnershipResultInverseDateComparator implements
+public class OwnershipResultDateComparator implements
 		Comparator<OwnershipResult> {
 	@Override
 	public int compare(OwnershipResult o1, OwnershipResult o2) {

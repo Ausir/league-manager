@@ -38,7 +38,12 @@ public class Tournament {
 		return maxAge;
 	}
 
-	public boolean isSex() {
+	/**
+	 * Return true if tournament is for males, false for females
+	 * 
+	 * @return
+	 */
+	public boolean getSex() {
 		return sex;
 	}
 

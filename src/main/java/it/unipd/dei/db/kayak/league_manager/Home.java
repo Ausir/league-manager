@@ -39,6 +39,16 @@ public class Home {
 		this.setUpContent();
 	}
 
+	public void showTournamentList() {
+		mainAreaLayout.removeAllComponents();
+		mainAreaLayout.addComponent(new TournamentListViewer().getContent());
+	}
+	
+	public void showPlayerList() {
+		mainAreaLayout.removeAllComponents();
+		mainAreaLayout.addComponent(new PlayerTableViewer().getContent());
+	}
+
 	public void showTournamentCalendarView(Tournament tournament) {
 		mainAreaLayout.removeAllComponents();
 		mainAreaLayout.addComponent(new TournamentCalendarViewer(tournament)
@@ -119,22 +129,23 @@ public class Home {
 		headerLayout.setComponentAlignment(bannerLabel, Alignment.TOP_LEFT);
 		headerLayout.setHeight("80px");
 		headerLayout.setWidth("100%");
+		mainLayout.addComponent(headerLayout);
 
-		buttonsLayout = new HorizontalLayout();
-		Button btn1 = new Button("Button1");
-		buttonsLayout.addComponent(btn1);
-		btn1.setWidth("200px");
-		Button btn2 = new Button("Button2");
-		buttonsLayout.addComponent(btn2);
-		btn2.setWidth("200px");
-		Button btn3 = new Button("Button3");
-		buttonsLayout.addComponent(btn3);
-		btn3.setWidth("200px");
-		Label buttonsSpacer = new Label();
-		buttonsLayout.addComponent(buttonsSpacer);
-		buttonsLayout.setExpandRatio(buttonsSpacer, 1);
-		buttonsLayout.setHeight("40px");
-		buttonsLayout.setWidth("100%");
+		// buttonsLayout = new HorizontalLayout();
+		// Button btn1 = new Button("Button1");
+		// buttonsLayout.addComponent(btn1);
+		// btn1.setWidth("200px");
+		// Button btn2 = new Button("Button2");
+		// buttonsLayout.addComponent(btn2);
+		// btn2.setWidth("200px");
+		// Button btn3 = new Button("Button3");
+		// buttonsLayout.addComponent(btn3);
+		// btn3.setWidth("200px");
+		// Label buttonsSpacer = new Label();
+		// buttonsLayout.addComponent(buttonsSpacer);
+		// buttonsLayout.setExpandRatio(buttonsSpacer, 1);
+		// buttonsLayout.setHeight("40px");
+		// buttonsLayout.setWidth("100%");
 
 		bodyLayout = new HorizontalLayout();
 
@@ -152,23 +163,33 @@ public class Home {
 						}
 					}));
 		}
+		leftBar.addComponent(new Button("All Tournaments", new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				showTournamentList();
+			}
+		}));
+		leftBar.addComponent(new Button("All Players", new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				showPlayerList();
+			}
+		}));
+
 		Label leftBarSpacer = new Label();
 		leftBar.addComponent(leftBarSpacer);
 		leftBar.setExpandRatio(leftBarSpacer, 1);
 		leftBar.setWidth("150px");
 		leftBar.setHeight("100%");
+		bodyLayout.addComponent(leftBar);
 
 		mainAreaLayout = new VerticalLayout();
 		mainAreaLayout.addComponent(new Label("Main Area Layout"));
 		mainAreaLayout.setSizeFull();
 
-		bodyLayout.addComponent(leftBar);
 		bodyLayout.addComponent(mainAreaLayout);
 		bodyLayout.setExpandRatio(mainAreaLayout, 1);
 		bodyLayout.setSizeFull();
-
-		mainLayout.addComponent(headerLayout);
-		mainLayout.addComponent(buttonsLayout);
 		mainLayout.addComponent(bodyLayout);
 		mainLayout.setExpandRatio(bodyLayout, 1);
 

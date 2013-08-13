@@ -8,7 +8,7 @@ import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 import it.unipd.dei.db.kayak.league_manager.data_utils.EventResultTimeComparator;
-import it.unipd.dei.db.kayak.league_manager.data_utils.OwnershipResultInverseDateComparator;
+import it.unipd.dei.db.kayak.league_manager.data_utils.OwnershipResultDateComparator;
 
 import java.util.Collections;
 
@@ -37,7 +37,7 @@ public class PlayerCareerInfoSubWindow {
 		this.playerInfo = playerInfo;
 
 		Collections.sort(playerInfo.getOwnerships(),
-				new OwnershipResultInverseDateComparator());
+				new OwnershipResultDateComparator());
 
 		Collections.sort(playerInfo.getEvents(), new EventResultTimeComparator(
 				true));
@@ -56,7 +56,7 @@ public class PlayerCareerInfoSubWindow {
 		mainLayout.setMargin(new MarginInfo(true, true, true, true));
 
 		mainLayout.addComponent(new Label(player.getFirstName() + " "
-				+ player.getLastName()));
+				+ player.getLastName() + " - " + player.getID()));
 		mainLayout.addComponent(new Label("born " + player.getBirthday()));
 
 		VerticalLayout ownershipsLayout = new VerticalLayout();
@@ -76,15 +76,17 @@ public class PlayerCareerInfoSubWindow {
 
 			HorizontalLayout eventLayout = new HorizontalLayout();
 			final int matchUpID = (int) res.getMatchUpID();
-			eventLayout.addComponent(new Button(res.getFullyQualifiedName(), new ClickListener() {
-				private static final long serialVersionUID = 8649065438982350398L;
+			eventLayout.addComponent(new Button(res.getFullyQualifiedName(),
+					new ClickListener() {
+						private static final long serialVersionUID = 8649065438982350398L;
 
-				@Override
-				public void buttonClick(ClickEvent event) {
-					Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
-					home.showMatchUpDetailsSubWindow(matchUpID);
-				}
-			}));
+						@Override
+						public void buttonClick(ClickEvent event) {
+							Home home = ((MyVaadinUI) UI.getCurrent())
+									.getHome();
+							home.showMatchUpDetailsSubWindow(matchUpID);
+						}
+					}));
 			String eventCaption = " - " + e.getCompactString();
 			eventLayout.addComponent(new Label(eventCaption));
 
