@@ -46,7 +46,7 @@ public class Home {
 
 	public void showPlayerList() {
 		mainAreaLayout.removeAllComponents();
-		mainAreaLayout.addComponent(new PlayerTableViewer().getContent());
+		mainAreaLayout.addComponent(new PlayerListViewer().getContent());
 	}
 
 	public void showTournamentCalendarView(Tournament tournament) {

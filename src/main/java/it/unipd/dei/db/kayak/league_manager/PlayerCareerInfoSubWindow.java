@@ -62,25 +62,24 @@ public class PlayerCareerInfoSubWindow {
 		// Ownerships section
 		mainLayout.addComponent(new Label("Ownerships contracts"));
 
-		VerticalLayout subLayout = new VerticalLayout();
-		subLayout.setMargin(new MarginInfo(false, false, false, true));
+		VerticalLayout tableLayout = new VerticalLayout();
+		tableLayout.setMargin(new MarginInfo(false, false, false, true));
+		OwnershipResultTable ownershipTable = new OwnershipResultTable();
 
 		for (OwnershipResult o : playerInfo.getOwnerships()) {
-			String ownershipCaption = o.getClubName() + " " + o.getStart()
-					+ " - " + o.getEnd();
-			if (o.isBorrowed()) {
-				ownershipCaption += " (borrowed)";
-			}
-			subLayout.addComponent(new Label(ownershipCaption));
+			ownershipTable.addOwnershipResult(o);
 		}
+		ownershipTable.setHeight("100px");
+		tableLayout.addComponent(ownershipTable);
 		
-		mainLayout.addComponent(subLayout);
+
+		mainLayout.addComponent(tableLayout);
 
 		// Events section
 		mainLayout.addComponent(new Label("Events"));
 
-		subLayout = new VerticalLayout();
-		subLayout.setMargin(new MarginInfo(false, false, false, true));
+		tableLayout = new VerticalLayout();
+		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
 		for (EventResult e : playerInfo.getEvents()) {
 			MatchUpDetails details = FakeDataWarehouse
@@ -107,10 +106,10 @@ public class PlayerCareerInfoSubWindow {
 			eventLayout.addComponent(spacer);
 			eventLayout.setExpandRatio(spacer, 1);
 
-			subLayout.addComponent(eventLayout);
+			tableLayout.addComponent(eventLayout);
 		}
-		
-		mainLayout.addComponent(subLayout);
+
+		mainLayout.addComponent(tableLayout);
 
 		Label spacer = new Label("");
 		mainLayout.addComponent(spacer);

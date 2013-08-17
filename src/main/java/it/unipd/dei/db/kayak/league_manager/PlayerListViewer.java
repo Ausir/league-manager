@@ -1,7 +1,7 @@
 package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
-import it.unipd.dei.db.kayak.league_manager.data.Tournament;
+import it.unipd.dei.db.kayak.league_manager.data.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +10,14 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-public class TournamentListViewer {
+public class PlayerListViewer {
 	// private fields
 	private VerticalLayout mainLayout;
 
-	private List<Tournament> tournamentList;
+	private List<Player> playerList;
 
-	public TournamentListViewer() {
-		tournamentList = new ArrayList<Tournament>(
-				FakeDataWarehouse.getTournaments());
+	public PlayerListViewer() {
+		playerList = new ArrayList<Player>(FakeDataWarehouse.getPlayers());
 
 		this.setUpContent();
 	}
@@ -27,21 +26,21 @@ public class TournamentListViewer {
 		mainLayout = new VerticalLayout();
 		mainLayout.setMargin(new MarginInfo(true, true, true, true));
 
-		Label presentation = new Label("Tournament list");
+		Label presentation = new Label("Player list");
 		mainLayout.addComponent(presentation);
 
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
-		TournamentTable tournamentTable = new TournamentTable();
+		PlayerTable playerTable = new PlayerTable();
 
-		for (Tournament t : tournamentList) {
-			tournamentTable.addTournament(t);
+		for (Player p : playerList) {
+			playerTable.addPlayer(p);
 		}
 
-		tableLayout.addComponent(tournamentTable);
-		tableLayout.setExpandRatio(tournamentTable, 1);
-		tournamentTable.setSizeFull();
+		tableLayout.addComponent(playerTable);
+		tableLayout.setExpandRatio(playerTable, 1);
+		playerTable.setSizeFull();
 
 		mainLayout.addComponent(tableLayout);
 		mainLayout.setExpandRatio(tableLayout, 1);
