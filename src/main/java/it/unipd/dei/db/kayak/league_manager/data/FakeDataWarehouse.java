@@ -317,7 +317,9 @@ public class FakeDataWarehouse {
 		MatchUpDetails details = new MatchUpDetails(hostLineUp.getID(),
 				guestLineUp.getID(), pitch.getName(), location.getID(),
 				matchUpResult, location.getName(), eventResults,
-				hostPlayerInfos, guestPlayerInfos);
+				hostPlayerInfos, guestPlayerInfos, mUp.getLineman1(),
+				mUp.getLineman2(), mUp.getTimekeeper1(), mUp.getTimekeeper2(),
+				mUp.getScorekeeper(), mUp.getReferee1(), mUp.getReferee2());
 
 		return details;
 	}

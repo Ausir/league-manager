@@ -19,12 +19,21 @@ public class MatchUpDetails {
 	private List<EventResult> eventList;
 	private List<PlayerMatchUpInfo> hostLineUp;
 	private List<PlayerMatchUpInfo> guestLineUp;
+	private String lineman1;
+	private String lineman2;
+	private String timekeeper1;
+	private String timekeeper2;
+	private String scorekeeper;
+	private String referee1;
+	private String referee2;
 
 	public MatchUpDetails(long lineUpHostID, long lineUpGuestID,
 			String pitchName, long locationID, MatchUpResult result,
 			String locationName, List<EventResult> eventList,
 			List<PlayerMatchUpInfo> hostLineUp,
-			List<PlayerMatchUpInfo> guestLineUp) {
+			List<PlayerMatchUpInfo> guestLineUp, String lineman1,
+			String lineman2, String timekeeper1, String timekeeper2,
+			String scorekeeper, String referee1, String referee2) {
 		super();
 		this.lineUpHostID = lineUpHostID;
 		this.lineUpGuestID = lineUpGuestID;
@@ -39,6 +48,13 @@ public class MatchUpDetails {
 		Collections.sort(this.hostLineUp, playerComp);
 		this.guestLineUp = new ArrayList<PlayerMatchUpInfo>(guestLineUp);
 		Collections.sort(this.guestLineUp, playerComp);
+		this.lineman1 = lineman1;
+		this.lineman2 = lineman2;
+		this.timekeeper1 = timekeeper1;
+		this.timekeeper2 = timekeeper2;
+		this.scorekeeper = scorekeeper;
+		this.referee1 = referee1;
+		this.referee2 = referee2;
 	}
 
 	public String getCompactString() {
@@ -92,5 +108,33 @@ public class MatchUpDetails {
 
 	public List<PlayerMatchUpInfo> getGuestLineUp() {
 		return guestLineUp;
+	}
+
+	public String getLineman1() {
+		return lineman1;
+	}
+
+	public String getLineman2() {
+		return lineman2;
+	}
+
+	public String getTimekeeper1() {
+		return timekeeper1;
+	}
+
+	public String getTimekeeper2() {
+		return timekeeper2;
+	}
+
+	public String getScorekeeper() {
+		return scorekeeper;
+	}
+
+	public String getReferee1() {
+		return referee1;
+	}
+
+	public String getReferee2() {
+		return referee2;
 	}
 }

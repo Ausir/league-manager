@@ -47,7 +47,7 @@ public class MatchUp {
 	private String timekeeper2;
 	private String scorekeeper;
 	private String referee1;
-	private String refereee2;
+	private String referee2;
 	private String pitchName;
 	private long pitchLocationID;
 	private int goalsHost;
@@ -73,7 +73,7 @@ public class MatchUp {
 		this.timekeeper2 = timekeeper2;
 		this.scorekeeper = scorekeeper;
 		this.referee1 = referee1;
-		this.refereee2 = refereee2;
+		this.referee2 = refereee2;
 		this.pitchName = pitchName;
 		this.pitchLocationID = pitchLocationID;
 		this.goalsHost = goalsHost;
@@ -132,8 +132,8 @@ public class MatchUp {
 		return referee1;
 	}
 
-	public String getRefereee2() {
-		return refereee2;
+	public String getReferee2() {
+		return referee2;
 	}
 
 	public String getPitchName() {

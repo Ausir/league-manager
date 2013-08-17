@@ -27,7 +27,7 @@ import com.vaadin.ui.Window;
 public class PlayerCareerInfoSubWindow {
 	// private fields
 	private Window window;
-	private VerticalLayout mainLayout;
+	// private VerticalLayout mainLayout;
 
 	private Player player;
 	private PlayerCareerInfo playerInfo;
@@ -47,28 +47,41 @@ public class PlayerCareerInfoSubWindow {
 
 	public void setUpWindow() {
 		window = new Window();
-		window.setCaption(player.getFirstName() + " " + player.getLastName()
-				+ " - " + player.getID());
+		window.setCaption(player.getID() + " " + player.getFirstName() + " "
+				+ player.getLastName());
 		window.setHeight("300px");
 		window.setWidth("450px");
 
-		mainLayout = new VerticalLayout();
-		mainLayout.setMargin(new MarginInfo(true, true, true, true));
+		VerticalLayout mainLayout = new VerticalLayout();
+		// mainLayout.setMargin(new MarginInfo(true, true, true, true));
 
-		mainLayout.addComponent(new Label(player.getFirstName() + " "
-				+ player.getLastName() + " - " + player.getID()));
-		mainLayout.addComponent(new Label("born " + player.getBirthday()));
+		mainLayout.addComponent(new Label(player.getID() + " "
+				+ player.getFirstName() + " " + player.getLastName()));
+		mainLayout.addComponent(new Label("Born " + player.getBirthday()));
 
-		VerticalLayout ownershipsLayout = new VerticalLayout();
-		ownershipsLayout.addComponent(new Label("Ownerships contracts"));
+		// Ownerships section
+		mainLayout.addComponent(new Label("Ownerships contracts"));
+
+		VerticalLayout subLayout = new VerticalLayout();
+		subLayout.setMargin(new MarginInfo(false, false, false, true));
+
 		for (OwnershipResult o : playerInfo.getOwnerships()) {
-			ownershipsLayout.addComponent(new Label(o.getClubName() + " "
-					+ o.getStart() + " - " + o.getEnd()));
+			String ownershipCaption = o.getClubName() + " " + o.getStart()
+					+ " - " + o.getEnd();
+			if (o.isBorrowed()) {
+				ownershipCaption += " (borrowed)";
+			}
+			subLayout.addComponent(new Label(ownershipCaption));
 		}
-		mainLayout.addComponent(ownershipsLayout);
+		
+		mainLayout.addComponent(subLayout);
 
-		VerticalLayout eventsLayout = new VerticalLayout();
-		ownershipsLayout.addComponent(new Label("Events"));
+		// Events section
+		mainLayout.addComponent(new Label("Events"));
+
+		subLayout = new VerticalLayout();
+		subLayout.setMargin(new MarginInfo(false, false, false, true));
+
 		for (EventResult e : playerInfo.getEvents()) {
 			MatchUpDetails details = FakeDataWarehouse
 					.getMatchUpDetails((int) e.getMatchUpID());
@@ -87,18 +100,17 @@ public class PlayerCareerInfoSubWindow {
 							home.showMatchUpDetailsSubWindow(matchUpID);
 						}
 					}));
-			String eventCaption = " - " + e.getCompactString();
+			String eventCaption = "    - " + e.getCompactString();
 			eventLayout.addComponent(new Label(eventCaption));
 
 			Label spacer = new Label();
 			eventLayout.addComponent(spacer);
 			eventLayout.setExpandRatio(spacer, 1);
 
-			eventsLayout.addComponent(eventLayout);
+			subLayout.addComponent(eventLayout);
 		}
-		// System.out.println("player " + playerInfo.getPlayerID() + " has "
-		// + playerInfo.getEvents().size() + " events");
-		mainLayout.addComponent(eventsLayout);
+		
+		mainLayout.addComponent(subLayout);
 
 		Label spacer = new Label("");
 		mainLayout.addComponent(spacer);

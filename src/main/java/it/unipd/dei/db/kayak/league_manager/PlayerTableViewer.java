@@ -48,12 +48,16 @@ public class PlayerTableViewer {
 		playerContainer.addContainerProperty("Birthday", Date.class, null);
 
 		Table playerTable = new Table("", playerContainer);
-		playerTable.addGeneratedColumn("View", new ColumnGenerator() {
+		playerTable.addGeneratedColumn("", new ColumnGenerator() {
+			private static final long serialVersionUID = 8778605441493432562L;
+
 			@Override
 			public Object generateCell(Table source, Object itemId,
 					Object columnId) {
 				final int playerID = ((Long) itemId).intValue();
 				return new Button("Open Details", new ClickListener() {
+					private static final long serialVersionUID = 894487094616791181L;
+
 					@Override
 					public void buttonClick(ClickEvent event) {
 						Home home = ((MyVaadinUI) UI.getCurrent()).getHome();

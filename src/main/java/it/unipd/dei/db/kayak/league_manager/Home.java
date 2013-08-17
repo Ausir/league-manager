@@ -23,7 +23,7 @@ public class Home {
 	// private fields
 	private VerticalLayout mainLayout;
 	private HorizontalLayout headerLayout;
-	private HorizontalLayout buttonsLayout;
+//	private HorizontalLayout buttonsLayout;
 	private HorizontalLayout bodyLayout;
 	private VerticalLayout leftBar;
 	private VerticalLayout mainAreaLayout;
@@ -43,7 +43,7 @@ public class Home {
 		mainAreaLayout.removeAllComponents();
 		mainAreaLayout.addComponent(new TournamentListViewer().getContent());
 	}
-	
+
 	public void showPlayerList() {
 		mainAreaLayout.removeAllComponents();
 		mainAreaLayout.addComponent(new PlayerTableViewer().getContent());
@@ -164,12 +164,16 @@ public class Home {
 					}));
 		}
 		leftBar.addComponent(new Button("All Tournaments", new ClickListener() {
+			private static final long serialVersionUID = -6224453886946793346L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				showTournamentList();
 			}
 		}));
 		leftBar.addComponent(new Button("All Players", new ClickListener() {
+			private static final long serialVersionUID = 3424857128044072824L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				showPlayerList();

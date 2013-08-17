@@ -1,6 +1,8 @@
 package it.unipd.dei.db.kayak.league_manager;
 
+import it.unipd.dei.db.kayak.league_manager.data.Club;
 import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
+import it.unipd.dei.db.kayak.league_manager.data.Location;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
@@ -23,7 +25,6 @@ public class TournamentCalendarViewer {
 	private VerticalLayout mainLayout;
 	private ArrayList<VerticalLayout> dayLayoutList;
 
-	@SuppressWarnings("unused")
 	private Tournament tournament;
 	private List<MatchUpResult> matchUpResults;
 	private List<MatchDay> matchDays;
@@ -94,13 +95,16 @@ public class TournamentCalendarViewer {
 		tournamentCaption += tournament.getSex() ? "M" : "F";
 		mainLayout.addComponent(new Label(tournamentCaption));
 
+		VerticalLayout subLayout = new VerticalLayout();
+		subLayout.setMargin(new MarginInfo(true, true, true, true));
+
 		dayLayoutList = new ArrayList<VerticalLayout>();
 
 		int mDayIdx = 0;
 		MatchDay mDay;
 		VerticalLayout dayLayout;
 		String dayString;
-		Label dayLabel;
+		// Label dayLabel;
 		VerticalLayout dayBody;
 		String tPhaseName;
 		VerticalLayout phaseLayout;
@@ -119,12 +123,32 @@ public class TournamentCalendarViewer {
 			if (mDay.getStartDate().compareTo(mDay.getEndDate()) != 0) {
 				dayString += " - " + mDay.getEndDate();
 			}
-			dayLabel = new Label(dayString);
-			dayLayout.addComponent(dayLabel);
+			Club organizer = null;
+			for (Club c : FakeDataWarehouse.getClubs()) {
+				if (c.getID() == mDay.getClubID()) {
+					organizer = c;
+					break;
+				}
+			}
+			Location location = null;
+			for (Location l : FakeDataWarehouse.getLocations()) {
+				if (l.getID() == mDay.getLocationID()) {
+					location = l;
+					break;
+				}
+			}
+			// dayLayout.addComponent(new Label("day managed by "
+			// + organizer.getName() + " at " + location.getName()));
+			dayString += " managed by " + organizer.getName() + " at "
+					+ location.getName();
+			// dayLabel = new Label(dayString);
+			dayLayout.addComponent(new Label(dayString));
+
 			dayBody = new VerticalLayout();
 			dayBody.setMargin(new MarginInfo(false, false, false, true));
 			dayLayout.addComponent(dayBody);
-			mainLayout.addComponent(dayLayout);
+
+			subLayout.addComponent(dayLayout);
 			dayLayoutList.add(dayLayout);
 
 			tPhaseName = "";
@@ -167,9 +191,13 @@ public class TournamentCalendarViewer {
 								home.showMatchUpDetailsSubWindow(matchUpID);
 							}
 						});
+
 				phaseBody.addComponent(mUpResBtn);
 			}
 		}
+
+		mainLayout.addComponent(subLayout);
+		// subLayout.setSizeFull();
 
 		Label spacer = new Label();
 		mainLayout.addComponent(spacer);
