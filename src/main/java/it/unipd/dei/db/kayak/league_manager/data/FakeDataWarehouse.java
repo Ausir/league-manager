@@ -139,11 +139,11 @@ public class FakeDataWarehouse {
 	}
 
 	public static MatchUpDetails getMatchUpDetails(String matchUpID) {
-//		System.out.println("FakeDataWarehouse retrieving MatchUpDetails for "
-//				+ matchUpID);
+		// System.out.println("FakeDataWarehouse retrieving MatchUpDetails for "
+		// + matchUpID);
 		MatchUp mUp = null;
 		for (MatchUp current : matchUps) {
-//			System.out.println("examining matchUpID " + current.getID());
+			// System.out.println("examining matchUpID " + current.getID());
 			if (current.getID().equals(matchUpID)) {
 				mUp = current;
 				break;
@@ -403,14 +403,19 @@ public class FakeDataWarehouse {
 
 		int CLUBS_NUM = 4;
 		clubs.add(new Club(0, "Nargothrond Kayak Club", "Nargothrond",
-				"1234567890", "Mithril boulevard 32, Nargothrond, Middle Earth"));
+				"1234567890",
+				"Mithril boulevard 32, Nargothrond, Middle Earth",
+				"nargothrondkayak@gmial.com", "nargothrondkayak.me"));
 		clubs.add(new Club(1, "Gondolin Kayak Club", "Gondolin", "0987654321",
-				"Aeglos plaza 17, Gondolin, Middle Earth"));
+				"Aeglos plaza 17, Gondolin, Middle Earth",
+				"gondolinkayak@gmial.com", "gondolinkayak.me"));
 		clubs.add(new Club(2, "Angband Kayak Club", "Angband", "0204060800",
-				"Melko avenue 4, Angband, Middle Earth"));
+				"Melko avenue 4, Angband, Middle Earth",
+				"angbandkayak@gmial.com", "angbandkayak.me"));
 		clubs.add(new Club(3, "Minas Ithil Kayak Club", "Minas Ithil",
 				"0103050709",
-				"Charcharas boulevard , Minas Ithil, Middle Earth"));
+				"Charcharas boulevard , Minas Ithil, Middle Earth",
+				"minasithilkayak@gmial.com", "minasithilkayak.me"));
 
 		int PLAYERS_NUM = 60;
 		for (int i = 0; i < PLAYERS_NUM; i++) {
@@ -516,17 +521,17 @@ public class FakeDataWarehouse {
 		actions.add(new Action("yellow card", "yellow card"));
 
 		// TODO: write correct ownership ids
-		events.add(new Event(0, "0", true, new Date(System
-				.currentTimeMillis()), 10, 0, "goal", 0,
+		events.add(new Event(0, "0", true,
+				new Date(System.currentTimeMillis()), 10, 0, "goal", 0,
 				"lorenzo.fabris@gmail.com"));
-		events.add(new Event(1, "1", true, new Date(System
-				.currentTimeMillis()), 10, 0, "goal", 15,
+		events.add(new Event(1, "1", true,
+				new Date(System.currentTimeMillis()), 10, 0, "goal", 15,
 				"lorenzo.fabris@gmail.com"));
-		events.add(new Event(2, "2", true, new Date(System
-				.currentTimeMillis()), 10, 0, "goal", 16,
+		events.add(new Event(2, "2", true,
+				new Date(System.currentTimeMillis()), 10, 0, "goal", 16,
 				"lorenzo.fabris@gmail.com"));
-		events.add(new Event(3, "3", true, new Date(System
-				.currentTimeMillis()), 10, 0, "goal", 17,
+		events.add(new Event(3, "3", true,
+				new Date(System.currentTimeMillis()), 10, 0, "goal", 17,
 				"lorenzo.fabris@gmail.com"));
 
 		initialized = true;

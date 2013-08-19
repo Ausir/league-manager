@@ -14,15 +14,19 @@ public class Club {
 	private String shortName;
 	private String phone;
 	private String address;
+	private String email;
+	private String website;
 
 	public Club(long id, String name, String shortName, String phone,
-			String address) {
+			String address, String email, String website) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.shortName = shortName;
 		this.phone = phone;
 		this.address = address;
+		this.email = email;
+		this.website = website;
 	}
 
 	public long getID() {
@@ -43,5 +47,13 @@ public class Club {
 
 	public String getAddress() {
 		return address;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getWebsite() {
+		return website;
 	}
 }
