@@ -176,22 +176,11 @@ public class TournamentCalendarViewer {
 				final String fmatchUpID = mUpRes.getMatchUpID();
 				Button mUpResBtn = new Button(mUpRes.getCompactString(),
 						new ClickListener() {
-							private static final long serialVersionUID = 9042873981140452659L;
-
-							// MatchUpDetails details = FakeDataWarehouse
-							// .getMatchUpDetails((int) fmUpRes
-							// .getMatchUpID());
-							// MatchUpDetailsSubWindow detailsWindow = new
-							// MatchUpDetailsSubWindow(
-							// details);
-							// String matchUpID = fmUpRes.getMatchUpID();
-							String matchUpID = fmatchUpID;
-
 							@Override
 							public void buttonClick(ClickEvent event) {
 								Home home = ((MyVaadinUI) UI.getCurrent())
 										.getHome();
-								home.showMatchUpDetailsSubWindow(matchUpID);
+								home.showMatchUpDetailsSubWindow(fmatchUpID);
 							}
 						});
 
@@ -200,7 +189,6 @@ public class TournamentCalendarViewer {
 		}
 
 		mainLayout.addComponent(subLayout);
-		// subLayout.setSizeFull();
 
 		Label spacer = new Label();
 		mainLayout.addComponent(spacer);

@@ -1,5 +1,6 @@
 package it.unipd.dei.db.kayak.league_manager;
 
+import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
 import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
@@ -29,12 +30,14 @@ public class Home {
 	private VerticalLayout mainAreaLayout;
 
 	private Map<String, MatchUpDetailsSubWindow> matchUpDetailsSubWindows;
-	private Map<Integer, PlayerCareerInfoSubWindow> playerCareerInfoSubWindows;
+	private Map<Long, PlayerCareerInfoSubWindow> playerCareerInfoSubWindows;
+	private Map<Long, ClubDetailsSubWindow> clubDetailsSubWindow;
 
 	// constructor
 	public Home() {
 		matchUpDetailsSubWindows = new HashMap<String, MatchUpDetailsSubWindow>();
-		playerCareerInfoSubWindows = new HashMap<Integer, PlayerCareerInfoSubWindow>();
+		playerCareerInfoSubWindows = new HashMap<Long, PlayerCareerInfoSubWindow>();
+		clubDetailsSubWindow = new HashMap<Long, ClubDetailsSubWindow>();
 
 		this.setUpContent();
 	}
@@ -49,16 +52,33 @@ public class Home {
 		mainAreaLayout.addComponent(new PlayerListViewer().getContent());
 	}
 
+	public void showClubList() {
+		mainAreaLayout.removeAllComponents();
+		mainAreaLayout.addComponent(new ClubListViewer().getContent());
+	}
+
 	public void showTournamentCalendarView(Tournament tournament) {
 		mainAreaLayout.removeAllComponents();
 		mainAreaLayout.addComponent(new TournamentCalendarViewer(tournament)
 				.getContent());
 	}
 
-	public void showClubDetailsView(int clubID) {
-		mainAreaLayout.removeAllComponents();
-		// mainAreaLayout.addComponent(new TournamentCalendarViewer(tournament)
-		// .getContent());
+	public void showClubDetailsSubWindow(long clubID) {
+		if (!clubDetailsSubWindow.containsKey(clubID)) {
+			ClubDetails clubDetails = FakeDataWarehouse.getClubDetails(clubID);
+			ClubDetailsSubWindow detailsWindow = new ClubDetailsSubWindow(
+					clubDetails);
+			clubDetailsSubWindow.put(clubID, detailsWindow);
+			UI.getCurrent().addWindow(detailsWindow.getWindow());
+		}
+	}
+
+	public void closedClubDetailsSubWindow(long clubID) {
+		if (clubDetailsSubWindow.containsKey(clubID)) {
+			// System.out.println("close event of MatchUpDetailsSubWindow "
+			// + matchUpID);
+			clubDetailsSubWindow.remove(clubID);
+		}
 	}
 
 	public void showMatchUpDetailsSubWindow(String matchUpID) {
@@ -90,7 +110,7 @@ public class Home {
 		}
 	}
 
-	public void showPlayerCareerInfoSubWindow(int playerID) {
+	public void showPlayerCareerInfoSubWindow(long playerID) {
 		if (!playerCareerInfoSubWindows.containsKey(playerID)) {
 			Player player = null;
 			for (Player p : FakeDataWarehouse.getPlayers()) {
@@ -109,7 +129,7 @@ public class Home {
 		}
 	}
 
-	public void closedPlayerCareerInfoSubWindow(int playerID) {
+	public void closedPlayerCareerInfoSubWindow(long playerID) {
 		if (playerCareerInfoSubWindows.containsKey(playerID)) {
 			// System.out.println("close event of MatchUpDetailsSubWindow "
 			// + matchUpID);
@@ -131,22 +151,6 @@ public class Home {
 		headerLayout.setWidth("100%");
 		mainLayout.addComponent(headerLayout);
 
-		// buttonsLayout = new HorizontalLayout();
-		// Button btn1 = new Button("Button1");
-		// buttonsLayout.addComponent(btn1);
-		// btn1.setWidth("200px");
-		// Button btn2 = new Button("Button2");
-		// buttonsLayout.addComponent(btn2);
-		// btn2.setWidth("200px");
-		// Button btn3 = new Button("Button3");
-		// buttonsLayout.addComponent(btn3);
-		// btn3.setWidth("200px");
-		// Label buttonsSpacer = new Label();
-		// buttonsLayout.addComponent(buttonsSpacer);
-		// buttonsLayout.setExpandRatio(buttonsSpacer, 1);
-		// buttonsLayout.setHeight("40px");
-		// buttonsLayout.setWidth("100%");
-
 		bodyLayout = new HorizontalLayout();
 
 		leftBar = new VerticalLayout();
@@ -156,27 +160,31 @@ public class Home {
 		for (final Tournament t : tournaments) {
 			leftBar.addComponent(new Button(t.getName() + " - " + t.getYear(),
 					new ClickListener() {
-						private static final long serialVersionUID = -1853835079781595641L;
-
+						@Override
 						public void buttonClick(ClickEvent event) {
 							showTournamentCalendarView(t);
 						}
 					}));
 		}
-		leftBar.addComponent(new Button("All Tournaments", new ClickListener() {
-			private static final long serialVersionUID = -6224453886946793346L;
 
+		leftBar.addComponent(new Button("All Tournaments", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				showTournamentList();
 			}
 		}));
-		leftBar.addComponent(new Button("All Players", new ClickListener() {
-			private static final long serialVersionUID = 3424857128044072824L;
 
+		leftBar.addComponent(new Button("All Players", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				showPlayerList();
+			}
+		}));
+
+		leftBar.addComponent(new Button("All Clubs", new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				showClubList();
 			}
 		}));
 

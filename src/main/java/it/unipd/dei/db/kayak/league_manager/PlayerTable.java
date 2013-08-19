@@ -13,42 +13,33 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 
 public class PlayerTable extends Table {
-	private static final long serialVersionUID = 8358667981809849010L;
-
 	public PlayerTable() {
 		super("");
 
 		Container playerContainer = (IndexedContainer) this
 				.getContainerDataSource();
-		playerContainer.addContainerProperty("ID", Long.class, null);
+
 		playerContainer.addContainerProperty("First Name", String.class, null);
 		playerContainer.addContainerProperty("Last Name", String.class, null);
 		playerContainer.addContainerProperty("Birthday", Date.class, null);
+		playerContainer.addContainerProperty("", Button.class, null);
 
 		this.setContainerDataSource(playerContainer);
-		this.addGeneratedColumn("", new ColumnGenerator() {
-			private static final long serialVersionUID = 8778605441493432562L;
-
-			@Override
-			public Object generateCell(Table source, Object itemId,
-					Object columnId) {
-				final int playerID = ((Long) itemId).intValue();
-				return new Button("View Player", new ClickListener() {
-					private static final long serialVersionUID = 894487094616791181L;
-
-					@Override
-					public void buttonClick(ClickEvent event) {
-						Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
-						home.showPlayerCareerInfoSubWindow(playerID);
-					}
-				});
-			}
-		});
 	}
 
 	public void addPlayer(Player player) {
-		this.addItem(new Object[] { player.getID(), player.getFirstName(),
-				player.getLastName(), player.getBirthday() }, player.getID());
+		final long playerID = player.getID();
+		Button btn = new Button("View Player Career", new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+				home.showPlayerCareerInfoSubWindow(playerID);
+			}
+		});
+		
+		this.addItem(new Object[] { player.getFirstName(),
+				player.getLastName(), player.getBirthday(), btn },
+				player.getID());
 	}
 
 	public void removePlayer(long playerID) {

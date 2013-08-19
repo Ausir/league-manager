@@ -32,7 +32,38 @@ public class FakeDataWarehouse {
 		return ret;
 	}
 
-	public static PlayerCareerInfo getPlayerCareerInfo(int playerID) {
+	public static ClubDetails getClubDetails(long clubID) {
+		Club club = null;
+		for (Club c : clubs) {
+			if (c.getID() == clubID) {
+				club = c;
+				break;
+			}
+		}
+
+		// List<Ownership> currentOwnerships = new ArrayList<Ownership>();
+		List<Player> clubPlayers = new ArrayList<Player>();
+		Date now = new Date(System.currentTimeMillis());
+		for (Ownership o : ownerships) {
+			// System.out.println("beforeEnd: "+now+" <= "+);
+			boolean beforeEnd = now.compareTo(o.getEndDate()) <= 0;
+			boolean afterStart = now.compareTo(o.getStartDate()) >= 0;
+			if (o.getClubID() == clubID && beforeEnd && afterStart) {
+				// currentOwnerships.add(o);
+				for (Player p : players) {
+					if (p.getID() == o.getPlayerID()) {
+						clubPlayers.add(p);
+					}
+				}
+			}
+		}
+
+		return new ClubDetails(clubID, club.getName(), club.getPhone(),
+				club.getAddress(), club.getEmail(), club.getWebsite(),
+				clubPlayers);
+	}
+
+	public static PlayerCareerInfo getPlayerCareerInfo(long playerID) {
 		Player pl = null;
 		for (Player current : players) {
 			if (current.getID() == playerID) {
@@ -338,19 +369,19 @@ public class FakeDataWarehouse {
 				MatchUp mUp = matchUps.get(i);
 				MatchDay mDay = matchDays.get(i / 2);
 				Plays pl = plays.get(i);
-				int hostID = 0;
+				long hostID = 0;
 				for (LineUp l : lineUps) {
 					if (l.getID().equals(pl.getLineupHostID())) {
-						hostID = (int) l.getClubID();
+						hostID = l.getClubID();
 						break;
 					}
 				}
 				// int hostID = (int) lineUps.get((int) pl.getLineupHostID())
 				// .getClubID();
-				int guestID = 0;
+				long guestID = 0;
 				for (LineUp l : lineUps) {
 					if (l.getID().equals(pl.getLineUpGuestID())) {
-						hostID = (int) l.getClubID();
+						hostID = l.getClubID();
 						break;
 					}
 				}
@@ -360,19 +391,21 @@ public class FakeDataWarehouse {
 				ret.add(new MatchUpResult("" + i, mUp.getMatchDayID(), mUp
 						.getTournamentPhaseName(), tournamentName,
 						tournamentYear, hostID, guestID, mDay.getStartDate(),
-						clubs.get(hostID).getShortName(), clubs.get(guestID)
-								.getShortName(), mUp.getGoalsHost(), mUp
-								.getGoalsGuest(), new Time(16 + i, 0, 0)));
+						clubs.get((int) hostID).getShortName(), clubs.get(
+								(int) guestID).getShortName(), mUp
+								.getGoalsHost(), mUp.getGoalsGuest(), new Time(
+								16 + i, 0, 0)));
 			}
 		} else if (tournamentName == "Tournament2") {
 			MatchUp mUp = matchUps.get(3);
 			MatchDay mDay = matchDays.get(2);
-			int hostID = 1;
-			int guestID = 0;
+			long hostID = 1;
+			long guestID = 0;
 			ret.add(new MatchUpResult("" + 3, "finals2", "Final",
 					tournamentName, tournamentYear, hostID, guestID, mDay
-							.getStartDate(), clubs.get(hostID).getShortName(),
-					clubs.get(guestID).getShortName(), mUp.getGoalsHost(), mUp
+							.getStartDate(), clubs.get((int) hostID)
+							.getShortName(), clubs.get((int) guestID)
+							.getShortName(), mUp.getGoalsHost(), mUp
 							.getGoalsGuest(), new Time(16, 0, 0)));
 		}
 
@@ -422,7 +455,7 @@ public class FakeDataWarehouse {
 			Player p = new Player(i, "player" + i + "FirstName", "player" + i
 					+ "LastName", new Date(98, 5, 1 + (i + 1) % 30));
 			players.add(p);
-			int clubID = i / (PLAYERS_NUM / CLUBS_NUM);
+			long clubID = i / (PLAYERS_NUM / CLUBS_NUM);
 			// int lineupID = 2 * clubID;
 			ownerships.add(new Ownership(i, i, clubID, false, new Date(110, 5,
 					1 + (i + 1) % 30), new Date(System.currentTimeMillis()

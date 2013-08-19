@@ -20,6 +20,7 @@ import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -47,38 +48,63 @@ public class PlayerCareerInfoSubWindow {
 
 	public void setUpWindow() {
 		window = new Window();
-		window.setCaption(player.getID() + " " + player.getFirstName() + " "
+		window.setCaption(player.getID() + " - " + player.getFirstName() + " "
 				+ player.getLastName());
 		window.setHeight("400px");
 		window.setWidth("600px");
 
-		VerticalLayout mainLayout = new VerticalLayout();
-		// mainLayout.setMargin(new MarginInfo(true, true, true, true));
+		TabSheet tabs = new TabSheet();
 
-		mainLayout.addComponent(new Label(player.getID() + " "
+		// content of Player Info
+		VerticalLayout tabLayout = new VerticalLayout();
+		// tabLayout.setMargin(new MarginInfo(false, false, false, true));
+
+		tabLayout.addComponent(new Label(player.getID() + " - "
 				+ player.getFirstName() + " " + player.getLastName()));
-		mainLayout.addComponent(new Label("Born " + player.getBirthday()));
+		tabLayout.addComponent(new Label("Birthday: " + player.getBirthday()));
+
+		Label spacer = new Label();
+		tabLayout.addComponent(spacer);
+		tabLayout.setExpandRatio(spacer, 1);
+
+		tabLayout.setSizeFull();
+
+		tabs.addTab(tabLayout, "Player Info");
 
 		// Ownerships section
-		mainLayout.addComponent(new Label("Ownerships contracts"));
+		tabLayout = new VerticalLayout();
+		tabLayout.setMargin(new MarginInfo(false, false, true, false));
+
+		tabLayout.addComponent(new Label("Ownerships contracts"));
 
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
-		OwnershipResultTable ownershipTable = new OwnershipResultTable();
 
+		OwnershipResultTable ownershipTable = new OwnershipResultTable();
 		for (OwnershipResult o : playerInfo.getOwnerships()) {
 			ownershipTable.addOwnershipResult(o);
 		}
-		ownershipTable.setHeight("100px");
-		tableLayout.addComponent(ownershipTable);
 
-		mainLayout.addComponent(tableLayout);
+		tableLayout.addComponent(ownershipTable);
+		tableLayout.setExpandRatio(ownershipTable, 1);
+		ownershipTable.setSizeFull();
+
+		tabLayout.addComponent(tableLayout);
+		tabLayout.setExpandRatio(tableLayout, 1);
+		tableLayout.setSizeFull();
+
+		tabLayout.setSizeFull();
+
+		tabs.addTab(tabLayout, "Ownerships");
 
 		// Events section
-		mainLayout.addComponent(new Label("Events"));
+		tabLayout = new VerticalLayout();
+		tabLayout.setMargin(new MarginInfo(false, false, true, false));
 
-		tableLayout = new VerticalLayout();
-		tableLayout.setMargin(new MarginInfo(false, false, false, true));
+		tabLayout.addComponent(new Label("Events"));
+
+		VerticalLayout subLayout = new VerticalLayout();
+		subLayout.setMargin(new MarginInfo(false, false, false, true));
 
 		for (EventResult e : playerInfo.getEvents()) {
 			MatchUpDetails details = FakeDataWarehouse.getMatchUpDetails(e
@@ -89,8 +115,6 @@ public class PlayerCareerInfoSubWindow {
 			final String matchUpID = res.getMatchUpID();
 			eventLayout.addComponent(new Button(res.getFullyQualifiedName(),
 					new ClickListener() {
-						private static final long serialVersionUID = 8649065438982350398L;
-
 						@Override
 						public void buttonClick(ClickEvent event) {
 							Home home = ((MyVaadinUI) UI.getCurrent())
@@ -101,26 +125,30 @@ public class PlayerCareerInfoSubWindow {
 			String eventCaption = "    - " + e.getCompactString();
 			eventLayout.addComponent(new Label(eventCaption));
 
-			Label spacer = new Label();
+			spacer = new Label();
 			eventLayout.addComponent(spacer);
 			eventLayout.setExpandRatio(spacer, 1);
 
-			tableLayout.addComponent(eventLayout);
+			subLayout.addComponent(eventLayout);
 		}
 
-		mainLayout.addComponent(tableLayout);
+		tabLayout.addComponent(subLayout);
+		tabLayout.setExpandRatio(subLayout, 1);
+		subLayout.setSizeFull();
 
-		Label spacer = new Label("");
-		mainLayout.addComponent(spacer);
-		mainLayout.setExpandRatio(spacer, 1);
+		spacer = new Label("");
+		tabLayout.addComponent(spacer);
+		tabLayout.setExpandRatio(spacer, 1);
 
-		window.setContent(mainLayout);
-		mainLayout.setSizeFull();
+		tabLayout.setSizeFull();
+
+		tabs.addTab(tabLayout, "Events");
+
+		window.setContent(tabs);
+		tabs.setSizeFull();
 
 		final int playerID = (int) player.getID();
 		window.addCloseListener(new CloseListener() {
-			private static final long serialVersionUID = 731861246706327704L;
-
 			@Override
 			public void windowClose(CloseEvent e) {
 				Home home = ((MyVaadinUI) UI.getCurrent()).getHome();

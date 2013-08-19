@@ -86,8 +86,9 @@ public class MatchUpDetailsSubWindow {
 		tabLayoutSplitter.setExpandRatio(rightSplitLayout, 0.5f);
 
 		tabLayout.addComponent(tabLayoutSplitter);
-		tabLayoutSplitter.setSizeFull();
 		tabLayout.setExpandRatio(tabLayoutSplitter, 1);
+		tabLayoutSplitter.setSizeFull();
+		
 		tabLayout.setSizeFull();
 
 		tabs.addTab(tabLayout, "Events");
@@ -112,8 +113,6 @@ public class MatchUpDetailsSubWindow {
 			final int playerID = (int) playerInfo.getPlayerID();
 			leftSplitSubLayout.addComponent(new Button(playerInfo.getNumber()
 					+ " " + playerInfo.getPlayerName(), new ClickListener() {
-				private static final long serialVersionUID = -8353847524980785433L;
-
 				@Override
 				public void buttonClick(ClickEvent event) {
 					Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
@@ -125,8 +124,6 @@ public class MatchUpDetailsSubWindow {
 			final int playerID = (int) playerInfo.getPlayerID();
 			rightSplitSubLayout.addComponent(new Button(playerInfo.getNumber()
 					+ " " + playerInfo.getPlayerName(), new ClickListener() {
-				private static final long serialVersionUID = -8353847524980785433L;
-
 				@Override
 				public void buttonClick(ClickEvent event) {
 					Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
@@ -145,7 +142,7 @@ public class MatchUpDetailsSubWindow {
 
 		tabLayout.addComponent(tabLayoutSplitter);
 		tabLayout.setExpandRatio(tabLayoutSplitter, 1);
-		tabLayout.setSizeFull();
+		tabLayoutSplitter.setSizeFull();
 
 		tabs.addTab(tabLayout, "LineUps");
 
@@ -198,8 +195,6 @@ public class MatchUpDetailsSubWindow {
 
 		final String mUpID = matchUpDetails.getResult().getMatchUpID();
 		window.addCloseListener(new CloseListener() {
-			private static final long serialVersionUID = 731861246706327704L;
-
 			@Override
 			public void windowClose(CloseEvent e) {
 				Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
