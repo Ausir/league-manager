@@ -11,12 +11,12 @@ public class CallsUp {
 	// FOREIGN KEY (ownership_id) REFERENCES lm.Ownership (id),
 	// FOREIGN KEY (club_id) REFERENCES lm.Club (id)
 	// );
-	private long lineupID;
+	private String lineupID;
 	private long ownershipID;
 	private long clubID;
 	private int playerNumber;
 
-	public CallsUp(long lineupID, long ownershipID, long clubID,
+	public CallsUp(String lineupID, long ownershipID, long clubID,
 			int playerNumber) {
 		super();
 		this.lineupID = lineupID;
@@ -25,7 +25,7 @@ public class CallsUp {
 		this.playerNumber = playerNumber;
 	}
 
-	public long getLineupID() {
+	public String getLineupID() {
 		return lineupID;
 	}
 

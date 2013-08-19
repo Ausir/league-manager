@@ -42,7 +42,7 @@ public class TournamentTable extends Table {
 						.getItemProperty("Max Age").getValue(), sex,
 						(String) item.getItemProperty("Organizer Email")
 								.getValue());
-				return new Button("Open Details", new ClickListener() {
+				return new Button("View Tournament", new ClickListener() {
 					private static final long serialVersionUID = 894487094616791181L;
 
 					@Override

@@ -70,7 +70,7 @@ public class FakeDataWarehouse {
 				if (current.getOwnershipID() == o.getOwnershipID()) {
 					Action a = null;
 					for (Action cA : actions) {
-						if (cA.getName() == current.getAction()) {
+						if (cA.getName().equals(current.getAction())) {
 							a = cA;
 							break;
 						}
@@ -84,16 +84,16 @@ public class FakeDataWarehouse {
 					// }
 					// }
 
-					long lineUpID = 0;
+					String lineUpID = "";
 
 					for (Plays p : plays) {
 						if (p.getMatchUpID() == current.getMatchUpID()) {
 							for (LineUp l : lineUps) {
 								if (l.getClubID() == o.getClubID()) {
-									if (l.getID() == p.getLineupHostID()) {
+									if (l.getID().equals(p.getLineupHostID())) {
 										lineUpID = l.getID();
-									} else if (l.getID() == p
-											.getLineUpGuestID()) {
+									} else if (l.getID().equals(
+											p.getLineUpGuestID())) {
 										lineUpID = l.getID();
 									}
 								}
@@ -104,7 +104,7 @@ public class FakeDataWarehouse {
 
 					CallsUp cUp = null;
 					for (CallsUp c : callsUps) {
-						if (c.getLineupID() == lineUpID) {
+						if (c.getLineupID().equals(lineUpID)) {
 							cUp = c;
 							break;
 						}
@@ -138,10 +138,13 @@ public class FakeDataWarehouse {
 		return ret;
 	}
 
-	public static MatchUpDetails getMatchUpDetails(int matchUpID) {
+	public static MatchUpDetails getMatchUpDetails(String matchUpID) {
+//		System.out.println("FakeDataWarehouse retrieving MatchUpDetails for "
+//				+ matchUpID);
 		MatchUp mUp = null;
 		for (MatchUp current : matchUps) {
-			if (current.getID() == matchUpID) {
+//			System.out.println("examining matchUpID " + current.getID());
+			if (current.getID().equals(matchUpID)) {
 				mUp = current;
 				break;
 			}
@@ -149,7 +152,9 @@ public class FakeDataWarehouse {
 
 		MatchDay mDay = null;
 		for (MatchDay current : matchDays) {
-			if (current.getID() == mUp.getMatchDayID()) {
+			// System.out.println("current.getID=" + current.getID());
+			// System.out.println("mUp.getMatchDayID=" + mUp.getMatchDayID());
+			if (current.getID().equals(mUp.getMatchDayID())) {
 				mDay = current;
 				break;
 			}
@@ -157,7 +162,7 @@ public class FakeDataWarehouse {
 
 		Plays play = null;
 		for (Plays current : plays) {
-			if (current.getMatchUpID() == mUp.getID()) {
+			if (current.getMatchUpID().equals(mUp.getID())) {
 				play = current;
 				break;
 			}
@@ -166,9 +171,9 @@ public class FakeDataWarehouse {
 		LineUp hostLineUp = null;
 		LineUp guestLineUp = null;
 		for (LineUp current : lineUps) {
-			if (current.getID() == play.getLineupHostID()) {
+			if (current.getID().equals(play.getLineupHostID())) {
 				hostLineUp = current;
-			} else if (current.getID() == play.getLineUpGuestID()) {
+			} else if (current.getID().equals(play.getLineUpGuestID())) {
 				guestLineUp = current;
 			}
 		}
@@ -190,7 +195,7 @@ public class FakeDataWarehouse {
 		ArrayList<Ownership> guestOwnerships = new ArrayList<Ownership>();
 		ArrayList<Player> guestPlayers = new ArrayList<Player>();
 		for (CallsUp current : callsUps) {
-			if (current.getLineupID() == hostLineUp.getID()) {
+			if (current.getLineupID().equals(hostLineUp.getID())) {
 				hostCallsUp.add(current);
 				for (Ownership o : ownerships) {
 					if (o.getID() == current.getOwnershipID()) {
@@ -204,7 +209,7 @@ public class FakeDataWarehouse {
 						break;
 					}
 				}
-			} else if (current.getLineupID() == guestLineUp.getID()) {
+			} else if (current.getLineupID().equals(guestLineUp.getID())) {
 				guestCallsUp.add(current);
 				for (Ownership o : ownerships) {
 					if (o.getID() == current.getOwnershipID()) {
@@ -223,7 +228,7 @@ public class FakeDataWarehouse {
 
 		ArrayList<Event> mUpEvents = new ArrayList<Event>();
 		for (Event current : events) {
-			if (current.getMatchUpID() == mUp.getID()) {
+			if (current.getMatchUpID().equals(mUp.getID())) {
 				mUpEvents.add(current);
 			}
 		}
@@ -238,7 +243,7 @@ public class FakeDataWarehouse {
 
 		Pitch pitch = null;
 		for (Pitch current : pitches) {
-			if (current.getName() == mUp.getPitchName()
+			if (current.getName().equals(mUp.getPitchName())
 					&& current.getLocationID() == location.getID()) {
 				pitch = current;
 				break;
@@ -278,7 +283,7 @@ public class FakeDataWarehouse {
 		for (Event current : mUpEvents) {
 			Action a = null;
 			for (Action cA : actions) {
-				if (cA.getName() == current.getAction()) {
+				if (cA.getName().equals(current.getAction())) {
 					a = cA;
 					break;
 				}
@@ -333,12 +338,26 @@ public class FakeDataWarehouse {
 				MatchUp mUp = matchUps.get(i);
 				MatchDay mDay = matchDays.get(i / 2);
 				Plays pl = plays.get(i);
-				int hostID = (int) lineUps.get((int) pl.getLineupHostID())
-						.getClubID();
-				int guestID = (int) lineUps.get((int) pl.getLineUpGuestID())
-						.getClubID();
+				int hostID = 0;
+				for (LineUp l : lineUps) {
+					if (l.getID().equals(pl.getLineupHostID())) {
+						hostID = (int) l.getClubID();
+						break;
+					}
+				}
+				// int hostID = (int) lineUps.get((int) pl.getLineupHostID())
+				// .getClubID();
+				int guestID = 0;
+				for (LineUp l : lineUps) {
+					if (l.getID().equals(pl.getLineUpGuestID())) {
+						hostID = (int) l.getClubID();
+						break;
+					}
+				}
+				// int guestID = (int) lineUps.get((int) pl.getLineUpGuestID())
+				// .getClubID();
 
-				ret.add(new MatchUpResult(i, mUp.getMatchDayID(), mUp
+				ret.add(new MatchUpResult("" + i, mUp.getMatchDayID(), mUp
 						.getTournamentPhaseName(), tournamentName,
 						tournamentYear, hostID, guestID, mDay.getStartDate(),
 						clubs.get(hostID).getShortName(), clubs.get(guestID)
@@ -350,10 +369,10 @@ public class FakeDataWarehouse {
 			MatchDay mDay = matchDays.get(2);
 			int hostID = 1;
 			int guestID = 0;
-			ret.add(new MatchUpResult(3, "finals2", "Final", tournamentName,
-					tournamentYear, hostID, guestID, mDay.getStartDate(), clubs
-							.get(hostID).getShortName(), clubs.get(guestID)
-							.getShortName(), mUp.getGoalsHost(), mUp
+			ret.add(new MatchUpResult("" + 3, "finals2", "Final",
+					tournamentName, tournamentYear, hostID, guestID, mDay
+							.getStartDate(), clubs.get(hostID).getShortName(),
+					clubs.get(guestID).getShortName(), mUp.getGoalsHost(), mUp
 							.getGoalsGuest(), new Time(16, 0, 0)));
 		}
 
@@ -428,40 +447,40 @@ public class FakeDataWarehouse {
 		pitches.add(new Pitch(0, "Nargothrond Water Stadium"));
 		pitches.add(new Pitch(1, "Gondolin Water Stadium"));
 
-		lineUps.add(new LineUp(0, true, "AAAAAA", "BBBBBB", "semifinals1",
+		lineUps.add(new LineUp("" + 0, true, "AAAAAA", "BBBBBB", "semifinals1",
 				"michele.palmia@gmail.com", 0));
-		lineUps.add(new LineUp(1, true, "AAAAAA", "BBBBBB", "finals1",
+		lineUps.add(new LineUp("" + 1, true, "AAAAAA", "BBBBBB", "finals1",
 				"michele.palmia@gmail.com", 0));
-		lineUps.add(new LineUp(2, true, "AAAAAA", "BBBBBB", "finals2",
+		lineUps.add(new LineUp("" + 2, true, "AAAAAA", "BBBBBB", "finals2",
 				"michele.palmia@gmail.com", 0));
 		for (int lup = 0; lup < 3; lup++) {
 			for (int pid = 0; pid < 8; pid++) {
-				callsUps.add(new CallsUp(lup, pid, 0, pid));
+				callsUps.add(new CallsUp("" + lup, pid, 0, pid));
 			}
 		}
 
-		lineUps.add(new LineUp(3, true, "CCCCCC", "DDDDDD", "semifinals1",
+		lineUps.add(new LineUp("" + 3, true, "CCCCCC", "DDDDDD", "semifinals1",
 				"denis.altomare@gmail.com", 1));
-		lineUps.add(new LineUp(4, true, "CCCCCC", "DDDDDD", "finals1",
+		lineUps.add(new LineUp("" + 4, true, "CCCCCC", "DDDDDD", "finals1",
 				"denis.altomare@gmail.com", 1));
-		lineUps.add(new LineUp(5, true, "CCCCCC", "DDDDDD", "finals2",
+		lineUps.add(new LineUp("" + 5, true, "CCCCCC", "DDDDDD", "finals2",
 				"denis.altomare@gmail.com", 1));
 		for (int lup = 3; lup < 6; lup++) {
 			for (int pid = 15; pid < 23; pid++) {
-				callsUps.add(new CallsUp(lup, pid, 1, pid));
+				callsUps.add(new CallsUp("" + lup, pid, 1, pid));
 			}
 		}
 
-		lineUps.add(new LineUp(6, true, "EEEEEE", "FFFFFF", "semifinals1",
+		lineUps.add(new LineUp("6", true, "EEEEEE", "FFFFFF", "semifinals1",
 				"michele.palmia@gmail.com", 2));
 		for (int pid = 30; pid < 38; pid++) {
-			callsUps.add(new CallsUp(6, pid, 1, pid));
+			callsUps.add(new CallsUp("" + 6, pid, 1, pid));
 		}
 
-		lineUps.add(new LineUp(7, true, "111111", "222222", "semifinals1",
+		lineUps.add(new LineUp("7", true, "111111", "222222", "semifinals1",
 				"michele.palmia@gmail.com", 3));
 		for (int pid = 45; pid < 53; pid++) {
-			callsUps.add(new CallsUp(7, pid, 1, pid));
+			callsUps.add(new CallsUp("" + 7, pid, 1, pid));
 		}
 
 		matchDays.add(new MatchDay("semifinals1", 1, new Date(113, 5, 13),
@@ -471,40 +490,44 @@ public class FakeDataWarehouse {
 		matchDays.add(new MatchDay("finals2", 1, new Date(113, 5, 20),
 				new Date(113, 5, 20), 1, 1, "Tournament2", 2013));
 
-		matchUps.add(new MatchUp(0, new Date(113, 5, 13), new Time(16, 0, 0),
+		matchUps.add(new MatchUp("0", new Date(113, 5, 13), new Time(16, 0, 0),
 				"semifinals1", "Semi-Final", "Tournament1", 2013, "lineman1",
 				"lineman2", "timekeeper1", "timekeeper2", "scorekeeper",
 				"referee1", "refereee2", "Nargothrond Water Stadium", 0, 1, 0));
-		plays.add(new Plays(0, 0, 6));
-		matchUps.add(new MatchUp(1, new Date(113, 5, 13), new Time(17, 0, 0),
+		plays.add(new Plays("0", "0", "6"));
+		matchUps.add(new MatchUp("1", new Date(113, 5, 13), new Time(17, 0, 0),
 				"semifinals1", "Semi-Final", "Tournament1", 2013, "lineman1",
 				"lineman2", "timekeeper1", "timekeeper2", "scorekeeper",
 				"referee1", "refereee2", "Nargothrond Water Stadium", 0, 0, 1));
-		plays.add(new Plays(1, 7, 3));
-		matchUps.add(new MatchUp(2, new Date(113, 5, 14), new Time(18, 0, 0),
+		plays.add(new Plays("1", "7", "3"));
+		matchUps.add(new MatchUp("2", new Date(113, 5, 14), new Time(18, 0, 0),
 				"finals1", "Final", "Tournament1", 2013, "lineman1",
 				"lineman2", "timekeeper1", "timekeeper2", "scorekeeper",
 				"referee1", "refereee2", "Nargothrond Water Stadium", 0, 1, 0));
-		plays.add(new Plays(2, 4, 2));
-		matchUps.add(new MatchUp(3, new Date(113, 5, 20), new Time(16, 0, 0),
+		plays.add(new Plays("2", "4", "2"));
+		matchUps.add(new MatchUp("3", new Date(113, 5, 20), new Time(16, 0, 0),
 				"finals2", "Final", "Tournament2", 2013, "lineman1",
 				"lineman2", "timekeeper1", "timekeeper2", "scorekeeper",
 				"referee1", "refereee2", "Gondolin Water Stadium", 0, 1, 0));
-		plays.add(new Plays(3, 5, 2));
+		plays.add(new Plays("3", "5", "2"));
 
 		actions.add(new Action("goal", "goal"));
 		actions.add(new Action("red card", "rad card"));
 		actions.add(new Action("yellow card", "yellow card"));
 
 		// TODO: write correct ownership ids
-		events.add(new Event(0, 0, true, new Date(System.currentTimeMillis()),
-				10, 0, "goal", 0, "lorenzo.fabris@gmail.com"));
-		events.add(new Event(1, 1, true, new Date(System.currentTimeMillis()),
-				10, 0, "goal", 15, "lorenzo.fabris@gmail.com"));
-		events.add(new Event(2, 2, true, new Date(System.currentTimeMillis()),
-				10, 0, "goal", 16, "lorenzo.fabris@gmail.com"));
-		events.add(new Event(3, 3, true, new Date(System.currentTimeMillis()),
-				10, 0, "goal", 17, "lorenzo.fabris@gmail.com"));
+		events.add(new Event(0, "0", true, new Date(System
+				.currentTimeMillis()), 10, 0, "goal", 0,
+				"lorenzo.fabris@gmail.com"));
+		events.add(new Event(1, "1", true, new Date(System
+				.currentTimeMillis()), 10, 0, "goal", 15,
+				"lorenzo.fabris@gmail.com"));
+		events.add(new Event(2, "2", true, new Date(System
+				.currentTimeMillis()), 10, 0, "goal", 16,
+				"lorenzo.fabris@gmail.com"));
+		events.add(new Event(3, "3", true, new Date(System
+				.currentTimeMillis()), 10, 0, "goal", 17,
+				"lorenzo.fabris@gmail.com"));
 
 		initialized = true;
 	}

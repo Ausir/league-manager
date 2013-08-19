@@ -5,7 +5,7 @@ import java.sql.Time;
 
 public class MatchUpResult {
 	// IDs (db) for the referenced tables
-	private long matchUpID;
+	private String matchUpID;
 	private String matchDayID;
 	private String tournamentPhaseName;
 	private String tournamentName;
@@ -20,7 +20,7 @@ public class MatchUpResult {
 	private int teamGuestGoals;
 	private Time time;
 
-	public MatchUpResult(long matchUpID, String matchDayID,
+	public MatchUpResult(String matchUpID, String matchDayID,
 			String tournamentPhaseName, String tournamentName,
 			long tournamentYear, long clubHostID, long clubGuestID, Date date,
 			String teamHostName, String teamGuestName, int teamHostGoals,
@@ -53,7 +53,7 @@ public class MatchUpResult {
 				+ this.getTeamGuestName() + " " + this.getTeamGuestGoals();
 	}
 
-	public long getMatchUpID() {
+	public String getMatchUpID() {
 		return matchUpID;
 	}
 

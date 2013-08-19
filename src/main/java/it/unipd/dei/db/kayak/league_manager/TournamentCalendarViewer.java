@@ -172,17 +172,20 @@ public class TournamentCalendarViewer {
 
 				// mUpResLabel = new Label(mUpRes.getCompactString());
 				// phaseBody.addComponent(mUpResLabel);
-				final MatchUpResult fmUpRes = mUpRes;
+				// final MatchUpResult fmUpRes = mUpRes;
+				final String fmatchUpID = mUpRes.getMatchUpID();
 				Button mUpResBtn = new Button(mUpRes.getCompactString(),
 						new ClickListener() {
 							private static final long serialVersionUID = 9042873981140452659L;
+
 							// MatchUpDetails details = FakeDataWarehouse
 							// .getMatchUpDetails((int) fmUpRes
 							// .getMatchUpID());
 							// MatchUpDetailsSubWindow detailsWindow = new
 							// MatchUpDetailsSubWindow(
 							// details);
-							int matchUpID = (int) fmUpRes.getMatchUpID();
+							// String matchUpID = fmUpRes.getMatchUpID();
+							String matchUpID = fmatchUpID;
 
 							@Override
 							public void buttonClick(ClickEvent event) {

@@ -5,7 +5,7 @@ import java.sql.Time;
 
 public class MatchUp {
 	// CREATE TABLE lm.MatchUp ( -- MATCH is a reserved SQL keyword
-	// id BIGSERIAL,
+	// id string,
 	// start_date DATE NOT NULL, -- meaning day of the year -- DATE is a
 	// reserved SQL keyword
 	// start_time TIME NOT NULL, -- meaning time_of_day -- TIME is a reserved
@@ -34,7 +34,7 @@ public class MatchUp {
 	// FOREIGN KEY (pitch_name, pitch_location) REFERENCES lm.Pitch (name,
 	// location)
 	// );
-	private long id;
+	private String id;
 	private Date startDate;
 	private Time startTime;
 	private String matchDayID;
@@ -53,7 +53,7 @@ public class MatchUp {
 	private int goalsHost;
 	private int goalsGuest;
 
-	public MatchUp(long id, Date startDate, Time startTime, String matchDayID,
+	public MatchUp(String id, Date startDate, Time startTime, String matchDayID,
 			String tournamentPhaseName, String tournamentName,
 			int tournamentPhaseYear, String lineman1, String lineman2,
 			String timekeeper1, String timekeeper2, String scorekeeper,
@@ -80,7 +80,7 @@ public class MatchUp {
 		this.goalsGuest = goalsGuest;
 	}
 
-	public long getID() {
+	public String getID() {
 		return id;
 	}
 

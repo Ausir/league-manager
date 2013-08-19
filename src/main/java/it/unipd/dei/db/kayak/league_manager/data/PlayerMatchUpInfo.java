@@ -3,14 +3,14 @@ package it.unipd.dei.db.kayak.league_manager.data;
 public class PlayerMatchUpInfo {
 	// IDs (db) for the referenced tables
 	private long playerID;
-	private long matchUpID;
+	private String matchUpID;
 	private long clubID;
 	
 	private String playerName;
 	private String clubName;
 	private int number;
 
-	public PlayerMatchUpInfo(long playerID, long matchUpID, long clubID,
+	public PlayerMatchUpInfo(long playerID, String matchUpID, long clubID,
 			String playerName, String clubName, int number) {
 		super();
 		this.playerID = playerID;
@@ -29,7 +29,7 @@ public class PlayerMatchUpInfo {
 		return playerID;
 	}
 
-	public long getMatchUpID() {
+	public String getMatchUpID() {
 		return matchUpID;
 	}
 

@@ -34,8 +34,8 @@ public class MatchUpDetailsSubWindow {
 
 		window = new Window();
 		window.setCaption(matchUpDetails.getResult().getFullyQualifiedName());
-		window.setHeight("300px");
-		window.setWidth("450px");
+		window.setHeight("400px");
+		window.setWidth("600px");
 
 		TabSheet tabs = new TabSheet();
 
@@ -86,6 +86,7 @@ public class MatchUpDetailsSubWindow {
 		tabLayoutSplitter.setExpandRatio(rightSplitLayout, 0.5f);
 
 		tabLayout.addComponent(tabLayoutSplitter);
+		tabLayoutSplitter.setSizeFull();
 		tabLayout.setExpandRatio(tabLayoutSplitter, 1);
 		tabLayout.setSizeFull();
 
@@ -195,7 +196,7 @@ public class MatchUpDetailsSubWindow {
 		window.setContent(tabs);
 		tabs.setSizeFull();
 
-		final int mUpID = (int) matchUpDetails.getResult().getMatchUpID();
+		final String mUpID = matchUpDetails.getResult().getMatchUpID();
 		window.addCloseListener(new CloseListener() {
 			private static final long serialVersionUID = 731861246706327704L;
 

@@ -49,8 +49,8 @@ public class PlayerCareerInfoSubWindow {
 		window = new Window();
 		window.setCaption(player.getID() + " " + player.getFirstName() + " "
 				+ player.getLastName());
-		window.setHeight("300px");
-		window.setWidth("450px");
+		window.setHeight("400px");
+		window.setWidth("600px");
 
 		VerticalLayout mainLayout = new VerticalLayout();
 		// mainLayout.setMargin(new MarginInfo(true, true, true, true));
@@ -71,7 +71,6 @@ public class PlayerCareerInfoSubWindow {
 		}
 		ownershipTable.setHeight("100px");
 		tableLayout.addComponent(ownershipTable);
-		
 
 		mainLayout.addComponent(tableLayout);
 
@@ -82,12 +81,12 @@ public class PlayerCareerInfoSubWindow {
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
 		for (EventResult e : playerInfo.getEvents()) {
-			MatchUpDetails details = FakeDataWarehouse
-					.getMatchUpDetails((int) e.getMatchUpID());
+			MatchUpDetails details = FakeDataWarehouse.getMatchUpDetails(e
+					.getMatchUpID());
 			MatchUpResult res = details.getResult();
 
 			HorizontalLayout eventLayout = new HorizontalLayout();
-			final int matchUpID = (int) res.getMatchUpID();
+			final String matchUpID = res.getMatchUpID();
 			eventLayout.addComponent(new Button(res.getFullyQualifiedName(),
 					new ClickListener() {
 						private static final long serialVersionUID = 8649065438982350398L;

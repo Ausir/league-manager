@@ -3,7 +3,7 @@ package it.unipd.dei.db.kayak.league_manager.data;
 public class EventResult {
 	// IDs (db) for the referenced tables
 	private long eventID;
-	private long matchUpID;
+	private String matchUpID;
 	private String actionName;
 
 	private PlayerMatchUpInfo playerInfo;
@@ -11,7 +11,7 @@ public class EventResult {
 	private int fraction;
 	private String actionDescription;
 
-	public EventResult(long eventID, long matchUpID, String actionName,
+	public EventResult(long eventID, String matchUpID, String actionName,
 			PlayerMatchUpInfo playerInfo, int instant, int fraction,
 			String actionDescription) {
 		super();
@@ -68,7 +68,7 @@ public class EventResult {
 		return eventID;
 	}
 
-	public long getMatchUpID() {
+	public String getMatchUpID() {
 		return matchUpID;
 	}
 

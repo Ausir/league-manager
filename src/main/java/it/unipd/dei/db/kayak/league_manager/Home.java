@@ -23,17 +23,17 @@ public class Home {
 	// private fields
 	private VerticalLayout mainLayout;
 	private HorizontalLayout headerLayout;
-//	private HorizontalLayout buttonsLayout;
+	// private HorizontalLayout buttonsLayout;
 	private HorizontalLayout bodyLayout;
 	private VerticalLayout leftBar;
 	private VerticalLayout mainAreaLayout;
 
-	private Map<Integer, MatchUpDetailsSubWindow> matchUpDetailsSubWindows;
+	private Map<String, MatchUpDetailsSubWindow> matchUpDetailsSubWindows;
 	private Map<Integer, PlayerCareerInfoSubWindow> playerCareerInfoSubWindows;
 
 	// constructor
 	public Home() {
-		matchUpDetailsSubWindows = new HashMap<Integer, MatchUpDetailsSubWindow>();
+		matchUpDetailsSubWindows = new HashMap<String, MatchUpDetailsSubWindow>();
 		playerCareerInfoSubWindows = new HashMap<Integer, PlayerCareerInfoSubWindow>();
 
 		this.setUpContent();
@@ -61,7 +61,7 @@ public class Home {
 		// .getContent());
 	}
 
-	public void showMatchUpDetailsSubWindow(int matchUpID) {
+	public void showMatchUpDetailsSubWindow(String matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
 			// System.out.println("opening of MatchUpDetailsSubWindow "
 			// + matchUpID);
@@ -82,7 +82,7 @@ public class Home {
 	// }
 	// }
 
-	public void closedMatchUpDetailsSubWindow(int matchUpID) {
+	public void closedMatchUpDetailsSubWindow(String matchUpID) {
 		if (matchUpDetailsSubWindows.containsKey(matchUpID)) {
 			// System.out.println("close event of MatchUpDetailsSubWindow "
 			// + matchUpID);

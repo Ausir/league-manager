@@ -9,8 +9,8 @@ import java.util.List;
 
 public class MatchUpDetails {
 	// IDs (db) for the referenced tables
-	private long lineUpHostID;
-	private long lineUpGuestID;
+	private String lineUpHostID;
+	private String lineUpGuestID;
 	private String pitchName;
 	private long locationID;
 
@@ -27,7 +27,7 @@ public class MatchUpDetails {
 	private String referee1;
 	private String referee2;
 
-	public MatchUpDetails(long lineUpHostID, long lineUpGuestID,
+	public MatchUpDetails(String lineUpHostID, String lineUpGuestID,
 			String pitchName, long locationID, MatchUpResult result,
 			String locationName, List<EventResult> eventList,
 			List<PlayerMatchUpInfo> hostLineUp,
@@ -74,11 +74,11 @@ public class MatchUpDetails {
 		return ret;
 	}
 
-	public long getLineUpHostID() {
+	public String getLineUpHostID() {
 		return lineUpHostID;
 	}
 
-	public long getLineUpGuestID() {
+	public String getLineUpGuestID() {
 		return lineUpGuestID;
 	}
 
