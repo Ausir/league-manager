@@ -438,17 +438,17 @@ public class FakeDataWarehouse {
 		clubs.add(new Club(0, "Nargothrond Kayak Club", "Nargothrond",
 				"1234567890",
 				"Mithril boulevard 32, Nargothrond, Middle Earth",
-				"nargothrondkayak@gmial.com", "nargothrondkayak.me"));
+				"nargothrondkayak@gmail.com", "nargothrondkayak.me"));
 		clubs.add(new Club(1, "Gondolin Kayak Club", "Gondolin", "0987654321",
 				"Aeglos plaza 17, Gondolin, Middle Earth",
-				"gondolinkayak@gmial.com", "gondolinkayak.me"));
+				"gondolinkayak@gmail.com", "gondolinkayak.me"));
 		clubs.add(new Club(2, "Angband Kayak Club", "Angband", "0204060800",
 				"Melko avenue 4, Angband, Middle Earth",
-				"angbandkayak@gmial.com", "angbandkayak.me"));
+				"angbandkayak@gmail.com", "angbandkayak.me"));
 		clubs.add(new Club(3, "Minas Ithil Kayak Club", "Minas Ithil",
 				"0103050709",
 				"Charcharas boulevard , Minas Ithil, Middle Earth",
-				"minasithilkayak@gmial.com", "minasithilkayak.me"));
+				"minasithilkayak@gmail.com", "minasithilkayak.me"));
 
 		int PLAYERS_NUM = 60;
 		for (int i = 0; i < PLAYERS_NUM; i++) {
