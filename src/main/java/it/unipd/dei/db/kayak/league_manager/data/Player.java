@@ -13,7 +13,7 @@ public class Player {
 	private long id;
 	private String firstName;
 	private String lastName;
-	private String name;
+	// private String name;
 	private Date birthday;
 
 	public Player(long id, String firstName, String lastName, Date birthday) {
@@ -22,7 +22,7 @@ public class Player {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.birthday = birthday;
-		name = firstName + " " + lastName;
+		// name = firstName + " " + lastName;
 	}
 
 	public long getID() {
