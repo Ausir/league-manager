@@ -83,7 +83,7 @@ public class MatchDay {
 		ret += clubID + " ";
 		ret += locationID + " ";
 		ret += tournamentName + " ";
-		ret += tournamentYear + "\n";
+		ret += tournamentYear;
 		
 		return ret;
 	}

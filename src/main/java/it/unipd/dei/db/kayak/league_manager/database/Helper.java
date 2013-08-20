@@ -13,9 +13,14 @@ import java.util.logging.Logger;
 
 public class Helper {
 	
-	final static String URL = "jdbc:postgresql://localhost:5555/Kayak";
+	private static int port = 5555;
+	final static String URL = "jdbc:postgresql://localhost:" + port + "/Kayak";
 	final static String USER = "Kayak";
 	final static String PASSWORD = "aijaevau";
+	
+	static int getPort(){return port;}
+	
+	static void setPort(int p) { port = p;}
 
 	static String readFileAsString(String filePath) throws IOException {
 		StringBuffer fileData = new StringBuffer();
