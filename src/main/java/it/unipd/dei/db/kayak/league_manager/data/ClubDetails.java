@@ -11,9 +11,11 @@ public class ClubDetails {
 	private String email;
 	private String website;
 	private List<Player> clubPlayers;
+	private List<LMUser> clubManagers;
 
 	public ClubDetails(long clubID, String name, String phone, String address,
-			String email, String website, List<Player> clubPlayers) {
+			String email, String website, List<Player> clubPlayers,
+			List<LMUser> clubManagers) {
 		super();
 		this.clubID = clubID;
 		this.name = name;
@@ -22,6 +24,7 @@ public class ClubDetails {
 		this.email = email;
 		this.website = website;
 		this.clubPlayers = clubPlayers;
+		this.clubManagers = clubManagers;
 	}
 
 	public long getClubID() {
@@ -50,5 +53,9 @@ public class ClubDetails {
 
 	public List<Player> getClubPlayers() {
 		return clubPlayers;
+	}
+	
+	public List<LMUser> getClubManagers() {
+		return clubManagers;
 	}
 }

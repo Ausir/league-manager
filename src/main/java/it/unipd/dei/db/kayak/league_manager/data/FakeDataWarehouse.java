@@ -1,5 +1,8 @@
 package it.unipd.dei.db.kayak.league_manager.data;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -23,6 +26,8 @@ public class FakeDataWarehouse {
 	private static ArrayList<Plays> plays;
 	private static ArrayList<Action> actions;
 	private static ArrayList<Event> events;
+	private static ArrayList<LMUser> users;
+	private static ArrayList<Coordinates> coordinates;
 
 	public static List<Tournament> getMostRecentTournaments() {
 		List<Tournament> ret = new ArrayList<Tournament>(5);
@@ -58,9 +63,25 @@ public class FakeDataWarehouse {
 			}
 		}
 
+		List<LMUser> clubManagers = new ArrayList<LMUser>();
+		for (Coordinates c : coordinates) {
+			if (c.getClubID() == clubID) {
+				LMUser mgr = null;
+				for (LMUser u : users) {
+					if (u.getEmail().equals(c.getManagerEmail())) {
+						mgr = u;
+						break;
+					}
+				}
+
+				clubManagers.add(mgr);
+				break;
+			}
+		}
+
 		return new ClubDetails(clubID, club.getName(), club.getPhone(),
 				club.getAddress(), club.getEmail(), club.getWebsite(),
-				clubPlayers);
+				clubPlayers, clubManagers);
 	}
 
 	public static PlayerCareerInfo getPlayerCareerInfo(long playerID) {
@@ -433,6 +454,8 @@ public class FakeDataWarehouse {
 		plays = new ArrayList<Plays>();
 		actions = new ArrayList<Action>();
 		events = new ArrayList<Event>();
+		users = new ArrayList<LMUser>();
+		coordinates = new ArrayList<Coordinates>();
 
 		int CLUBS_NUM = 4;
 		clubs.add(new Club(0, "Nargothrond Kayak Club", "Nargothrond",
@@ -567,7 +590,33 @@ public class FakeDataWarehouse {
 				new Date(System.currentTimeMillis()), 10, 0, "goal", 17,
 				"lorenzo.fabris@gmail.com"));
 
+		users.add(new LMUser("lorenzo.fabris@gmail.com",
+				getHashedString("lorenzo"), "6665554441", "Lorenzo", "Fabris",
+				new Date(89, 1, 24)));
+
+		coordinates.add(new Coordinates("lorenzo.fabris@gmail.com", 0));
+		coordinates.add(new Coordinates("lorenzo.fabris@gmail.com", 1));
+		coordinates.add(new Coordinates("lorenzo.fabris@gmail.com", 2));
+		coordinates.add(new Coordinates("lorenzo.fabris@gmail.com", 3));
+
 		initialized = true;
+	}
+
+	public static byte[] getHashedString(String text) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("SHA-256");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			md.update(text.getBytes("UTF-8"));// Change this to "UTF-16" if
+												// needed
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return md.digest();
 	}
 
 	public static boolean isInitialized() {
@@ -632,5 +681,13 @@ public class FakeDataWarehouse {
 
 	public static ArrayList<Event> getEvents() {
 		return events;
+	}
+
+	public static ArrayList<LMUser> getUsers() {
+		return users;
+	}
+
+	public static ArrayList<Coordinates> getCoordinates() {
+		return coordinates;
 	}
 }

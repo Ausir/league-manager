@@ -7,11 +7,11 @@ import it.unipd.dei.db.kayak.league_manager.data.Player;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -28,6 +28,15 @@ public class Home {
 	private HorizontalLayout bodyLayout;
 	private VerticalLayout leftBar;
 	private VerticalLayout mainAreaLayout;
+
+	private List<Button> recentTournamentButtons;
+	private Button allTournamentsButton;
+	private Button allPlayersButton;
+	private Button allClubsButton;
+	private Button manageButton;
+
+	private LoginElement login;
+	private String loggedInUserEmail;
 
 	private Map<String, MatchUpDetailsSubWindow> matchUpDetailsSubWindows;
 	private Map<Long, PlayerCareerInfoSubWindow> playerCareerInfoSubWindows;
@@ -75,16 +84,12 @@ public class Home {
 
 	public void closedClubDetailsSubWindow(long clubID) {
 		if (clubDetailsSubWindow.containsKey(clubID)) {
-			// System.out.println("close event of MatchUpDetailsSubWindow "
-			// + matchUpID);
 			clubDetailsSubWindow.remove(clubID);
 		}
 	}
 
 	public void showMatchUpDetailsSubWindow(String matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
-			// System.out.println("opening of MatchUpDetailsSubWindow "
-			// + matchUpID);
 			MatchUpDetails details = FakeDataWarehouse
 					.getMatchUpDetails(matchUpID);
 			MatchUpDetailsSubWindow detailsWindow = new MatchUpDetailsSubWindow(
@@ -94,18 +99,8 @@ public class Home {
 		}
 	}
 
-	// public void closeMatchUpDetailsSubWindow(int matchUpID) {
-	// if (matchUpDetailsSubWindows.containsKey(matchUpID)) {
-	// UI.getCurrent().removeWindow(
-	// matchUpDetailsSubWindows.get(matchUpID).getWindow());
-	// matchUpDetailsSubWindows.remove(matchUpID);
-	// }
-	// }
-
 	public void closedMatchUpDetailsSubWindow(String matchUpID) {
 		if (matchUpDetailsSubWindows.containsKey(matchUpID)) {
-			// System.out.println("close event of MatchUpDetailsSubWindow "
-			// + matchUpID);
 			matchUpDetailsSubWindows.remove(matchUpID);
 		}
 	}
@@ -137,8 +132,31 @@ public class Home {
 		}
 	}
 
+	public String getLoggedInUserEmail() {
+		return loggedInUserEmail;
+	}
+
+	public void setLoggedIn(String loggedUserEmail) {
+		login.setLoggedIn(loggedUserEmail);
+
+		manageButton.setVisible(true);
+
+		loggedInUserEmail = loggedUserEmail;
+	}
+
+	public void setUnlogged() {
+		login.setUnlogged();
+
+		manageButton.setVisible(false);
+		// TODO: close all opened manage elements
+
+		loggedInUserEmail = null;
+	}
+
 	private void setUpContent() {
 		FakeDataWarehouse.initFakeData();
+
+		loggedInUserEmail = null;
 
 		mainLayout = new VerticalLayout();
 
@@ -146,9 +164,16 @@ public class Home {
 		Label bannerLabel = new Label(
 				"PROTOTYPE BANNER - FICK LOGO + OTHER STUFF");
 		headerLayout.addComponent(bannerLabel);
-		headerLayout.setComponentAlignment(bannerLabel, Alignment.TOP_LEFT);
-		headerLayout.setHeight("80px");
+		headerLayout.setExpandRatio(bannerLabel, 1);
+
+		login = new LoginElement();
+		VerticalLayout loginLayout = login.getContent();
+		loginLayout.setWidth("150px");
+		headerLayout.addComponent(loginLayout);
+
+		headerLayout.setHeight("100px");
 		headerLayout.setWidth("100%");
+
 		mainLayout.addComponent(headerLayout);
 
 		bodyLayout = new HorizontalLayout();
@@ -157,36 +182,53 @@ public class Home {
 		leftBar.addComponent(new Label("Most recent Tournaments"));
 		List<Tournament> tournaments = FakeDataWarehouse
 				.getMostRecentTournaments();
+		recentTournamentButtons = new ArrayList<Button>();
+
 		for (final Tournament t : tournaments) {
-			leftBar.addComponent(new Button(t.getName() + " - " + t.getYear(),
+			Button btn = new Button(t.getName() + " - " + t.getYear(),
 					new ClickListener() {
 						@Override
 						public void buttonClick(ClickEvent event) {
 							showTournamentCalendarView(t);
 						}
-					}));
+					});
+			recentTournamentButtons.add(btn);
+			leftBar.addComponent(btn);
 		}
 
-		leftBar.addComponent(new Button("All Tournaments", new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				showTournamentList();
-			}
-		}));
+		allTournamentsButton = new Button("All Tournaments",
+				new ClickListener() {
+					@Override
+					public void buttonClick(ClickEvent event) {
+						showTournamentList();
+					}
+				});
+		leftBar.addComponent(allTournamentsButton);
 
-		leftBar.addComponent(new Button("All Players", new ClickListener() {
+		allPlayersButton = new Button("All Players", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				showPlayerList();
 			}
-		}));
+		});
+		leftBar.addComponent(allPlayersButton);
 
-		leftBar.addComponent(new Button("All Clubs", new ClickListener() {
+		allClubsButton = new Button("All Clubs", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				showClubList();
 			}
-		}));
+		});
+		leftBar.addComponent(allClubsButton);
+
+		manageButton = new Button("Manage Something", new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				System.out.println("Manage something");
+			}
+		});
+		leftBar.addComponent(manageButton);
+		manageButton.setVisible(false);
 
 		Label leftBarSpacer = new Label();
 		leftBar.addComponent(leftBarSpacer);

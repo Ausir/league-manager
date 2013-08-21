@@ -1,6 +1,7 @@
 package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
+import it.unipd.dei.db.kayak.league_manager.data.LMUser;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
 
 import com.vaadin.shared.ui.MarginInfo;
@@ -34,6 +35,7 @@ public class ClubDetailsSubWindow {
 
 		// content of Contacts tab
 		VerticalLayout tabLayout = new VerticalLayout();
+		tabLayout.setMargin(new MarginInfo(false, false, true, false));
 
 		tabLayout.addComponent(new Label(clubDetails.getName()));
 		tabLayout
@@ -41,10 +43,27 @@ public class ClubDetailsSubWindow {
 		tabLayout
 				.addComponent(new Label("Website: " + clubDetails.getWebsite()));
 		tabLayout.addComponent(new Label("email: " + clubDetails.getEmail()));
+		tabLayout.addComponent(new Label("Managers:"));
 
-		Label spacer = new Label();
-		tabLayout.addComponent(spacer);
-		tabLayout.setExpandRatio(spacer, 1);
+		VerticalLayout tableLayout = new VerticalLayout();
+		tableLayout.setMargin(new MarginInfo(false, false, false, true));
+
+		LMUserTable mgrTable = new LMUserTable();
+		for (LMUser mgr : clubDetails.getClubManagers()) {
+			mgrTable.addLMUser(mgr);
+		}
+
+		tableLayout.addComponent(mgrTable);
+		tableLayout.setExpandRatio(mgrTable, 1);
+		mgrTable.setSizeFull();
+
+		// Label spacer = new Label();
+		// tabLayout.addComponent(spacer);
+		// tabLayout.setExpandRatio(spacer, 1);
+
+		tabLayout.addComponent(tableLayout);
+		tabLayout.setExpandRatio(tableLayout, 1);
+		tableLayout.setSizeFull();
 
 		tabLayout.setSizeFull();
 
@@ -56,7 +75,7 @@ public class ClubDetailsSubWindow {
 
 		tabLayout.addComponent(new Label("Currently owned players"));
 
-		VerticalLayout tableLayout = new VerticalLayout();
+		tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
 		PlayerTable playerTable = new PlayerTable();
