@@ -28,6 +28,9 @@ public class FakeDataWarehouse {
 	private static ArrayList<Event> events;
 	private static ArrayList<LMUser> users;
 	private static ArrayList<Coordinates> coordinates;
+	private static ArrayList<String> clubManagers;
+	private static ArrayList<String> managers;
+	private static ArrayList<String> secretaries;
 
 	public static List<Tournament> getMostRecentTournaments() {
 		List<Tournament> ret = new ArrayList<Tournament>(5);
@@ -456,6 +459,9 @@ public class FakeDataWarehouse {
 		events = new ArrayList<Event>();
 		users = new ArrayList<LMUser>();
 		coordinates = new ArrayList<Coordinates>();
+		clubManagers = new ArrayList<String>();
+		managers = new ArrayList<String>();
+		secretaries = new ArrayList<String>();
 
 		int CLUBS_NUM = 4;
 		clubs.add(new Club(0, "Nargothrond Kayak Club", "Nargothrond",
@@ -493,7 +499,7 @@ public class FakeDataWarehouse {
 		}
 
 		tournaments.add(new Tournament("Tournament1", 2013, 99, true,
-				"lorenzo.fabris@gmail.com"));
+				"michele.palmia@gmail.com"));
 		tournaments.add(new Tournament("Tournament2", 2013, 99, true,
 				"lorenzo.fabris@gmail.com"));
 
@@ -521,11 +527,11 @@ public class FakeDataWarehouse {
 		}
 
 		lineUps.add(new LineUp("" + 3, true, "CCCCCC", "DDDDDD", "semifinals1",
-				"denis.altomare@gmail.com", 1));
+				"lorenzo.fabris@gmail.com", 1));
 		lineUps.add(new LineUp("" + 4, true, "CCCCCC", "DDDDDD", "finals1",
-				"denis.altomare@gmail.com", 1));
+				"lorenzo.fabris@gmail.com", 1));
 		lineUps.add(new LineUp("" + 5, true, "CCCCCC", "DDDDDD", "finals2",
-				"denis.altomare@gmail.com", 1));
+				"lorenzo.fabris@gmail.com", 1));
 		for (int lup = 3; lup < 6; lup++) {
 			for (int pid = 15; pid < 23; pid++) {
 				callsUps.add(new CallsUp("" + lup, pid, 1, pid));
@@ -533,13 +539,13 @@ public class FakeDataWarehouse {
 		}
 
 		lineUps.add(new LineUp("6", true, "EEEEEE", "FFFFFF", "semifinals1",
-				"michele.palmia@gmail.com", 2));
+				"denis.altomare@gmail.com", 2));
 		for (int pid = 30; pid < 38; pid++) {
 			callsUps.add(new CallsUp("" + 6, pid, 1, pid));
 		}
 
 		lineUps.add(new LineUp("7", true, "111111", "222222", "semifinals1",
-				"michele.palmia@gmail.com", 3));
+				"raffaele.maffei@gmail.com", 3));
 		for (int pid = 45; pid < 53; pid++) {
 			callsUps.add(new CallsUp("" + 7, pid, 1, pid));
 		}
@@ -579,25 +585,47 @@ public class FakeDataWarehouse {
 		// TODO: write correct ownership ids
 		events.add(new Event(0, "0", true,
 				new Date(System.currentTimeMillis()), 10, 0, "goal", 0,
-				"lorenzo.fabris@gmail.com"));
+				"fick.secretary@gmail.com"));
 		events.add(new Event(1, "1", true,
 				new Date(System.currentTimeMillis()), 10, 0, "goal", 15,
-				"lorenzo.fabris@gmail.com"));
+				"fick.secretary@gmail.com"));
 		events.add(new Event(2, "2", true,
 				new Date(System.currentTimeMillis()), 10, 0, "goal", 16,
-				"lorenzo.fabris@gmail.com"));
+				"fick.secretary@gmail.com"));
 		events.add(new Event(3, "3", true,
 				new Date(System.currentTimeMillis()), 10, 0, "goal", 17,
-				"lorenzo.fabris@gmail.com"));
+				"fick.secretary@gmail.com"));
+
+		users.add(new LMUser("michele.palmia@gmail.com",
+				getHashedString("password"), "6665554441", "Michele", "Palmia",
+				new Date(89, 1, 24)));
+		clubManagers.add("michele.palmia@gmail.com");
+		managers.add("michele.palmia@gmail.com");
 
 		users.add(new LMUser("lorenzo.fabris@gmail.com",
-				getHashedString("lorenzo"), "6665554441", "Lorenzo", "Fabris",
+				getHashedString("password"), "6665554441", "Lorenzo", "Fabris",
+				new Date(89, 1, 24)));
+		clubManagers.add("lorenzo.fabris@gmail.com");
+		managers.add("lorenzo.fabris@gmail.com");
+		users.add(new LMUser("denis.altomare@gmail.com",
+				getHashedString("password"), "6665554441", "Denis", "Altomare",
 				new Date(89, 1, 24)));
 
-		coordinates.add(new Coordinates("lorenzo.fabris@gmail.com", 0));
+		clubManagers.add("denis.altomare@gmail.com");
+		users.add(new LMUser("raffaele.maffei@gmail.com",
+				getHashedString("password"), "6665554441", "Raffaele",
+				"Maffei", new Date(89, 1, 24)));
+
+		clubManagers.add("raffaele.maffei@gmail.com");
+		users.add(new LMUser("fick.secretary@gmail.com",
+				getHashedString("password"), "6665554441", "Fick", "Secretary",
+				new Date(89, 1, 24)));
+		secretaries.add("fick.secretary@gmail.com");
+
+		coordinates.add(new Coordinates("michele.palmia@gmail.com", 0));
 		coordinates.add(new Coordinates("lorenzo.fabris@gmail.com", 1));
-		coordinates.add(new Coordinates("lorenzo.fabris@gmail.com", 2));
-		coordinates.add(new Coordinates("lorenzo.fabris@gmail.com", 3));
+		coordinates.add(new Coordinates("denis.altomare@gmail.com", 2));
+		coordinates.add(new Coordinates("raffaele.maffei@gmail.com", 3));
 
 		initialized = true;
 	}
