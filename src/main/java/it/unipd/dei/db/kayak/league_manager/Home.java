@@ -7,15 +7,20 @@ import it.unipd.dei.db.kayak.league_manager.data.Player;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.server.ClassResource;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -161,17 +166,32 @@ public class Home {
 		mainLayout = new VerticalLayout();
 
 		headerLayout = new HorizontalLayout();
-		Label bannerLabel = new Label(
-				"PROTOTYPE BANNER - FICK LOGO + OTHER STUFF");
-		headerLayout.addComponent(bannerLabel);
-		headerLayout.setExpandRatio(bannerLabel, 1);
+
+		// Find the application directory
+		String basepath = VaadinService.getCurrent().getBaseDirectory()
+				.getAbsolutePath();
+
+		// Image as a file resource
+		FileResource resource = new FileResource(new File(basepath
+				+ "/WEB-INF/images/fick_logo_256x120.png"));
+
+		// Show the image in the application
+		Image logo = new Image(null, resource);
+		// Image logo = new Image(null, new ClassResource(
+		// "images/fick_logo_200x100.png"));
+		headerLayout.addComponent(logo);
+		headerLayout.setExpandRatio(logo, 1);
+		// Label bannerLabel = new Label(
+		// "PROTOTYPE BANNER - FICK LOGO + OTHER STUFF");
+		// headerLayout.addComponent(bannerLabel);
+		// headerLayout.setExpandRatio(bannerLabel, 1);
 
 		login = new LoginElement();
 		VerticalLayout loginLayout = login.getContent();
-		loginLayout.setWidth("150px");
+		loginLayout.setWidth("200px");
 		headerLayout.addComponent(loginLayout);
 
-		headerLayout.setHeight("100px");
+		headerLayout.setHeight("120px");
 		headerLayout.setWidth("100%");
 
 		mainLayout.addComponent(headerLayout);

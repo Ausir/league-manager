@@ -3,6 +3,7 @@ package it.unipd.dei.db.kayak.league_manager;
 import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
 import it.unipd.dei.db.kayak.league_manager.data.LMUser;
 
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -23,6 +24,7 @@ public class LoginElement {
 
 	private void setUpContent() {
 		mainLayout = new VerticalLayout();
+		mainLayout.setMargin(new MarginInfo(false, true, false, true));
 
 		setUnlogged();
 	}
@@ -47,12 +49,12 @@ public class LoginElement {
 
 		mainLayout.addComponent(new Label("User email"));
 		final TextField emailArea = new TextField();
-		// emailArea.setWidth("100px");
+		emailArea.setWidth("100%");
 		mainLayout.addComponent(emailArea);
 
 		mainLayout.addComponent(new Label("Password"));
 		final PasswordField passwordArea = new PasswordField();
-		passwordArea.setEnabled(true);
+		passwordArea.setWidth("100%");
 		mainLayout.addComponent(passwordArea);
 
 		mainLayout.addComponent(new Button("Login", new ClickListener() {
