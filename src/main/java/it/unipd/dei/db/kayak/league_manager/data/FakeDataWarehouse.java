@@ -570,7 +570,7 @@ public class FakeDataWarehouse {
 		matchUps.add(new MatchUp("2", new Date(113, 5, 14), new Time(18, 0, 0),
 				"finals1", "Final", "Tournament1", 2013, "lineman1",
 				"lineman2", "timekeeper1", "timekeeper2", "scorekeeper",
-				"referee1", "refereee2", "Nargothrond Water Stadium", 0, 1, 0));
+				"referee1", "refereee2", "Nargothrond Water Stadium", 0, 2, 1));
 		plays.add(new Plays("2", "4", "2"));
 		matchUps.add(new MatchUp("3", new Date(113, 5, 20), new Time(16, 0, 0),
 				"finals2", "Final", "Tournament2", 2013, "lineman1",
@@ -592,8 +592,14 @@ public class FakeDataWarehouse {
 		events.add(new Event(2, "2", true,
 				new Date(System.currentTimeMillis()), 10, 0, "goal", 16,
 				"fick.secretary@gmail.com"));
-		events.add(new Event(3, "3", true,
-				new Date(System.currentTimeMillis()), 10, 0, "goal", 17,
+		events.add(new Event(3, "2", true,
+				new Date(System.currentTimeMillis()), 15, 0, "goal", 17,
+				"fick.secretary@gmail.com"));
+		events.add(new Event(4, "2", true,
+				new Date(System.currentTimeMillis()), 12, 0, "goal", 1,
+				"fick.secretary@gmail.com"));
+		events.add(new Event(5, "3", true,
+				new Date(System.currentTimeMillis()), 10, 0, "goal", 18,
 				"fick.secretary@gmail.com"));
 
 		users.add(new LMUser("michele.palmia@gmail.com",

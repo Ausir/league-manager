@@ -50,45 +50,113 @@ public class MatchUpDetailsSubWindow {
 		tabLayout.addComponent(new Label("Played at "
 				+ matchUpDetails.getPitchName()));
 
-		HorizontalLayout tabLayoutSplitter = new HorizontalLayout();
-		VerticalLayout leftSplitLayout = new VerticalLayout();
-		VerticalLayout rightSplitLayout = new VerticalLayout();
+		HorizontalLayout eventLine = new HorizontalLayout();
 
-		leftSplitLayout.addComponent(new Label(mRes.getTeamHostName() + " "
-				+ mRes.getTeamHostGoals()));
-		rightSplitLayout.addComponent(new Label(mRes.getTeamGuestName() + " "
-				+ mRes.getTeamGuestGoals()));
+		// Label leftLabelMargin = new Label("");
+		// leftLabelMargin.setWidth("10px");
+		// Label rightLabelMargin = new Label("");
+		// rightLabelMargin.setWidth("10px");
 
-		VerticalLayout leftSplitSubLayout = new VerticalLayout();
-		leftSplitSubLayout.setMargin(new MarginInfo(false, false, false, true));
-		VerticalLayout rightSplitSubLayout = new VerticalLayout();
-		rightSplitSubLayout
-				.setMargin(new MarginInfo(false, false, false, true));
+		// eventLine.addComponent(leftLabelMargin);
+		Label left = new Label(mRes.getTeamHostName() + " "
+				+ mRes.getTeamHostGoals());
+		eventLine.addComponent(left);
+		left.setWidth("100%");
+		// eventLine.addComponent(rightLabelMargin);
+		Label right = new Label(mRes.getTeamGuestName() + " "
+				+ mRes.getTeamGuestGoals());
+		eventLine.addComponent(right);
+		right.setWidth("100%");
+
+		eventLine.setExpandRatio(left, 0.5f);
+		eventLine.setExpandRatio(right, 0.5f);
+		tabLayout.addComponent(eventLine);
+		eventLine.setWidth("100%");
 
 		for (EventResult event : matchUpDetails.getEventList()) {
+			eventLine = new HorizontalLayout();
+
+			String eventString = "  " + event.getShortString();
+			String empty = "";
+			// for (int i = 0; i < eventString.length(); ++i) {
+			// empty += (char) 255;
+			// }
+
+			Label leftLabelMargin = new Label("");
+			leftLabelMargin.setWidth("10px");
+			Label rightLabelMargin = new Label("");
+			rightLabelMargin.setWidth("10px");
+
 			if (event.getPlayerInfo().getClubID() == mRes.getClubHostID()) {
-				leftSplitSubLayout.addComponent(new Label(event
-						.getShortString()));
-				rightSplitSubLayout.addComponent(new Label(""));
+				left = new Label(eventString);
+				right = new Label(empty);
 			} else {
-				leftSplitSubLayout.addComponent(new Label(""));
-				rightSplitSubLayout.addComponent(new Label(event
-						.getShortString()));
+				left = new Label(empty);
+				right = new Label(eventString);
 			}
+
+			eventLine.addComponent(leftLabelMargin);
+			eventLine.addComponent(left);
+			left.setWidth("100%");
+			eventLine.addComponent(rightLabelMargin);
+			eventLine.addComponent(right);
+			right.setWidth("100%");
+
+			eventLine.setExpandRatio(left, 0.5f);
+			eventLine.setExpandRatio(right, 0.5f);
+			tabLayout.addComponent(eventLine);
+			eventLine.setWidth("100%");
 		}
 
-		leftSplitLayout.addComponent(leftSplitSubLayout);
-		rightSplitLayout.addComponent(rightSplitSubLayout);
+		// HorizontalLayout tabLayoutSplitter = new HorizontalLayout();
+		// VerticalLayout leftSplitLayout = new VerticalLayout();
+		// VerticalLayout rightSplitLayout = new VerticalLayout();
+		//
+		// leftSplitLayout.addComponent(new Label(mRes.getTeamHostName() + " "
+		// + mRes.getTeamHostGoals()));
+		// rightSplitLayout.addComponent(new Label(mRes.getTeamGuestName() + " "
+		// + mRes.getTeamGuestGoals()));
+		//
+		// VerticalLayout leftSplitSubLayout = new VerticalLayout();
+		// leftSplitSubLayout.setMargin(new MarginInfo(false, false, false,
+		// true));
+		// VerticalLayout rightSplitSubLayout = new VerticalLayout();
+		// rightSplitSubLayout
+		// .setMargin(new MarginInfo(false, false, false, true));
+		//
+		// for (EventResult event : matchUpDetails.getEventList()) {
+		// String eventString = event.getShortString();
+		// String empty = "";
+		// for (int i = 0; i < eventString.length(); ++i) {
+		// empty += (char) 255;
+		// }
+		// if (event.getPlayerInfo().getClubID() == mRes.getClubHostID()) {
+		// leftSplitSubLayout.addComponent(new Label(eventString));
+		// rightSplitSubLayout.addComponent(new Label(empty));
+		// } else {
+		// leftSplitSubLayout.addComponent(new Label(empty));
+		// rightSplitSubLayout.addComponent(new Label(eventString));
+		// }
+		// }
+		//
+		// leftSplitLayout.addComponent(leftSplitSubLayout);
+		// leftSplitSubLayout.setWidth("100%");
+		// rightSplitLayout.addComponent(rightSplitSubLayout);
+		// rightSplitSubLayout.setWidth("100%");
+		//
+		// tabLayoutSplitter.addComponent(leftSplitLayout);
+		// tabLayoutSplitter.addComponent(rightSplitLayout);
+		// tabLayoutSplitter.setExpandRatio(leftSplitLayout, 0.5f);
+		// tabLayoutSplitter.setExpandRatio(rightSplitLayout, 0.5f);
+		//
+		// tabLayout.addComponent(tabLayoutSplitter);
+		// tabLayout.setExpandRatio(tabLayoutSplitter, 1);
+		// tabLayoutSplitter.setSizeFull();
 
-		tabLayoutSplitter.addComponent(leftSplitLayout);
-		tabLayoutSplitter.addComponent(rightSplitLayout);
-		tabLayoutSplitter.setExpandRatio(leftSplitLayout, 0.5f);
-		tabLayoutSplitter.setExpandRatio(rightSplitLayout, 0.5f);
+		Label eventSpacer = new Label("");
+		tabLayout.addComponent(eventSpacer);
+		tabLayout.setExpandRatio(eventSpacer, 1);
 
-		tabLayout.addComponent(tabLayoutSplitter);
-		tabLayout.setExpandRatio(tabLayoutSplitter, 1);
-		tabLayoutSplitter.setSizeFull();
-		
 		tabLayout.setSizeFull();
 
 		tabs.addTab(tabLayout, "Events");
@@ -96,16 +164,16 @@ public class MatchUpDetailsSubWindow {
 		tabLayout = new VerticalLayout();
 		// tabLayout.setMargin(new MarginInfo(true, true, true, true));
 
-		tabLayoutSplitter = new HorizontalLayout();
-		leftSplitLayout = new VerticalLayout();
-		rightSplitLayout = new VerticalLayout();
+		HorizontalLayout tabLayoutSplitter = new HorizontalLayout();
+		VerticalLayout leftSplitLayout = new VerticalLayout();
+		VerticalLayout rightSplitLayout = new VerticalLayout();
 
 		leftSplitLayout.addComponent(new Label(mRes.getTeamHostName()));
 		rightSplitLayout.addComponent(new Label(mRes.getTeamGuestName()));
 
-		leftSplitSubLayout = new VerticalLayout();
+		VerticalLayout leftSplitSubLayout = new VerticalLayout();
 		leftSplitSubLayout.setMargin(new MarginInfo(false, false, false, true));
-		rightSplitSubLayout = new VerticalLayout();
+		VerticalLayout rightSplitSubLayout = new VerticalLayout();
 		rightSplitSubLayout
 				.setMargin(new MarginInfo(false, false, false, true));
 
