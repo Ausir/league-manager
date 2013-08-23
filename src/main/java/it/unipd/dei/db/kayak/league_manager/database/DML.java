@@ -1,12 +1,16 @@
 package it.unipd.dei.db.kayak.league_manager.database;
 
 import it.unipd.dei.db.kayak.league_manager.data.Club;
+import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
 import it.unipd.dei.db.kayak.league_manager.data.EventResult;
+import it.unipd.dei.db.kayak.league_manager.data.LMUser;
+import it.unipd.dei.db.kayak.league_manager.data.Location;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
+import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerEvent;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerMatchUpInfo;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
@@ -142,6 +146,7 @@ public class DML {
 					Helper.PASSWORD);
 
 			String stm = "SELECT o.id as ownership_id, " +
+					"c.id as club_id, " +
 					"c.name as club_name, " +
 					"o.start_date, " +
 					"o.end_date, " +
@@ -161,7 +166,8 @@ public class DML {
 					Date start = rs.getDate("start_date");
 					Date end = rs.getDate("end_date");
 					Boolean borrowed = rs.getBoolean("isborrowed");
-					ret.add(new OwnershipResult(ownershipID, playerId, clubName, start, end, borrowed));
+					long clubID = rs.getLong("club_id");
+					ret.add(new OwnershipResult(ownershipID, playerId, clubID, clubName, start, end, borrowed));
 				}
 			}
 
@@ -536,6 +542,13 @@ public class DML {
 					"mu.goals_host, " +
 					"mu.goals_guest, " +
 					"mu.start_time, " +
+					"mu.lineman1, " +
+					"mu.lineman2, " +
+					"mu.timekeeper1, " +
+					"mu.timekeeper2, " +
+					"mu.scorekeeper, " +
+					"mu.referee1, " +
+					"mu.referee2, " +
 					"l.name as loc_name, " +
 					"ch.id as ch_id, " +
 					"ch.name as ch_name, " +
@@ -570,6 +583,13 @@ public class DML {
 				int teamHostGoals = rs.getInt("goals_host");
 				int teamGuestGoals = rs.getInt("goals_guest");
 				Time time = rs.getTime("start_time");
+				String lineman1 = rs.getString("lineman1");
+				String lineman2 = rs.getString("lineman2");
+				String timekeeper1 = rs.getString("timekeeper1");
+				String timekeeper2 = rs.getString("timekeeper2");
+				String scorekeeper = rs.getString("scorekeeper");
+				String referee1 = rs.getString("referee1");
+				String referee2 = rs.getString("referee2");
 				MatchUpResult result = new MatchUpResult(matchUpId, matchDayID, tournamentPhaseName, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time);
 				// ora faccio le query per i campi rimanenti: eventList, hostLineUp, guestLineUp
 				// per ottenere le lineup passo il relativo id ma anche il nome del club e l'id del matchup che ho già calcolato in precedenza per rendere meno onerose le query
@@ -577,7 +597,7 @@ public class DML {
 				List<PlayerMatchUpInfo> guestLineUp = retrieveLineUpDetails(luGuest, matchUpId, teamGuestName);;
 				// per rendere le query più snelle potrei passare al metodo anche le lineup
 				List<EventResult> eventList = retrieveEventsFromMatchUp(matchUpId);
-				ret = new MatchUpDetails(luHost, luGuest, pitchName, locationID, result, locationName, eventList, hostLineUp, guestLineUp);
+				ret = new MatchUpDetails(luHost, luGuest, pitchName, locationID, result, locationName, eventList, hostLineUp, guestLineUp, lineman1, lineman2, timekeeper1, timekeeper2, scorekeeper, referee1, referee2);
 			}
 
 		} catch (SQLException ex) {
@@ -605,28 +625,78 @@ public class DML {
 		return ret;
 	}
 
-	public static PlayerCareerInfo retrieveCareerInfo(long playerId){
+	public static List<PlayerCareerEvent> retrievePlayerCareerEvents(long playerId){
 		Connection con = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
-		PlayerCareerInfo ret = null;
+		List<PlayerCareerEvent> ret = new ArrayList<PlayerCareerEvent>();
 
 		try {
 			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 					Helper.PASSWORD);
-			String stm = "SELECT p.name "
-					+ "FROM lm.Player as p "
-					+ "WHERE p.id=?";
+			String stm = "SELECT mu.tournament_name, " +
+					"mu.tournament_phase_year, " +
+					"mu.match_day, e.match_id, " +
+					"c.id as player_club_id, " +
+					"ch.id as clubh_id, " +
+					"cg.id as clubg_id, " +
+					"e.id as event_id, " +
+					"c.name as player_club_name, " +
+					"md.start_date as md_start_date, " +
+					"md.end_date as md_end_date, " +
+					"mu.start_date as match_date, " +
+					"mu.start_time as match_time, " +
+					"ch.name as clubh_name, " +
+					"cg.name as clubg_name, " +
+					"mu.goals_host, " +
+					"mu.goals_guest, " +
+					"e.instant, e.fraction, a.display_name " +
+					"FROM lm.Ownership as o " +
+					"INNER JOIN lm.Event as e ON o.id=e.ownership_id " +
+					"INNER JOIN lm.MatchUp as mu ON e.match_id=mu.id " +
+					"INNER JOIN lm.Club as c ON o.club_id=c.id " +
+					"INNER JOIN lm.MatchDay as md ON mu.match_day=md.id " +
+					"INNER JOIN lm.Plays as pls ON mu.id=pls.match_id " +
+					"INNER JOIN lm.LineUp as luh ON pls.lineup_host=luh.id " +
+					"INNER JOIN lm.LineUp as lug ON pls.lineup_guest=lug.id " +
+					"INNER JOIN lm.Club as ch ON luh.club_id=ch.id " +
+					"INNER JOIN lm.Club as cg ON lug.club_id=cg.id " +
+					"INNER JOIN lm.Action as a ON e.action=a.display_name " +
+					"WHERE o.player_id=?";
 			pst = con.prepareStatement(stm);
 			pst.setLong(1, playerId);
 			rs = pst.executeQuery();
-			if (rs.next()) {
-				String playerName = rs.getString("name");
-				List<OwnershipResult> ownerships = retrieveOwnershipsFromPlayer(playerId);
-				List<EventResult> events = retrieveEventsFromPlayer(playerId);
-				ret = new PlayerCareerInfo(playerId, playerName, events, ownerships);
-				
+
+			while(rs.next()) {
+				String tournamentName = rs.getString("tournament_name");
+				int tournamentYear = rs.getInt("tournament_phase_year");
+				String matchDayID = rs.getString("match_day");
+				String matchUpID = rs.getString("match_id");
+				long playerClubID = rs.getLong("player_club_id");
+				long hostClubID = rs.getLong("clubh_id");
+				long guestClubID = rs.getLong("clubg_id");
+				long eventID = rs.getLong("event_id");
+				String playerClubName = rs.getString("player_club_name");
+				Date matchDayStartDate = rs.getDate("md_start_date");
+				Date matchDayEndDate = rs.getDate("md_end_date");
+				Date matchUpDate = rs.getDate("match_date");
+				Time matchUpTime = rs.getTime("match_time");
+				String hostClubName = rs.getString("clubh_name");
+				String guestClubName = rs.getString("clubg_name");
+				int hostGoals = rs.getInt("goals_host");
+				int guestGoals = rs.getInt("goals_guest");
+				int instant = rs.getInt("instant");
+				int fraction = rs.getInt("fraction");
+				String actionDisplay = rs.getString("display_name");
+
+				ret.add(new PlayerCareerEvent(tournamentName, tournamentYear,
+						matchDayID, matchUpID, playerClubID, hostClubID,
+						guestClubID, eventID, playerClubName,
+						matchDayStartDate, matchDayEndDate, matchUpDate,
+						matchUpTime, hostClubName, guestClubName, hostGoals,
+						guestGoals, instant, fraction, actionDisplay));
+
 			}
 
 		} catch (SQLException ex) {
@@ -837,5 +907,340 @@ public class DML {
 			}
 		}
 		return ret;
+	}
+
+	public static List<Location> retrieveAllLocations() {
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		List<Location> ret = null;
+		try {
+			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+					Helper.PASSWORD);
+
+			String stm = "SELECT l.id, l.city, l.name " +
+					"FROM lm.Location as l";
+
+			pst = con.prepareStatement(stm);
+			rs = pst.executeQuery();
+			if (!rs.isAfterLast()) {
+				ret = new ArrayList<Location>();
+				while (rs.next()) {
+					long id = rs.getLong("id");
+					String city = rs.getString("city");
+					String name = rs.getString("name");
+					
+					ret.add(new Location(id, city, name));
+				}
+			}
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+
+			} catch (SQLException ex) {
+				Logger lgr = Logger.getLogger(DML.class.getName());
+				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			}
+		}
+		return ret;
+	}
+	
+	public static List<Player> retrievePlayersFromClub(long clubId) {
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		List<Player> ret = null;
+		try {
+			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+					Helper.PASSWORD);
+
+			String stm = "SELECT DISTINCT p.id, p.name, p.birthday " +
+					"FROM lm.Club as c " +
+					"INNER JOIN lm.LineUp as lu ON c.id=lu.club_id " +
+					"INNER JOIN lm.CallsUp as cu ON lu.id=cu.lineup_id " +
+					"INNER JOIN lm.Ownership as o ON cu.ownership_id=o.id " +
+					"INNER JOIN lm.Player as p ON o.player_id=p.id " +
+					"WHERE c.id=? AND o.end_date>=current_date";
+
+			pst = con.prepareStatement(stm);
+			pst.setLong(1, clubId);
+			rs = pst.executeQuery();
+			if (!rs.isAfterLast()) {
+				ret = new ArrayList<Player>();
+				while (rs.next()) {
+					long id = rs.getLong("id");
+					String name = rs.getString("name");
+					Date birthday = rs.getDate("birthday");
+					
+					ret.add(new Player(id, name, birthday));
+				}
+			}
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+
+			} catch (SQLException ex) {
+				Logger lgr = Logger.getLogger(DML.class.getName());
+				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			}
+		}
+		return ret;
+	}
+	
+	public static List<LMUser> retrieveManagersFromClub(long clubId) {
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		List<LMUser> ret = null;
+		try {
+			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+					Helper.PASSWORD);
+
+			String stm = "SELECT u.user_email, u.password, u.phone_number, u.first_name, u.last_name, u.birthday " +
+					"FROM lm.Coordinates as c " +
+					"INNER JOIN lm.LMUser as u ON c.manager=u.user_email " +
+					"WHERE c.club=?";
+
+			pst = con.prepareStatement(stm);
+			pst.setLong(1, clubId);
+			rs = pst.executeQuery();
+			if (!rs.isAfterLast()) {
+				ret = new ArrayList<LMUser>();
+				while (rs.next()) {
+					String email = rs.getString("user_email");
+					byte[] password = rs.getBytes("password");
+					String phone = rs.getString("phone_number");
+					String firstName = rs.getString("first_name");
+					String lastName = rs.getString("last_name");
+					Date birthday = rs.getDate("birthday");
+					
+					ret.add(new LMUser(email, password, phone, firstName, lastName, birthday));
+				}
+			}
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+
+			} catch (SQLException ex) {
+				Logger lgr = Logger.getLogger(DML.class.getName());
+				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			}
+		}
+		return ret;
+	}
+	
+	public static ClubDetails retrieveClubDetails(long clubId){
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		ClubDetails ret = null;
+		try {
+			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+					Helper.PASSWORD);
+
+			String stm = "SELECT c.name, c.phone_number, c.email, c.address, c.website " +
+					"FROM lm.Club as c " +
+					"WHERE c.id=?";
+
+			pst = con.prepareStatement(stm);
+			pst.setLong(1, clubId);
+			rs = pst.executeQuery();
+			if (rs.next()) {
+				String name = rs.getString("name");
+				String phone = rs.getString("phone_number");
+				String address = rs.getString("address");
+				String email = rs.getString("email");
+				String website = rs.getString("website");
+				List<Player> clubPlayers = retrievePlayersFromClub(clubId);
+				List<LMUser> clubManagers = retrieveManagersFromClub(clubId);
+				ret = new ClubDetails(clubId, name, phone, address, email,
+						website, clubPlayers, clubManagers);
+			}
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+
+			} catch (SQLException ex) {
+				Logger lgr = Logger.getLogger(DML.class.getName());
+				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			}
+		}
+		return ret;
+	}
+	
+	public static EventResult retrieveEventResult(long eventId){
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		EventResult ret = null;
+		try {
+			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+					Helper.PASSWORD);
+
+			String stm = "SELECT p.id as player_id, e.match_id, c.id as club_id, p.name as player_name, c.name as club_name, cu.player_number, a.name as action_name, e.instant, e.fraction, a.display_name " +
+					"FROM lm.Event as e " +
+					"INNER JOIN lm.Action as a ON e.action=a.name " +
+					"INNER JOIN lm.Ownership as o ON e.ownership_id=o.id " +
+					"INNER JOIN lm.Player as p ON o.player_id=p.id " +
+					"INNER JOIN lm.Plays as pls ON e.match_id=pls.match_id " +
+					"INNER JOIN lm.LineUp as lu ON (pls.lineup_host=lu.id OR pls.lineup_guest=lu.id) " +
+					"INNER JOIN lm.CallsUp as cu ON (lu.id=cu.lineup_id AND o.id=cu.ownership_id) " +
+					"INNER JOIN lm.Club as c ON o.club_id=c.id " +
+					"WHERE e.id=? AND lu.club_id=cu.club_id AND lu.club_id=o.club_id";
+
+			pst = con.prepareStatement(stm);
+			pst.setLong(1, eventId);
+			rs = pst.executeQuery();
+			if (rs.next()) {
+				long playerID = rs.getLong("player_id");
+				String matchUpID = rs.getString("match_id");;
+				long clubID = rs.getLong("club_id");
+				String playerName = rs.getString("player_name");
+				String clubName = rs.getString("club_name");
+				int number = rs.getInt("player_number");
+				String actionName = rs.getString("action_name");
+				int instant = rs.getInt("instant");
+				int fraction = rs.getInt("fraction");
+				String actionDescription = rs.getString("display_name");
+				PlayerMatchUpInfo playerInfo = new PlayerMatchUpInfo(playerID, matchUpID, clubID, playerName, clubName, number);
+				ret = new EventResult(eventId, matchUpID, actionName, playerInfo, instant, fraction, actionDescription);
+			}
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+
+			} catch (SQLException ex) {
+				Logger lgr = Logger.getLogger(DML.class.getName());
+				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			}
+		}
+		return ret;
+	}
+	
+	public static PlayerCareerInfo retrievePlayerCareerInfo(long playerId){
+
+		Connection con = null;
+		String stm = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Player playerData = null;
+
+		try {
+
+			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+					Helper.PASSWORD);
+			stm = "SELECT p.id, p.name, p.birthday FROM lm.Player as p "
+					+ "WHERE p.id=?";
+			pst = con.prepareStatement(stm);
+			pst.setLong(1, playerId);
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				long id = rs.getLong("id");
+				String name = rs.getString("name");
+				Date birthday = rs.getDate("birthday");
+				playerData = new Player(id, name, birthday);
+			}
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DDL.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+
+			} catch (SQLException ex) {
+				Logger lgr = Logger.getLogger(DDL.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+			}
+		}
+		List<OwnershipResult> ownerships = retrieveOwnershipsFromPlayer(playerId);
+		List<PlayerCareerEvent> careerEvents = retrievePlayerCareerEvents(playerId);
+		return new PlayerCareerInfo(playerData, ownerships, careerEvents);
 	}
 }

@@ -4,43 +4,42 @@ import java.util.List;
 
 public class PlayerCareerInfo {
 	// IDs (db) for the referenced tables
-	private long playerID;
-	
-	private String playerName;
-	private List<EventResult> events;
+	// private long playerID;
+
+	private Player playerData;
 	private List<OwnershipResult> ownerships;
-	
-	public PlayerCareerInfo(long playerID, String playerName,
-			List<EventResult> events, List<OwnershipResult> ownerships) {
+	// private List<PlayerTournamentStatistics> tournamentResults;
+	private List<PlayerCareerEvent> careerEvents;
+
+	public PlayerCareerInfo(// long playerID,
+			Player playerData, List<OwnershipResult> ownerships,
+			// List<PlayerTournamentStatistics> tournamentResults,
+			List<PlayerCareerEvent> careerEvents) {
 		super();
-		this.playerID = playerID;
-		this.playerName = playerName;
-		this.events = events;
+		// this.playerID = playerID;
+		this.playerData = playerData;
+		// this.tournamentResults = tournamentResults;
 		this.ownerships = ownerships;
+		this.careerEvents = careerEvents;
 	}
-	
-	public long getPlayerID() {
-		return playerID;
+
+	// public long getPlayerID() {
+	// return playerID;
+	// }
+
+	public Player getPlayerData() {
+		return playerData;
 	}
-	public String getPlayerName() {
-		return playerName;
-	}
-	public List<EventResult> getEvents() {
-		return events;
-	}
+
 	public List<OwnershipResult> getOwnerships() {
 		return ownerships;
 	}
-	
-	public String getCompactString(){
-		String ret;
-		ret = playerName;
-		for(EventResult er: events){
-			ret += "\n" + er.getCompactString();
-		}
-		for(OwnershipResult or: ownerships){
-			ret += "\n" + or.getCompactString();
-		}
-		return ret;
+
+	// public List<PlayerTournamentStatistics> getTournamentResults() {
+	// return tournamentResults;
+	// }
+
+	public List<PlayerCareerEvent> getCareerEvents() {
+		return careerEvents;
 	}
 }

@@ -26,6 +26,20 @@ public class EventResult {
 
 	public String getCompactString() {
 		String time;
+		if (fraction == 0) {
+			time = "1° half";
+		} else if (fraction == 1) {
+			time = "2° half";
+		} else {
+			time = "" + (fraction - 1) + "° sup.";
+		}
+
+		return "" + (instant / 100) + " " + time + " " + actionDescription
+				+ " " + playerInfo.getCompactString();
+	}
+
+	public String getShortString() {
+		String time;
 		switch (fraction) {
 		case 0:
 			time = "first half";
@@ -40,8 +54,8 @@ public class EventResult {
 			time = "error 404: fraction not found";
 		}
 
-		return "" + instant + " " + time + " " + actionDescription + " "
-				+ playerInfo.getCompactString();
+		return "" + instant + "' " + time + " " + actionDescription + " "
+				+ playerInfo.getNumber() + " " + playerInfo.getPlayerName();
 	}
 
 	public long getEventID() {

@@ -10,26 +10,26 @@ public class Plays {
 	// FOREIGN KEY (lineup_host) REFERENCES lm.LineUp (id),
 	// FOREIGN KEY (lineup_guest) REFERENCES lm.LineUp (id)
 	// );
-	private long matchID;
-	private long lineupHostID;
-	private long lineupGuestID;
+	private String matchID;
+	private String lineupHostID;
+	private String lineupGuestID;
 
-	public Plays(long matchID, long lineupHostID, long lineupGuestID) {
+	public Plays(String matchID, String lineupHostID, String lineupGuestID) {
 		super();
 		this.matchID = matchID;
 		this.lineupHostID = lineupHostID;
 		this.lineupGuestID = lineupGuestID;
 	}
 
-	public long getMatchUpID() {
+	public String getMatchUpID() {
 		return matchID;
 	}
 
-	public long getLineupHostID() {
+	public String getLineupHostID() {
 		return lineupHostID;
 	}
 
-	public long getLineUpGuestID() {
+	public String getLineUpGuestID() {
 		return lineupGuestID;
 	}
 }

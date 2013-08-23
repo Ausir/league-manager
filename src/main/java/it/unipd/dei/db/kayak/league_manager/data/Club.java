@@ -41,7 +41,7 @@ public class Club {
 		return ret;
 	}
 
-	public long getId() {
+	public long getID() {
 		return id;
 	}
 
