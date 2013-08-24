@@ -41,9 +41,9 @@ public class DML {
 
 			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 					Helper.PASSWORD);
-			pst = con.prepareStatement("SELECT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website " +
-					"FROM lm.Club as c " +
-					"ORDER BY c.id ASC");
+			pst = con.prepareStatement("SELECT DISTINCT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website " +
+					"FROM lm.callsup AS l INNER JOIN lm.club AS c ON c.id = l.club_id " +
+					"ORDER BY c.id ASC;");
 			rs = pst.executeQuery();
 
 			if (!rs.isAfterLast()) {
@@ -95,9 +95,11 @@ public class DML {
 
 			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 					Helper.PASSWORD);
-			pst = con.prepareStatement("SELECT p.id, p.name, p.birthday " +
-					"FROM lm.Player as p " +
-					"ORDER BY p.id ASC");
+			// gets all players that were sometimes included in a line-up
+			pst = con.prepareStatement("SELECT DISTINCT o.player_id, p.name, p.birthday, p.id " +
+					"FROM lm.callsup AS c INNER JOIN lm.ownership AS o ON c.ownership_id = o.id " +
+					"INNER JOIN lm.player AS p on p.id = o.player_id " +
+					"ORDER BY p.name ASC;");
 			rs = pst.executeQuery();
 
 			if (!rs.isAfterLast()) {
