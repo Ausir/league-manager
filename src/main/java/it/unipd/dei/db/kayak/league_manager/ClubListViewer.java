@@ -25,7 +25,7 @@ public class ClubListViewer {
 
 	public ClubListViewer() {
 		clubList = new ArrayList<Club>(DML.retrieveAllClubs()
-//				FakeDataWarehouse.getClubs()
+				//FakeDataWarehouse.getClubs()
 				);
 
 		this.setUpContent();
@@ -41,7 +41,7 @@ public class ClubListViewer {
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
-		final ClubTable clubTable = new ClubTable();
+		final ClubTable clubTable = new ClubTable(clubList);
 		
 		HorizontalLayout controlLayout = new HorizontalLayout();
 		final TextField filterField = new TextField();
@@ -61,10 +61,6 @@ public class ClubListViewer {
 					}
 				}));
 		tableLayout.addComponent(controlLayout);
-
-		for (Club c : clubList) {
-			clubTable.addClub(c);
-		}
 
 		tableLayout.addComponent(clubTable);
 		tableLayout.setExpandRatio(clubTable, 1);

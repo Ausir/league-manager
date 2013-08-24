@@ -1,6 +1,7 @@
 package it.unipd.dei.db.kayak.league_manager;
 
 import java.io.File;
+import java.util.Collection;
 
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 
@@ -20,7 +21,10 @@ public class TournamentTable extends Table {
 	private StringPropertyFilter nameFilter;
 	private StringPropertyFilter emailFilter;
 
-	public TournamentTable() {
+	private TournamentTable() {
+	}
+
+	public TournamentTable(Collection<Tournament> tournaments) {
 		super("");
 
 		Container tournamentContainer = new IndexedContainer();
@@ -34,13 +38,17 @@ public class TournamentTable extends Table {
 		tournamentContainer.addContainerProperty("Organizer Email",
 				String.class, null);
 
+		this.setContainerDataSource(tournamentContainer);
+
+		for (Tournament t : tournaments) {
+			this.addTournament(t);
+		}
+
 		Filterable filterable = (Filterable) tournamentContainer;
 		nameFilter = new StringPropertyFilter("", "Name");
 		filterable.addContainerFilter(nameFilter);
 		emailFilter = new StringPropertyFilter("", "Organizer Email");
 		filterable.addContainerFilter(emailFilter);
-
-		this.setContainerDataSource(tournamentContainer);
 
 		this.setColumnExpandRatio("", 0);
 		this.setColumnWidth("", 45);
