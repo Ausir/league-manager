@@ -4,6 +4,7 @@ import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
 
 import java.io.File;
 import java.sql.Date;
+import java.util.Collection;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filterable;
@@ -18,8 +19,11 @@ import com.vaadin.ui.UI;
 
 public class OwnershipResultTable extends Table {
 	private StringPropertyFilter clubFilter;
+	
+	private OwnershipResultTable() {
+	}
 
-	public OwnershipResultTable() {
+	public OwnershipResultTable(Collection<OwnershipResult> ownershipResults) {
 		super("");
 
 		Container ownershipContainer = new IndexedContainer();
@@ -31,11 +35,15 @@ public class OwnershipResultTable extends Table {
 		ownershipContainer
 				.addContainerProperty("Borrowed", Boolean.class, null);
 
+		this.setContainerDataSource(ownershipContainer);
+
+		for (OwnershipResult o : ownershipResults) {
+			this.addOwnershipResult(o);
+		}
+
 		Filterable filterable = (Filterable) ownershipContainer;
 		clubFilter = new StringPropertyFilter("", "Club");
 		filterable.addContainerFilter(clubFilter);
-
-		this.setContainerDataSource(ownershipContainer);
 
 		this.setColumnExpandRatio("", 0);
 		this.setColumnWidth("", 45);

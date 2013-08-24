@@ -16,6 +16,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
@@ -77,7 +78,49 @@ public class MatchUpDetailsSubWindow {
 		for (EventResult event : matchUpDetails.getEventList()) {
 			eventLine = new HorizontalLayout();
 
-			String eventString = "  " + event.getShortString();
+			HorizontalLayout eventLayout = new HorizontalLayout();
+
+			String eventCaption = "" + (event.getInstant() / 100) + "' ";
+			if (event.getFraction() == 0) {
+				eventCaption += "1° half";
+			} else if (event.getFraction() == 1) {
+				eventCaption += "2° half";
+			} else {
+				eventCaption += "" + (event.getFraction() - 1) + "° sup.";
+			}
+			eventLayout.addComponent(new Label(eventCaption));
+			Label spacer = new Label();
+			spacer.setWidth("5px");
+			eventLayout.addComponent(spacer);
+
+			String basepath = VaadinService.getCurrent().getBaseDirectory()
+					.getAbsolutePath();
+			String imgName = null;
+			if (event.getActionName().endsWith("goal")) {
+				imgName = "goal_30x20";
+			} else if (event.getActionName().equals("goal R")) {
+				imgName = "goal_penalty_30x20";
+			} else if (event.getActionName().startsWith("green")) {
+				imgName = "green";
+			} else if (event.getActionName().startsWith("yellow")) {
+				imgName = "yellow";
+			} else if (event.getActionName().startsWith("red")) {
+				imgName = "red";
+			} else if (event.getActionName().equals("1ª palla")) {
+				imgName = "first_ball";
+			}
+			FileResource resource = new FileResource(new File(basepath
+					+ "/WEB-INF/images/" + imgName + ".png"));
+			eventLine.addComponent(new Label(eventCaption));
+			Image img = new Image(null, resource);
+			eventLayout.addComponent(img);
+			spacer = new Label("");
+			spacer.setWidth("5px");
+			eventLayout.addComponent(spacer);
+			eventLayout.addComponent(new Label(" "
+					+ event.getActionDescription()));
+
+			String eventString = "" + event.getShortString();
 			String empty = "";
 
 			Label leftLabelMargin = new Label("");

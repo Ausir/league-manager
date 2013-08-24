@@ -46,47 +46,78 @@ public class Home {
 	private Map<Long, PlayerCareerInfoSubWindow> playerCareerInfoSubWindows;
 	private Map<Long, ClubDetailsSubWindow> clubDetailsSubWindow;
 
+	private Visualizing current;
+	private String currentTName;
+	private int currentTYear;
+
+	private enum Visualizing {
+		HOME, CLUBS, TOURNAMENTS, PLAYERS, SINGLE_TOURNAMENT
+	}
+
 	// constructor
 	public Home() {
 		matchUpDetailsSubWindows = new HashMap<String, MatchUpDetailsSubWindow>();
 		playerCareerInfoSubWindows = new HashMap<Long, PlayerCareerInfoSubWindow>();
 		clubDetailsSubWindow = new HashMap<Long, ClubDetailsSubWindow>();
 
+		current = Visualizing.HOME;
+		currentTName = "";
+		currentTYear = -1;
+
 		this.setUpContent();
 	}
 
 	public void showTournamentList() {
-		mainAreaLayout.removeAllComponents();
-		mainAreaLayout.addComponent(new TournamentListViewer().getContent());
+		if (current != Visualizing.TOURNAMENTS) {
+			current = Visualizing.TOURNAMENTS;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout
+					.addComponent(new TournamentListViewer().getContent());
+		}
 	}
 
 	public void showPlayerList() {
-		mainAreaLayout.removeAllComponents();
-		mainAreaLayout.addComponent(new PlayerListViewer().getContent());
+		if (current != Visualizing.PLAYERS) {
+			current = Visualizing.PLAYERS;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout.addComponent(new PlayerListViewer().getContent());
+		}
 	}
 
 	public void showClubList() {
-		mainAreaLayout.removeAllComponents();
-		mainAreaLayout.addComponent(new ClubListViewer().getContent());
+		if (current != Visualizing.CLUBS) {
+			current = Visualizing.CLUBS;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout.addComponent(new ClubListViewer().getContent());
+		}
 	}
 
 	public void showTournamentCalendarView(String tournamentName,
 			int tournamentYear) {
-		mainAreaLayout.removeAllComponents();
-		
-		TournamentDetails tDetails = DML.retrieveTournamentDetails(tournamentName, tournamentYear);
-//				FakeDataWarehouse.getTournamentDetails(
-//				tournamentName, tournamentYear);
+		if ((current != Visualizing.SINGLE_TOURNAMENT)
+				|| (!currentTName.equals(tournamentName) || currentTYear != tournamentYear)) {
+			currentTName = tournamentName;
+			currentTYear = tournamentYear;
+			current = Visualizing.SINGLE_TOURNAMENT;
 
-		mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
-				.getContent());
+			mainAreaLayout.removeAllComponents();
+
+			TournamentDetails tDetails = DML.retrieveTournamentDetails(tournamentName, tournamentYear);
+					//FakeDataWarehouse.getTournamentDetails(tournamentName, tournamentYear);
+
+			mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
+					.getContent());
+		}
 	}
 
 	public void showClubDetailsSubWindow(long clubID) {
 		if (!clubDetailsSubWindow.containsKey(clubID)) {
 			ClubDetails clubDetails = DML.retrieveClubDetails(clubID);
 //					FakeDataWarehouse.getClubDetails(clubID);
-			
+
 			ClubDetailsSubWindow detailsWindow = new ClubDetailsSubWindow(
 					clubDetails);
 
@@ -103,10 +134,10 @@ public class Home {
 
 	public void showMatchUpDetailsSubWindow(String matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
-			MatchUpDetails details = DML.retrieveMatchUpDetails(matchUpID);
+			MatchUpDetails details = DML.retrieveMatchUpDetails(matchUpID); 
 //					FakeDataWarehouse
 //					.getMatchUpDetails(matchUpID);
-			
+
 			MatchUpDetailsSubWindow detailsWindow = new MatchUpDetailsSubWindow(
 					details);
 
@@ -126,7 +157,7 @@ public class Home {
 			PlayerCareerInfo playerInfo = DML.retrievePlayerCareerInfo(playerID);
 //					FakeDataWarehouse
 //					.getPlayerCareerInfo(playerID);
-			
+
 			PlayerCareerInfoSubWindow playerWindow = new PlayerCareerInfoSubWindow(
 					playerInfo);
 
@@ -194,7 +225,7 @@ public class Home {
 
 		leftBar = new VerticalLayout();
 		leftBar.addComponent(new Label("Most recent Tournaments"));
-		List<Tournament> tournaments = DML.retrieveAllTournaments(); 
+		List<Tournament> tournaments = DML.retrieveAllTournaments();
 //				FakeDataWarehouse
 //				.getMostRecentTournaments();
 		recentTournamentButtons = new ArrayList<Button>();

@@ -24,8 +24,7 @@ public class TournamentListViewer {
 	private List<Tournament> tournamentList;
 
 	public TournamentListViewer() {
-		tournamentList = new ArrayList<Tournament>(
-				DML.retrieveAllTournaments()
+		tournamentList = new ArrayList<Tournament>(DML.retrieveAllTournaments()
 //				FakeDataWarehouse.getTournaments()
 				);
 
@@ -42,7 +41,8 @@ public class TournamentListViewer {
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
-		final TournamentTable tournamentTable = new TournamentTable();
+		final TournamentTable tournamentTable = new TournamentTable(
+				tournamentList);
 
 		HorizontalLayout controlLayout = new HorizontalLayout();
 		final TextField filterField = new TextField();
@@ -63,10 +63,6 @@ public class TournamentListViewer {
 					}
 				}));
 		tableLayout.addComponent(controlLayout);
-
-		for (Tournament t : tournamentList) {
-			tournamentTable.addTournament(t);
-		}
 
 		tableLayout.addComponent(tournamentTable);
 		tableLayout.setExpandRatio(tournamentTable, 1);

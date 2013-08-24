@@ -74,10 +74,7 @@ public class ClubDetailsSubWindow {
 		tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
-		PlayerTable playerTable = new PlayerTable();
-		for (Player p : clubDetails.getClubPlayers()) {
-			playerTable.addPlayer(p);
-		}
+		PlayerTable playerTable = new PlayerTable(clubDetails.getClubPlayers());
 
 		tableLayout.addComponent(playerTable);
 		tableLayout.setExpandRatio(playerTable, 1);

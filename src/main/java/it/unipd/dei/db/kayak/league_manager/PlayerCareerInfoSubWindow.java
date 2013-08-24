@@ -1,11 +1,10 @@
 package it.unipd.dei.db.kayak.league_manager;
 
-import java.io.File;
-
-import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerEvent;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
+
+import java.io.File;
 
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
@@ -14,6 +13,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
@@ -76,10 +76,8 @@ public class PlayerCareerInfoSubWindow {
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
-		OwnershipResultTable ownershipTable = new OwnershipResultTable();
-		for (OwnershipResult o : playerInfo.getOwnerships()) {
-			ownershipTable.addOwnershipResult(o);
-		}
+		OwnershipResultTable ownershipTable = new OwnershipResultTable(
+				playerInfo.getOwnerships());
 
 		tableLayout.addComponent(ownershipTable);
 		tableLayout.setExpandRatio(ownershipTable, 1);
@@ -103,13 +101,16 @@ public class PlayerCareerInfoSubWindow {
 		tabLayout.addComponent(careerLayout);
 
 		VerticalLayout tLayout = null;
+		boolean chainT = false;
 		String tName = "";
 		int tYear = 0;
 
 		VerticalLayout mDayLayout = null;
+		boolean chainMDay = false;
 		String mDayID = "";
 
 		VerticalLayout mUpLayout = null;
+		boolean chainMUp = false;
 		String mUpID = "";
 
 		for (int eventIdx = 0; eventIdx < playerInfo.getCareerEvents().size(); ++eventIdx) {
@@ -121,6 +122,12 @@ public class PlayerCareerInfoSubWindow {
 				tName = cEvent.getTournamentName();
 				tYear = cEvent.getTournamentYear();
 
+				if (tLayout != null && chainT) {
+					tLayout.setMargin(new MarginInfo(false, false, true, true));
+				}
+				chainT = true;
+				chainMDay = false;
+				chainMUp = false;
 				tLayout = new VerticalLayout();
 				tLayout.setMargin(new MarginInfo(false, false, false, true));
 
@@ -162,6 +169,12 @@ public class PlayerCareerInfoSubWindow {
 			if (!cEvent.getMatchDayID().equals(mDayID)) {
 				mDayID = cEvent.getMatchDayID();
 
+				if (mDayLayout != null && chainMDay) {
+					mDayLayout.setMargin(new MarginInfo(false, false, true,
+							true));
+				}
+				chainMDay = true;
+				chainMUp = false;
 				mDayLayout = new VerticalLayout();
 				mDayLayout.setMargin(new MarginInfo(false, false, false, true));
 
@@ -175,6 +188,11 @@ public class PlayerCareerInfoSubWindow {
 			if (!cEvent.getMatchUpID().equals(mUpID)) {
 				mUpID = cEvent.getMatchUpID();
 
+				if (mUpLayout != null && chainMUp) {
+					mUpLayout
+							.setMargin(new MarginInfo(false, false, true, true));
+				}
+				chainMUp = true;
 				mUpLayout = new VerticalLayout();
 				mUpLayout.setMargin(new MarginInfo(false, false, false, true));
 
@@ -212,17 +230,51 @@ public class PlayerCareerInfoSubWindow {
 				mDayLayout.addComponent(mUpLayout);
 			}
 
+			HorizontalLayout eventLine = new HorizontalLayout();
+
 			String eventCaption = "" + (cEvent.getInstant() / 100) + "' ";
 			if (cEvent.getFraction() == 0) {
-				eventCaption = "1° half";
+				eventCaption += "1° half";
 			} else if (cEvent.getFraction() == 1) {
-				eventCaption = "2° half";
+				eventCaption += "2° half";
 			} else {
-				eventCaption = "" + (cEvent.getFraction() - 1) + "° sup.";
+				eventCaption += "" + (cEvent.getFraction() - 1) + "° sup.";
 			}
-			eventCaption += " " + cEvent.getActionDisplay();
 
-			mUpLayout.addComponent(new Label(eventCaption));
+			String basepath = VaadinService.getCurrent().getBaseDirectory()
+					.getAbsolutePath();
+			String actionName = cEvent.getActionDisplay();
+			String imgName = null;
+			if (actionName.endsWith("goal")) {
+				imgName = "goal_30x20";
+			} else if (actionName.equals("goal R")) {
+				imgName = "goal_penalty_30x20";
+			} else if (actionName.startsWith("green")) {
+				imgName = "green";
+			} else if (actionName.startsWith("yellow")) {
+				imgName = "yellow";
+			} else if (actionName.startsWith("red")) {
+				imgName = "red";
+			} else if (actionName.equals("1ª palla")) {
+				imgName = "first_ball";
+			}
+			FileResource resource = new FileResource(new File(basepath
+					+ "/WEB-INF/images/" + imgName + ".png"));
+
+			eventLine.addComponent(new Label(eventCaption));
+			spacer = new Label("");
+			spacer.setWidth("5px");
+			eventLine.addComponent(spacer);
+			Image img = new Image(null, resource);
+			eventLine.addComponent(img);
+			spacer = new Label("");
+			spacer.setWidth("5px");
+			eventLine.addComponent(spacer);
+			eventLine.addComponent(new Label(" " + cEvent.getActionDisplay()));
+
+			// eventCaption += " " + cEvent.getActionDisplay();
+
+			mUpLayout.addComponent(eventLine);
 		}
 
 		tabLayout.addComponent(careerLayout);

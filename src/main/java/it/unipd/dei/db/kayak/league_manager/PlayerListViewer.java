@@ -25,8 +25,8 @@ public class PlayerListViewer {
 
 	public PlayerListViewer() {
 		playerList = new ArrayList<Player>(DML.retrieveAllPlayers()
-		// FakeDataWarehouse.getPlayers()
-		);
+//				FakeDataWarehouse.getPlayers()
+				);
 
 		this.setUpContent();
 	}
@@ -41,7 +41,7 @@ public class PlayerListViewer {
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
-		final PlayerTable playerTable = new PlayerTable();
+		final PlayerTable playerTable = new PlayerTable(playerList);
 
 		HorizontalLayout controlLayout = new HorizontalLayout();
 		final TextField filterField = new TextField();
@@ -61,12 +61,6 @@ public class PlayerListViewer {
 					}
 				}));
 		tableLayout.addComponent(controlLayout);
-//		long start = System.currentTimeMillis();
-		for (Player p : playerList) {
-			playerTable.addPlayer(p);
-		}
-//		long elapsed = System.currentTimeMillis() - start;
-//		System.out.println(elapsed);
 
 		tableLayout.addComponent(playerTable);
 		tableLayout.setExpandRatio(playerTable, 1);

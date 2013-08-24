@@ -4,9 +4,9 @@ import it.unipd.dei.db.kayak.league_manager.data.Player;
 
 import java.io.File;
 import java.sql.Date;
+import java.util.Collection;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
@@ -18,8 +18,11 @@ import com.vaadin.ui.UI;
 
 public class PlayerTable extends Table {
 	private StringPropertyFilter nameFilter;
+	
+	private PlayerTable() {
+	}
 
-	public PlayerTable() {
+	public PlayerTable(Collection<Player> players) {
 		super("");
 
 		Container playerContainer = (IndexedContainer) this
@@ -29,11 +32,15 @@ public class PlayerTable extends Table {
 		playerContainer.addContainerProperty("Name", String.class, null);
 		playerContainer.addContainerProperty("Birthday", Date.class, null);
 
+		this.setContainerDataSource(playerContainer);
+
+		for (Player p:players) {
+			this.addPlayer(p);
+		}
+		
 		Filterable filterable = (Filterable) playerContainer;
 		nameFilter = new StringPropertyFilter("", "Name");
 		filterable.addContainerFilter(nameFilter);
-
-		this.setContainerDataSource(playerContainer);
 
 		this.setColumnExpandRatio("", 0);
 		this.setColumnWidth("", 45);
