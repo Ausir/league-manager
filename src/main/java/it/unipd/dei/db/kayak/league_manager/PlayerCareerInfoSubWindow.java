@@ -1,11 +1,19 @@
 package it.unipd.dei.db.kayak.league_manager;
 
+import java.io.File;
+
 import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerEvent;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 
+import com.vaadin.server.FileResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
@@ -123,7 +131,30 @@ public class PlayerCareerInfoSubWindow {
 					tCaption += cEvent.getGuestClubName();
 				}
 
-				careerLayout.addComponent(new Label(tCaption));
+				HorizontalLayout tControlLayout = new HorizontalLayout();
+
+				final String ftName = tName;
+				final int ftYear = tYear;
+				Button btn = new Button("", new ClickListener() {
+					@Override
+					public void buttonClick(ClickEvent event) {
+						Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+						home.showTournamentCalendarView(ftName, ftYear);
+					}
+				});
+
+				String basepath = VaadinService.getCurrent().getBaseDirectory()
+						.getAbsolutePath();
+				FileResource resource = new FileResource(new File(basepath
+						+ "/WEB-INF/images/magnifier.png"));
+				btn.setIcon(resource);
+
+				tControlLayout.addComponent(btn);
+				Label smallSpacer = new Label("");
+				smallSpacer.setWidth("10px");
+				tControlLayout.addComponent(smallSpacer);
+				tControlLayout.addComponent(new Label(tCaption));
+				careerLayout.addComponent(tControlLayout);
 
 				careerLayout.addComponent(tLayout);
 			}
@@ -147,24 +178,47 @@ public class PlayerCareerInfoSubWindow {
 				mUpLayout = new VerticalLayout();
 				mUpLayout.setMargin(new MarginInfo(false, false, false, true));
 
-				// eventLayout = new VerticalLayout();
-				// eventLayout
-				// .setMargin(new MarginInfo(false, false, false, true));
+				HorizontalLayout mUpControlLayout = new HorizontalLayout();
 
-				mDayLayout.addComponent(new Label(cEvent.getHostClubName()
-						+ " " + cEvent.getHostGoals() + " - "
-						+ cEvent.getGuestClubName() + " "
+				final String fmUpID = mUpID;
+				Button btn = new Button("", new ClickListener() {
+					@Override
+					public void buttonClick(ClickEvent event) {
+						Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+						home.showMatchUpDetailsSubWindow(fmUpID);
+					}
+				});
+
+				String basepath = VaadinService.getCurrent().getBaseDirectory()
+						.getAbsolutePath();
+				FileResource resource = new FileResource(new File(basepath
+						+ "/WEB-INF/images/magnifier.png"));
+				btn.setIcon(resource);
+
+				mUpControlLayout.addComponent(btn);
+				Label smallSpacer = new Label("");
+				smallSpacer.setWidth("10px");
+				mUpControlLayout.addComponent(smallSpacer);
+				mUpControlLayout.addComponent(new Label(cEvent
+						.getHostClubName()
+						+ " "
+						+ cEvent.getHostGoals()
+						+ " - "
+						+ cEvent.getGuestClubName()
+						+ " "
 						+ cEvent.getGuestGoals()));
+				mDayLayout.addComponent(mUpControlLayout);
+
 				mDayLayout.addComponent(mUpLayout);
 			}
 
-			String eventCaption = "" + (cEvent.getInstant()/100) + "' ";
+			String eventCaption = "" + (cEvent.getInstant() / 100) + "' ";
 			if (cEvent.getFraction() == 0) {
-				eventCaption += "1° half";
+				eventCaption = "1° half";
 			} else if (cEvent.getFraction() == 1) {
-				eventCaption += "2° half";
+				eventCaption = "2° half";
 			} else {
-				eventCaption +=  (cEvent.getFraction() - 1) + "° sup.";
+				eventCaption = "" + (cEvent.getFraction() - 1) + "° sup.";
 			}
 			eventCaption += " " + cEvent.getActionDisplay();
 

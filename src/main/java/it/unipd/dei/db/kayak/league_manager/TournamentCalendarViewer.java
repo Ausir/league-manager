@@ -7,10 +7,13 @@ import it.unipd.dei.db.kayak.league_manager.data.TournamentDetails;
 import it.unipd.dei.db.kayak.league_manager.data_utils.MatchDayDetailsCalendarComparator;
 import it.unipd.dei.db.kayak.league_manager.data_utils.MatchUpResultCalendarComparator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.vaadin.server.FileResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -23,7 +26,7 @@ import com.vaadin.ui.VerticalLayout;
 public class TournamentCalendarViewer {
 	// private fields
 	private VerticalLayout mainLayout;
-	private ArrayList<VerticalLayout> dayLayoutList;
+	// private ArrayList<VerticalLayout> dayLayoutList;
 
 	private TournamentDetails tournamentDetails;
 
@@ -113,16 +116,22 @@ public class TournamentCalendarViewer {
 				HorizontalLayout resultLine = new HorizontalLayout();
 
 				final String mUpID = mUpRes.getMatchUpID();
-				resultLine.addComponent(new Button("View Match",
-						new ClickListener() {
-							@Override
-							public void buttonClick(ClickEvent event) {
-								Home home = ((MyVaadinUI) UI.getCurrent())
-										.getHome();
-								home.showMatchUpDetailsSubWindow(mUpID);
-							}
-						}));
-				
+				Button btn = new Button("", new ClickListener() {
+					@Override
+					public void buttonClick(ClickEvent event) {
+						Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+						home.showMatchUpDetailsSubWindow(mUpID);
+					}
+				});
+
+				String basepath = VaadinService.getCurrent().getBaseDirectory()
+						.getAbsolutePath();
+				FileResource resource = new FileResource(new File(basepath
+						+ "/WEB-INF/images/magnifier.png"));
+				btn.setIcon(resource);
+
+				resultLine.addComponent(btn);
+
 				Label smallSpacer = new Label("");
 				smallSpacer.setWidth("10px");
 				resultLine.addComponent(smallSpacer);
@@ -130,7 +139,7 @@ public class TournamentCalendarViewer {
 				Label resultLabel = new Label(mUpRes.getCompactString());
 				resultLine.addComponent(resultLabel);
 				resultLine.setExpandRatio(resultLabel, 1);
-				
+
 				phaseLayout.addComponent(resultLine);
 			}
 		}

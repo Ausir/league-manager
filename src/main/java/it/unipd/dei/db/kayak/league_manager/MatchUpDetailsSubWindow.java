@@ -1,5 +1,6 @@
 package it.unipd.dei.db.kayak.league_manager;
 
+import java.io.File;
 import java.util.Collections;
 
 import it.unipd.dei.db.kayak.league_manager.data.EventResult;
@@ -8,6 +9,8 @@ import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerMatchUpInfo;
 import it.unipd.dei.db.kayak.league_manager.data_utils.EventResultTimeComparator;
 
+import com.vaadin.server.FileResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -130,15 +133,21 @@ public class MatchUpDetailsSubWindow {
 			HorizontalLayout playerLine = new HorizontalLayout();
 
 			final int playerID = (int) playerInfo.getPlayerID();
-			playerLine.addComponent(new Button("View Player",
-					new ClickListener() {
-						@Override
-						public void buttonClick(ClickEvent event) {
-							Home home = ((MyVaadinUI) UI.getCurrent())
-									.getHome();
-							home.showPlayerCareerInfoSubWindow(playerID);
-						}
-					}));
+			Button btn = new Button("", new ClickListener() {
+				@Override
+				public void buttonClick(ClickEvent event) {
+					Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+					home.showPlayerCareerInfoSubWindow(playerID);
+				}
+			});
+
+			String basepath = VaadinService.getCurrent().getBaseDirectory()
+					.getAbsolutePath();
+			FileResource resource = new FileResource(new File(basepath
+					+ "/WEB-INF/images/magnifier.png"));
+			btn.setIcon(resource);
+
+			playerLine.addComponent(btn);
 			Label smallSpacer = new Label("");
 			smallSpacer.setWidth("10px");
 			playerLine.addComponent(smallSpacer);
@@ -152,15 +161,21 @@ public class MatchUpDetailsSubWindow {
 			HorizontalLayout playerLine = new HorizontalLayout();
 
 			final int playerID = (int) playerInfo.getPlayerID();
-			playerLine.addComponent(new Button("View Player",
-					new ClickListener() {
-						@Override
-						public void buttonClick(ClickEvent event) {
-							Home home = ((MyVaadinUI) UI.getCurrent())
-									.getHome();
-							home.showPlayerCareerInfoSubWindow(playerID);
-						}
-					}));
+			Button btn = new Button("", new ClickListener() {
+				@Override
+				public void buttonClick(ClickEvent event) {
+					Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+					home.showPlayerCareerInfoSubWindow(playerID);
+				}
+			});
+
+			String basepath = VaadinService.getCurrent().getBaseDirectory()
+					.getAbsolutePath();
+			FileResource resource = new FileResource(new File(basepath
+					+ "/WEB-INF/images/magnifier.png"));
+			btn.setIcon(resource);
+
+			playerLine.addComponent(btn);
 			Label smallSpacer = new Label("");
 			smallSpacer.setWidth("10px");
 			playerLine.addComponent(smallSpacer);

@@ -4,6 +4,7 @@ import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
+import it.unipd.dei.db.kayak.league_manager.data.TournamentDetails;
 import it.unipd.dei.db.kayak.league_manager.database.DML;
 
 import java.io.File;
@@ -73,12 +74,12 @@ public class Home {
 			int tournamentYear) {
 		mainAreaLayout.removeAllComponents();
 		
-//		TournamentDetails tDetails = TODO DML.retrieveTournamentDetails
+		TournamentDetails tDetails = DML.retrieveTournamentDetails(tournamentName, tournamentYear);
 //				FakeDataWarehouse.getTournamentDetails(
 //				tournamentName, tournamentYear);
 
-//		mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
-//				.getContent());
+		mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
+				.getContent());
 	}
 
 	public void showClubDetailsSubWindow(long clubID) {
