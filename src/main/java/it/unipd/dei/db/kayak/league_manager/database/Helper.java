@@ -16,14 +16,11 @@ import java.util.logging.Logger;
 
 public class Helper {
 
-//	private static int port = 5555;
-//	final static String URL = "jdbc:postgresql://localhost:" + port + "/Kayak";
-//	final static String USER = "Kayak";
-//	final static String PASSWORD = "aijaevau";
 	private static int port = 5555;
-	final static String URL = "jdbc:postgresql://localhost/Kayak";
-	final static String USER = "denis";
-	final static String PASSWORD = "a";
+	final static String URL = "jdbc:postgresql://localhost:" + port + "/Kayak";
+	final static String USER = "Kayak";
+	final static String PASSWORD = "aijaevau";
+
 
 	static int getPort() {
 		return port;
