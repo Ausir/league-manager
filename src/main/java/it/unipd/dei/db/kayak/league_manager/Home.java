@@ -248,7 +248,7 @@ public class Home {
 		Label leftBarSpacer = new Label();
 		leftBar.addComponent(leftBarSpacer);
 		leftBar.setExpandRatio(leftBarSpacer, 1);
-		leftBar.setWidth("150px");
+		leftBar.setWidth("250px");
 		leftBar.setHeight("100%");
 		bodyLayout.addComponent(leftBar);
 
