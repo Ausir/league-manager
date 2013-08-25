@@ -1,6 +1,7 @@
 package it.unipd.dei.db.kayak.league_manager;
 
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.ClientConnector.DetachEvent;
 import com.vaadin.ui.UI;
 
 /**
@@ -29,7 +30,12 @@ public class MyVaadinUI extends UI {
 		// }));
 		
 		home = new Home();
-		
+		addDetachListener(new DetachListener() {
+			@Override
+			public void detach(DetachEvent event) {
+				home.close();
+			}
+		});
 		this.setContent(home.getContent());
 	}
 	

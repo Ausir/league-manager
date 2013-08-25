@@ -299,4 +299,8 @@ public class Home {
 	public VerticalLayout getContent() {
 		return mainLayout;
 	}
+
+	public void close(){
+		// TODO: cleanup
+	}
 }
