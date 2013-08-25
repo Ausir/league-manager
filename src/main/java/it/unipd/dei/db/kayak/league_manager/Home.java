@@ -186,6 +186,12 @@ public class Home {
 		manageButton.setVisible(true);
 
 		loggedInUser = loggedUser;
+		// System.out.println("user email: "
+		// + loggedInUser.getUserData().getEmail());
+		// System.out.println("is secretary: " + loggedInUser.isSectretary());
+		// System.out.println("is manager: " + loggedInUser.isManager());
+		// System.out.println("is club manager: "
+		// + (loggedInUser.getManagedClubID() != -1));
 	}
 
 	public void setUnlogged() {
