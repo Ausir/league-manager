@@ -15,12 +15,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Helper {
-
 	private static int port = 5555;
 	final static String URL = "jdbc:postgresql://localhost:" + port + "/Kayak";
 	final static String USER = "Kayak";
 	final static String PASSWORD = "aijaevau";
-
+	private static Connection CON;
 
 	static int getPort() {
 		return port;
@@ -108,24 +107,24 @@ public class Helper {
 		return md.digest();
 	}
 
-	public static Connection openConnection() {
-		Connection con = null;
-
+	public static Connection getConnection() {
 		try {
-			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-					Helper.PASSWORD);
+			if (CON == null) {
+				CON = DriverManager.getConnection(Helper.URL, Helper.USER,
+						Helper.PASSWORD);
+			}
 		} catch (SQLException e) {
 			Logger lgr = Logger.getLogger(Helper.class.getName());
 			lgr.log(Level.SEVERE, e.getMessage(), e);
 		}
 
-		return con;
+		return CON;
 	}
 
-	public static void closeConnection(Connection con) {
+	public static void closeConnection() {
 		try {
-			if (con != null) {
-				con.close();
+			if (CON != null) {
+				CON.close();
 			}
 
 		} catch (SQLException ex) {
