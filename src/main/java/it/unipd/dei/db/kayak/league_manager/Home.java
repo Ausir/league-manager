@@ -1,10 +1,10 @@
 package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
-import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
-import it.unipd.dei.db.kayak.league_manager.data.MatchDayMatches;
+import it.unipd.dei.db.kayak.league_manager.data.LMUserDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
+import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 import it.unipd.dei.db.kayak.league_manager.data.TournamentDetails;
 import it.unipd.dei.db.kayak.league_manager.data.TournamentEssentials;
 import it.unipd.dei.db.kayak.league_manager.database.DML;
@@ -47,10 +47,12 @@ public class Home {
 	private Button allTournamentsButton;
 	private Button allPlayersButton;
 	private Button allClubsButton;
-	private Button manageButton;
+
+	private Button addPlayerButton;
+	private Button addOwnershipButton;
 
 	private LoginElement login;
-	private String loggedInUserEmail;
+	private LMUserDetails loggedInUser;
 
 	private Map<String, MatchUpDetailsSubWindow> matchUpDetailsSubWindows;
 	private Map<Long, PlayerCareerInfoSubWindow> playerCareerInfoSubWindows;
@@ -62,7 +64,7 @@ public class Home {
 	private int currentTYear;
 
 	private enum Visualizing {
-		HOME, CLUBS, TOURNAMENTS, PLAYERS, SINGLE_TOURNAMENT, SINGLE_MATCHDAY
+		HOME, CLUBS, TOURNAMENTS, PLAYERS, SINGLE_TOURNAMENT, SINGLE_MATCHDAY, ADD_PLAYER, ADD_OWNERSHIP
 	}
 
 	// constructor
@@ -84,7 +86,7 @@ public class Home {
 
 			mainAreaLayout.removeAllComponents();
 			mainAreaLayout
-			.addComponent(new TournamentListViewer().getContent());
+					.addComponent(new TournamentListViewer().getContent());
 		}
 	}
 
@@ -117,7 +119,7 @@ public class Home {
 			mainAreaLayout.removeAllComponents();
 
 			TournamentDetails tDetails = DML.retrieveTournamentDetails(tournamentName, tournamentYear);
-			//FakeDataWarehouse.getTournamentDetails(tournamentName, tournamentYear);
+					//FakeDataWarehouse.getTournamentDetails(tournamentName, tournamentYear);
 
 			mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
 			.getContent());
@@ -139,10 +141,28 @@ public class Home {
 		}
 	}
 
+public void showAddPlayerView() {
+		if (current != Visualizing.ADD_PLAYER) {
+			current = Visualizing.ADD_PLAYER;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout.addComponent(new AddPlayerView().getContent());
+		}
+	}
+
+	public void showAddOwnershipView() {
+		if (current != Visualizing.ADD_OWNERSHIP) {
+			current = Visualizing.ADD_OWNERSHIP;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout.addComponent(new AddOwnershipView().getContent());
+		}
+	}
+
 	public void showClubDetailsSubWindow(long clubID) {
 		if (!clubDetailsSubWindow.containsKey(clubID)) {
 			ClubDetails clubDetails = DML.retrieveClubDetails(clubID);
-			//					FakeDataWarehouse.getClubDetails(clubID);
+//					FakeDataWarehouse.getClubDetails(clubID);
 
 			ClubDetailsSubWindow detailsWindow = new ClubDetailsSubWindow(
 					clubDetails);
@@ -161,8 +181,8 @@ public class Home {
 	public void showMatchUpDetailsSubWindow(String matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
 			MatchUpDetails details = DML.retrieveMatchUpDetails(matchUpID); 
-			//					FakeDataWarehouse
-			//					.getMatchUpDetails(matchUpID);
+//					FakeDataWarehouse
+//					.getMatchUpDetails(matchUpID);
 
 			MatchUpDetailsSubWindow detailsWindow = new MatchUpDetailsSubWindow(
 					details);
@@ -181,8 +201,8 @@ public class Home {
 	public void showPlayerCareerInfoSubWindow(long playerID) {
 		if (!playerCareerInfoSubWindows.containsKey(playerID)) {
 			PlayerCareerInfo playerInfo = DML.retrievePlayerCareerInfo(playerID);
-			//					FakeDataWarehouse
-			//					.getPlayerCareerInfo(playerID);
+//					FakeDataWarehouse
+//					.getPlayerCareerInfo(playerID);
 
 			PlayerCareerInfoSubWindow playerWindow = new PlayerCareerInfoSubWindow(
 					playerInfo);
@@ -198,31 +218,41 @@ public class Home {
 		}
 	}
 
-	public String getLoggedInUserEmail() {
-		return loggedInUserEmail;
+	public LMUserDetails getLoggedInUser() {
+		return loggedInUser;
 	}
 
-	public void setLoggedIn(String loggedUserEmail) {
-		login.setLoggedIn(loggedUserEmail);
+	public void setLoggedIn(LMUserDetails loggedUser) {
+		login.setLoggedIn(loggedUser);
 
-		manageButton.setVisible(true);
+		if (loggedUser.isSectretary()) {
+			addPlayerButton.setVisible(true);
+			addOwnershipButton.setVisible(true);
+		}
 
-		loggedInUserEmail = loggedUserEmail;
+		loggedInUser = loggedUser;
+		// System.out.println("user email: "
+		// + loggedInUser.getUserData().getEmail());
+		// System.out.println("is secretary: " + loggedInUser.isSectretary());
+		// System.out.println("is manager: " + loggedInUser.isManager());
+		// System.out.println("is club manager: "
+		// + (loggedInUser.getManagedClubID() != -1));
 	}
 
 	public void setUnlogged() {
 		login.setUnlogged();
 
-		manageButton.setVisible(false);
+		addPlayerButton.setVisible(false);
+		addOwnershipButton.setVisible(false);
 		// TODO: close all opened manage elements
 
-		loggedInUserEmail = null;
+		loggedInUser = null;
 	}
 
 	private void setUpContent() {
-		//		FakeDataWarehouse.initFakeData();
+//		FakeDataWarehouse.initFakeData();
 
-		loggedInUserEmail = null;
+		loggedInUser = null;
 
 		mainLayout = new VerticalLayout();
 
@@ -250,21 +280,6 @@ public class Home {
 		bodyLayout = new HorizontalLayout();
 
 		leftBar = new VerticalLayout();
-		//leftBar.addComponent(new Label("Most recent Tournaments"));
-		//		List<Tournament> tournaments = DML.retrieveAllTournaments();
-		//		recentTournamentButtons = new ArrayList<Button>();
-		//
-		//		for (final Tournament t : tournaments) {
-		//			Button btn = new Button(t.getName() + " - " + t.getYear(),
-		//					new ClickListener() {
-		//						@Override
-		//						public void buttonClick(ClickEvent event) {
-		//							showTournamentCalendarView(t.getName(), t.getYear());
-		//						}
-		//					});
-		//			recentTournamentButtons.add(btn);
-		//			leftBar.addComponent(btn);
-		//		}
 
 		// Create the Tree,a dd to layout
 		Tree tree = new Tree("Tornei recenti");
@@ -336,11 +351,11 @@ public class Home {
 
 		allTournamentsButton = new Button("All Tournaments",
 				new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				showTournamentList();
-			}
-		});
+					@Override
+					public void buttonClick(ClickEvent event) {
+						showTournamentList();
+					}
+				});
 		leftBar.addComponent(allTournamentsButton);
 
 		allPlayersButton = new Button("All Players", new ClickListener() {
@@ -359,14 +374,27 @@ public class Home {
 		});
 		leftBar.addComponent(allClubsButton);
 
-		manageButton = new Button("Manage Something", new ClickListener() {
+		addPlayerButton = new Button("Add Player", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				System.out.println("Manage something");
+				if (loggedInUser != null) {
+					showAddPlayerView();
+				}
 			}
 		});
-		leftBar.addComponent(manageButton);
-		manageButton.setVisible(false);
+		leftBar.addComponent(addPlayerButton);
+		addPlayerButton.setVisible(false);
+
+		addOwnershipButton = new Button("Add Ownership", new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				if (loggedInUser != null) {
+					showAddOwnershipView();
+				}
+			}
+		});
+		leftBar.addComponent(addOwnershipButton);
+		addOwnershipButton.setVisible(false);
 
 		Label leftBarSpacer = new Label();
 		leftBar.addComponent(leftBarSpacer);

@@ -4,12 +4,14 @@ import it.unipd.dei.db.kayak.league_manager.data.Club;
 import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
 import it.unipd.dei.db.kayak.league_manager.data.EventResult;
 import it.unipd.dei.db.kayak.league_manager.data.LMUser;
+import it.unipd.dei.db.kayak.league_manager.data.LMUserDetails;
 import it.unipd.dei.db.kayak.league_manager.data.Location;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDayDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDayMatches;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
+import it.unipd.dei.db.kayak.league_manager.data.Ownership;
 import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerEvent;
@@ -21,6 +23,7 @@ import it.unipd.dei.db.kayak.league_manager.data.TournamentEssentials;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,7 +35,228 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.ui.Notification;
+
 public class DML {
+	public static boolean addPlayer(Player player) {
+		if (player == null) {
+			return false;
+		}
+
+		Connection con = null;
+		PreparedStatement pst = null;
+		int returnValue = 0;
+
+		try {
+			con = Helper.getConnection();
+			String stm = "insert into lm.Player values (?, ?, ?);";
+			pst = con.prepareStatement(stm);
+			pst.setLong(1, player.getID());
+			pst.setString(2, player.getName());
+			pst.setDate(3, player.getBirthday());
+
+			returnValue = pst.executeUpdate();
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DDL.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+		} finally {
+			try {
+				if (pst != null) {
+					pst.close();
+				}
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+				Logger lgr = Logger.getLogger(DDL.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean addOwnership(Ownership ownership) {
+		if (ownership == null) {
+			return false;
+		}
+
+		Connection con = null;
+		PreparedStatement pst = null;
+		int returnValue = 0;
+
+		try {
+			con = Helper.getConnection();
+			// id | player_id | club_id | isborrowed | start_date | end_date
+			String stm = "insert into lm.Ownership (player_id, club_id, isborrowed, start_date,  end_date) "
+					+ "values (?, ?, ?, ?, ?);";
+			pst = con.prepareStatement(stm);
+			pst.setLong(1, ownership.getPlayerID());
+			pst.setLong(2, ownership.getClubID());
+			pst.setBoolean(3, ownership.isBorrowed());
+			pst.setDate(4, ownership.getStartDate());
+			pst.setDate(5, ownership.getStartDate());
+
+			returnValue = pst.executeUpdate();
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DDL.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+		} finally {
+			try {
+				if (pst != null) {
+					pst.close();
+				}
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+				Logger lgr = Logger.getLogger(DDL.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean setLMUserPassword(String userEmail, byte[] password) {
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		// EXTODO: lasciare un byte libero, copiare solo i primi 31
+		// byte[] digest = new byte[32];
+		// for (int i = 0; i < digest.length; ++i) {
+		// digest[i] = password[i];
+		// }
+		// System.out.println("settin password length: " + digest.length);
+		if (password.length != 32) {
+			System.out.println("Wrong password length, should be 32; supplied "
+					+ password.length);
+			return false;
+		}
+
+		try {
+			con = Helper.getConnection();
+			String stm = "update lm.LMUser set password = ? where user_email = ?;";
+			pst = con.prepareStatement(stm);
+			pst.setString(1, new String(password, "UTF-8"));
+			pst.setString(2, userEmail);
+			rs = pst.executeQuery();
+		} catch (Exception ex) {
+			Logger lgr = Logger.getLogger(DDL.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+				Logger lgr = Logger.getLogger(DDL.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static LMUserDetails retrieveLMUserDetails(String userEmail) {
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		LMUserDetails ret = null;
+
+		try {
+
+			// con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			// Helper.PASSWORD);
+			con = Helper.getConnection();
+			String stm = "select u.user_email as email, u.password as password, u.phone_number as phone, u.first_name as first_name, "
+					+ "u.last_name as last_name, u.birthday as birthday, s.user_email as s_email, "
+					+ "m.user_email as m_email, c.id as club_id, c.short_name as club_name "
+					+ "from lm.LMUser as u "
+					+ "left join lm.Secretary as s on u.user_email = s.user_email "
+					+ "left join lm.Manager as m on u.user_email = m.user_email "
+					+ "left join lm.Coordinates as coo on u.user_email = coo.manager "
+					+ "left join lm.Club as c on coo.club = c.id "
+					+ "where u.user_email = ?;";
+			pst = con.prepareStatement(stm);
+			pst.setString(1, userEmail);
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				String email = rs.getString("email");
+				byte[] password = rs.getString("password").getBytes();
+				String phone = rs.getString("phone");
+				String firstName = rs.getString("first_name");
+
+				String lastName = rs.getString("last_name");
+				Date birthday = rs.getDate("birthday");
+				boolean secretary = rs.getString("s_email") != null;
+				boolean manager = rs.getString("m_email") != null;
+
+				long managedClubID = rs.getLong("club_id");
+				if (managedClubID == 0) {
+					managedClubID = -1;
+				}
+				String managedClubName = rs.getString("club_name");
+				if (managedClubName == null) {
+					managedClubName = "";
+				}
+
+				LMUser user = new LMUser(email, password, phone, firstName,
+						lastName, birthday);
+				ret = new LMUserDetails(user, secretary, manager,
+						managedClubID, managedClubName);
+			}
+
+		} catch (Exception ex) {
+			Logger lgr = Logger.getLogger(DDL.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+				Logger lgr = Logger.getLogger(DDL.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+			}
+		}
+		return ret;
+	}
 
 	public static List<Club> retrieveAllClubs() {
 		Connection con = null;
@@ -42,12 +266,11 @@ public class DML {
 
 		try {
 
-			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-			//					Helper.PASSWORD);
 			con = Helper.getConnection();
-			pst = con.prepareStatement("SELECT DISTINCT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website " +
-					"FROM lm.callsup AS l INNER JOIN lm.club AS c ON c.id = l.club_id " +
-					"ORDER BY c.id ASC;");
+			pst = con
+					.prepareStatement("SELECT DISTINCT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website "
+							+ "FROM lm.callsup AS l INNER JOIN lm.club AS c ON c.id = l.club_id "
+							+ "ORDER BY c.id ASC;");
 			rs = pst.executeQuery();
 
 			if (!rs.isAfterLast()) {
@@ -67,7 +290,8 @@ public class DML {
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DDL.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
-			//	TODO		Notification.show("connection problem", description, type)
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -78,13 +302,15 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DDL.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
@@ -98,8 +324,6 @@ public class DML {
 
 		try {
 
-			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-			//					Helper.PASSWORD);
 			con = Helper.getConnection();
 			// gets all players that were sometimes included in a line-up
 			pst = con.prepareStatement("SELECT DISTINCT o.player_id, p.name, p.birthday, p.id " +
@@ -131,9 +355,6 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DDL.class.getName());
@@ -142,7 +363,7 @@ public class DML {
 		}
 		return ret;
 	}
-
+	
 	public static List<OwnershipResult> retrieveOwnershipsFromPlayer(
 			long playerId) {
 		Connection con = null;
@@ -195,9 +416,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.SEVERE, ex.getMessage(), ex);
@@ -215,8 +436,8 @@ public class DML {
 		List<EventResult> ret = null;
 
 		try {
-			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-			//					Helper.PASSWORD);
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
 			con = Helper.getConnection();
 
 			String stm = "SELECT p.name as player_name, e.id as event_id, e.match_id, a.name as action_name, e.instant, e.fraction, a.display_name, cu.player_number, c.name as club_name, c.id as club_id " +
@@ -253,7 +474,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -264,9 +487,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -284,8 +507,8 @@ public class DML {
 		List<EventResult> ret = null;
 
 		try {
-			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-			//					Helper.PASSWORD);
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
 			con = Helper.getConnection();
 
 			String stm = "SELECT e.id as event_id, e.match_id, a.name as action_name, p.id as player_id, o.club_id, p.name, cu.player_number, e.instant, e.fraction, a.display_name, c.name as club_name " +
@@ -309,13 +532,13 @@ public class DML {
 					long eventID = rs.getLong("event_id");
 					String matchUpID = rs.getString("match_id");
 					String actionName = rs.getString("action_name");
-
+					
 					long playerID = rs.getLong("player_id");
 					long clubID = rs.getLong("club_id");
 					String playerName = rs.getString("name");
 					String clubName = rs.getString("club_name");
 					int number = rs.getInt("player_number");
-
+					
 					int instant = rs.getInt("instant");
 					int fraction = rs.getInt("fraction");
 					String actionDescription = rs.getString("display_name");
@@ -325,7 +548,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -336,13 +561,15 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
@@ -360,8 +587,8 @@ public class DML {
 
 		List<PlayerMatchUpInfo> ret = null;
 		try {
-			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-			//					Helper.PASSWORD);
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
 			con = Helper.getConnection();
 
 			String stm = "SELECT o.player_id, o.club_id, p.name, cu.player_number " +
@@ -387,7 +614,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -398,18 +627,20 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
 	}
-
+	
 	/**
 	 * ritorna i più recenti tornei. se viene inserito un numero negativo li restituisce tutti
 	 * @param numberOfTournaments
@@ -426,8 +657,8 @@ public class DML {
 		 * boolean sex; private String organizerEmail;
 		 */
 		try {
-			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-			//					Helper.PASSWORD);
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
 			con = Helper.getConnection();
 
 			String stm = "SELECT name, year, max_age, sex, organizer "
@@ -449,7 +680,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -460,18 +693,20 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
 	}
-
+	
 	public static MatchUpDetails retrieveMatchUpDetails(String matchUpId) {
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -480,8 +715,8 @@ public class DML {
 		MatchUpDetails ret = null;
 
 		try {
-			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-			//					Helper.PASSWORD);
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
 			con = Helper.getConnection();
 			String stm = "SELECT luh.id as lineup_host, " +
 					"lug.id as lineup_guest, " +
@@ -563,7 +798,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -574,17 +811,20 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
 	}
+
 
 	public static MatchDayMatches retrieveMatches(String md_id){
 		Connection con = null;
@@ -726,8 +966,8 @@ public class DML {
 		List<PlayerCareerEvent> ret = new ArrayList<PlayerCareerEvent>();
 
 		try {
-			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-			//					Helper.PASSWORD);
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
 			con = Helper.getConnection();
 			String stm = "SELECT mu.tournament_name, " +
 					"mu.tournament_phase_year, " +
@@ -793,6 +1033,64 @@ public class DML {
 
 			}
 
+		} catch (Exception ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+				Logger lgr = Logger.getLogger(DML.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+			}
+		}
+		return ret;
+	}
+
+	private static Club retrieveClubFromLineUp(String lineUpId) {
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		Club ret = null;
+
+		try {
+			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+					Helper.PASSWORD);
+			String stm = "SELECT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website "
+					+ "FROM lm.Lineup as lu "
+					+ "INNER JOIN lm.Club as c ON lu.club_id=c.id "
+					+ "WHERE lu.id=?;";
+			pst = con.prepareStatement(stm);
+			pst.setString(1, lineUpId);
+			rs = pst.executeQuery();
+			if (rs.next()) {
+				long id = rs.getLong("id");
+				String name = rs.getString("name");
+				String shortName = rs.getString("short_name");
+				String phone = rs.getString("phone_number");
+				String address = rs.getString("address");
+				String email = rs.getString("email");
+				String website = rs.getString("website");
+				ret = new Club(id, name, shortName, phone, address, email,
+						website);
+			}
+
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
@@ -806,9 +1104,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -867,10 +1165,11 @@ public class DML {
 				}
 			}
 
-
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -881,18 +1180,20 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
 	}
-
+	
 	public static Map<TournamentEssentials, List<MatchDay>> retrieveAllMatchDays() {
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -939,7 +1240,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -953,7 +1256,9 @@ public class DML {
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
@@ -981,14 +1286,16 @@ public class DML {
 					long id = rs.getLong("id");
 					String city = rs.getString("city");
 					String name = rs.getString("name");
-
+					
 					ret.add(new Location(id, city, name));
 				}
 			}
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -999,18 +1306,20 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
 	}
-
+	
 	public static List<Player> retrievePlayersFromClub(long clubId) {
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1039,14 +1348,16 @@ public class DML {
 					long id = rs.getLong("id");
 					String name = rs.getString("name");
 					Date birthday = rs.getDate("birthday");
-
+					
 					ret.add(new Player(id, name, birthday));
 				}
 			}
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -1057,18 +1368,20 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
 	}
-
+	
 	public static List<LMUser> retrieveManagersFromClub(long clubId) {
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1097,14 +1410,16 @@ public class DML {
 					String firstName = rs.getString("first_name");
 					String lastName = rs.getString("last_name");
 					Date birthday = rs.getDate("birthday");
-
+					
 					ret.add(new LMUser(email, password, phone, firstName, lastName, birthday));
 				}
 			}
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -1115,18 +1430,20 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
 	}
-
+	
 	public static ClubDetails retrieveClubDetails(long clubId){
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1159,7 +1476,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -1170,9 +1489,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -1181,7 +1500,7 @@ public class DML {
 		}
 		return ret;
 	}
-
+	
 	public static EventResult retrieveEventResult(long eventId){
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1224,7 +1543,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -1235,18 +1556,20 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
 	}
-
+	
 	public static PlayerCareerInfo retrievePlayerCareerInfo(long playerId){
 
 		Connection con = null;
@@ -1275,7 +1598,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DDL.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -1286,9 +1611,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DDL.class.getName());
@@ -1332,17 +1657,19 @@ public class DML {
 					Date endDate = rs.getDate("end_date");
 					long clubID = rs.getLong("club");
 					long locationID = rs.getLong("loc_id");
-
+					
 					String organizerClubName = rs.getString("club_name");
 					String locationName = rs.getString("loc_name");
 					MatchDay matchDay = new MatchDay(id, num, startDate, endDate, clubID, locationID, tournamentName, tournamentYear);
-					ret.add(new MatchDayDetails(matchDay, organizerClubName, locationName));
+					ret.add(new MatchDayDetails(matchDay,num, organizerClubName, locationName));
 				}
 			}
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -1353,15 +1680,20 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;
 	}
-
+	
 	public static TournamentDetails retrieveTournamentDetails(
 			String tournamentName, int tournamentYear) {
 		Connection con = null;
@@ -1386,7 +1718,7 @@ public class DML {
 				int maxAge = rs.getInt("max_age");
 				String sex = rs.getString("sex");
 				String organizerEmail = rs.getString("organizer");
-
+				
 				Tournament tournament = new Tournament(tournamentName, tournamentYear, maxAge, sex, organizerEmail);
 				List<MatchDayDetails> matchDayDetails = retrieveMatchDayDetailsFromTournament(tournamentName, tournamentYear);
 				Map<Integer, List<MatchUpResult>> matchUpResults = retrieveMatchResultsFromTournament(tournamentName, tournamentYear);
@@ -1395,7 +1727,9 @@ public class DML {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			lgr.log(Level.WARNING, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
 		} finally {
 
@@ -1406,13 +1740,15 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-				//				if (con != null) {
-				//					con.close();
-				//				}
+//				if (con != null) {
+//					con.close();
+//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		return ret;

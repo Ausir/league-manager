@@ -232,7 +232,8 @@ public class PlayerCareerInfoSubWindow {
 
 			HorizontalLayout eventLine = new HorizontalLayout();
 
-			String eventCaption = "" + (cEvent.getInstant() / 100) + "' ";
+			String eventCaption = "" + (cEvent.getInstant() / 100) + ":"
+					+ (cEvent.getInstant() % 100) + " ";
 			if (cEvent.getFraction() == 0) {
 				eventCaption += "1° half";
 			} else if (cEvent.getFraction() == 1) {

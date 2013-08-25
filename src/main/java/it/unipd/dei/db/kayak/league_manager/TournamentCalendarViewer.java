@@ -9,9 +9,7 @@ import it.unipd.dei.db.kayak.league_manager.data_utils.MatchUpPhaseComparator;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
@@ -45,12 +43,12 @@ public class TournamentCalendarViewer {
 		mainLayout.setMargin(new MarginInfo(true, true, true, true));
 
 		Tournament tournament = tournamentDetails.getTournament();
-		List<MatchDayDetails> matchDays = tournamentDetails
+		List<MatchDayDetails> matchDayDetails = tournamentDetails
 				.getMatchDayDetails();
 		
 		String tCaption = tournament.getName() + " " + tournament.getYear()
 				+ " max age: " + tournament.getMaxAge() + " ";
-		tCaption += tournament.getSex();
+		tCaption += tournament.getSex() ? "M" : "F";
 		mainLayout.addComponent(new Label(tCaption));
 
 		VerticalLayout tLayout = new VerticalLayout();
@@ -65,7 +63,7 @@ public class TournamentCalendarViewer {
 		VerticalLayout phaseLayout = null;
 		String phaseName = "";
 
-		for (int i = 0; i < matchDays.size(); ++i) {
+		for (int i = 0; i < tournamentDetails.getMatchDayDetails().size(); ++i) {
 			MatchDayDetails mDayDetails = tournamentDetails
 					.getMatchDayDetails().get(i);
 			mDayID = mDayDetails.getMatchDay().getID();

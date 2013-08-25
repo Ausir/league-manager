@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 
 public class Helper {
 	private static int port = 5555;
-	final static String URL = "jdbc:postgresql://localhost:" + port + "/Kayak";
-	final static String USER = "Kayak";
-	final static String PASSWORD = "aijaevau";
+	final public static String URL = "jdbc:postgresql://localhost:" + port + "/Kayak";
+	final public static String USER = "Kayak";
+	final public static String PASSWORD = "aijaevau";
 	private static Connection CON;
 
 	static int getPort() {

@@ -80,7 +80,8 @@ public class MatchUpDetailsSubWindow {
 
 			HorizontalLayout eventLayout = new HorizontalLayout();
 
-			String eventCaption = "" + (event.getInstant() / 100) + "' ";
+			String eventCaption = "" + (event.getInstant() / 100) + ":"
+					+ (event.getInstant() % 100) + " ";
 			if (event.getFraction() == 0) {
 				eventCaption += "1° half";
 			} else if (event.getFraction() == 1) {
@@ -114,42 +115,57 @@ public class MatchUpDetailsSubWindow {
 			eventLine.addComponent(new Label(eventCaption));
 			Image img = new Image(null, resource);
 			eventLayout.addComponent(img);
+			eventCaption = "" + event.getPlayerInfo().getNumber() + " "
+					+ event.getPlayerInfo().getPlayerName();
+			eventLayout.addComponent(new Label(eventCaption));
 			spacer = new Label("");
 			spacer.setWidth("5px");
 			eventLayout.addComponent(spacer);
 			eventLayout.addComponent(new Label(" "
 					+ event.getActionDescription()));
+			Label eventLayoutSpacer = new Label("");
+			eventLayoutSpacer.setWidth("100%");
+			eventLayout.addComponent(eventLayoutSpacer);
+			// eventLayout.setExpandRatio(eventLayoutSpacer, 1);
 
-			String eventString = "" + event.getShortString();
-			String empty = "";
+			eventLayout.setHeight("30px");
+
+			// String eventString = "" + event.getShortString();
+			// String empty = "";
 
 			Label leftLabelMargin = new Label("");
 			leftLabelMargin.setWidth("10px");
 			Label rightLabelMargin = new Label("");
 			rightLabelMargin.setWidth("10px");
+			Label empty = new Label("");
+			empty.setWidth("100%");
+			empty.setHeight("30px");
 
 			if (event.getPlayerInfo().getClubID() == mRes.getClubHostID()) {
-				left = new Label(eventString);
-				right = new Label(empty);
+				eventLine.addComponent(leftLabelMargin);
+				eventLine.addComponent(eventLayout);
+				eventLine.addComponent(rightLabelMargin);
+				eventLine.addComponent(empty);
+
+				eventLine.setExpandRatio(eventLayout, 0.5f);
+				eventLine.setExpandRatio(empty, 0.5f);
 			} else {
-				left = new Label(empty);
-				right = new Label(eventString);
+				eventLine.addComponent(leftLabelMargin);
+				eventLine.addComponent(empty);
+				eventLine.addComponent(rightLabelMargin);
+				eventLine.addComponent(eventLayout);
+
+				eventLine.setExpandRatio(eventLayout, 0.5f);
+				eventLine.setExpandRatio(empty, 0.5f);
 			}
 
-			eventLine.addComponent(leftLabelMargin);
-			eventLine.addComponent(left);
-			left.setWidth("100%");
-			eventLine.addComponent(rightLabelMargin);
-			eventLine.addComponent(right);
-			right.setWidth("100%");
-
-			eventLine.setExpandRatio(left, 0.5f);
-			eventLine.setExpandRatio(right, 0.5f);
 			tabLayout.addComponent(eventLine);
 			eventLine.setWidth("100%");
+			eventLine.setHeight("30px");
 		}
 
 		Label eventSpacer = new Label("");
+		eventSpacer.setHeight("100%");
 		tabLayout.addComponent(eventSpacer);
 		tabLayout.setExpandRatio(eventSpacer, 1);
 
@@ -157,6 +173,7 @@ public class MatchUpDetailsSubWindow {
 
 		tabs.addTab(tabLayout, "Events");
 
+		// content of LineUps
 		tabLayout = new VerticalLayout();
 
 		HorizontalLayout tabLayoutSplitter = new HorizontalLayout();

@@ -13,10 +13,10 @@ public class Tournament {
 	private String name;
 	private int year;
 	private int maxAge;
-	private String sex;
+	private boolean sex;
 	private String organizerEmail;
 
-	public Tournament(String name, int year, int maxAge, String sex,
+	public Tournament(String name, int year, int maxAge, boolean sex,
 			String organizerEmail) {
 		super();
 		this.name = name;
@@ -43,7 +43,7 @@ public class Tournament {
 	 * 
 	 * @return
 	 */
-	public String getSex() {
+	public boolean getSex() {
 		return sex;
 	}
 
@@ -53,7 +53,7 @@ public class Tournament {
 	
 	public String getCompactString(){
 		String ret;
-		ret = name + " " + year + " " +maxAge + " " + sex;
+		ret = name + " " + year + " " +maxAge + (sex==true?" male":" female");
 		return ret;
 	}
 }
