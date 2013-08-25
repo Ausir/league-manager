@@ -1,15 +1,17 @@
 package it.unipd.dei.db.kayak.league_manager.data;
 
 import java.util.List;
+import java.util.Map;
 
 public class TournamentDetails {
 	private Tournament tournament;
 	private List<MatchDayDetails> matchDayDetails;
-	private List<MatchUpResult> matchUpResults;
+	// index is md_num
+	private Map<Integer, List<MatchUpResult>> matchUpResults;
 
 	public TournamentDetails(Tournament tournament,
 			List<MatchDayDetails> matchDayDetails,
-			List<MatchUpResult> matchUpResults) {
+			Map<Integer, List<MatchUpResult>> matchUpResults) {
 		super();
 		this.tournament = tournament;
 		this.matchDayDetails = matchDayDetails;
@@ -24,7 +26,7 @@ public class TournamentDetails {
 		return matchDayDetails;
 	}
 
-	public List<MatchUpResult> getMatchUpResults() {
+	public Map<Integer, List<MatchUpResult>> getMatchUpResults() {
 		return matchUpResults;
 	}
 }

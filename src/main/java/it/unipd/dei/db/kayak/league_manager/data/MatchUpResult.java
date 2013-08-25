@@ -7,6 +7,8 @@ public class MatchUpResult {
 	// IDs (db) for the referenced tables
 	private String matchUpID;
 	private String matchDayID;
+	private int matchDayNum;
+	private Date matchDayStartDate;
 	private String tournamentPhaseName;
 	private int tournamentPhaseNum;
 	private String tournamentName;
@@ -21,7 +23,7 @@ public class MatchUpResult {
 	private int teamGuestGoals;
 	private Time time;
 
-	public MatchUpResult(String matchUpID, String matchDayID,
+	public MatchUpResult(String matchUpID, String matchDayID, Date matchDayStartDate, int matchDayNum,
 			String tournamentPhaseName, int tournamentPhaseNum, String tournamentName,
 			long tournamentYear, long clubHostID, long clubGuestID, Date date,
 			String teamHostName, String teamGuestName, int teamHostGoals,
@@ -29,6 +31,8 @@ public class MatchUpResult {
 		super();
 		this.matchUpID = matchUpID;
 		this.matchDayID = matchDayID;
+		this.matchDayNum = matchDayNum;
+		this.matchDayStartDate = matchDayStartDate;
 		this.tournamentPhaseName = tournamentPhaseName;
 		this.tournamentPhaseNum = tournamentPhaseNum;
 		this.tournamentName = tournamentName;
@@ -61,6 +65,14 @@ public class MatchUpResult {
 
 	public String getMatchDayID() {
 		return matchDayID;
+	}
+	
+	public int getMatchDayNum() {
+		return matchDayNum;
+	}
+	
+	public Date getMatchDayStartDate() {
+		return matchDayStartDate;
 	}
 
 	public String getTournamentPhaseName() {
