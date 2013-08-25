@@ -1,8 +1,8 @@
 package it.unipd.dei.db.kayak.league_manager.data;
 
 public class MatchDayDetails {
+	
 	private MatchDay matchDay;
-
 	private String organizerClubName;
 	private String locationName;
 	private int number;

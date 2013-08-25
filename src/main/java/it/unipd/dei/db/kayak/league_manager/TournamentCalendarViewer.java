@@ -5,12 +5,13 @@ import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 import it.unipd.dei.db.kayak.league_manager.data.TournamentDetails;
 import it.unipd.dei.db.kayak.league_manager.data_utils.MatchDayDetailsCalendarComparator;
-import it.unipd.dei.db.kayak.league_manager.data_utils.MatchUpResultCalendarComparator;
+import it.unipd.dei.db.kayak.league_manager.data_utils.MatchUpPhaseComparator;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
@@ -26,20 +27,16 @@ import com.vaadin.ui.VerticalLayout;
 public class TournamentCalendarViewer {
 	// private fields
 	private VerticalLayout mainLayout;
-	// private ArrayList<VerticalLayout> dayLayoutList;
-
 	private TournamentDetails tournamentDetails;
 
 	// constructor
 	public TournamentCalendarViewer(TournamentDetails tournamentDetails) {
 		this.tournamentDetails = tournamentDetails;
 
-		Collections.sort(tournamentDetails.getMatchUpResults(),
-				new MatchUpResultCalendarComparator());
-
+		// order match days by date
 		Collections.sort(tournamentDetails.getMatchDayDetails(),
 				new MatchDayDetailsCalendarComparator());
-
+		
 		this.setUpContent();
 	}
 
@@ -50,9 +47,7 @@ public class TournamentCalendarViewer {
 		Tournament tournament = tournamentDetails.getTournament();
 		List<MatchDayDetails> matchDays = tournamentDetails
 				.getMatchDayDetails();
-		List<MatchUpResult> matchUpResults = tournamentDetails
-				.getMatchUpResults();
-
+		
 		String tCaption = tournament.getName() + " " + tournament.getYear()
 				+ " max age: " + tournament.getMaxAge() + " ";
 		tCaption += tournament.getSex();
@@ -64,6 +59,7 @@ public class TournamentCalendarViewer {
 
 		VerticalLayout mDayLayout = null;
 		String mDayID = "";
+		int mDayNum;
 
 		int mUpIdx = 0;
 		VerticalLayout phaseLayout = null;
@@ -73,7 +69,10 @@ public class TournamentCalendarViewer {
 			MatchDayDetails mDayDetails = tournamentDetails
 					.getMatchDayDetails().get(i);
 			mDayID = mDayDetails.getMatchDay().getID();
+			mDayNum = mDayDetails.getMatchDay().getNum();
 
+			System.out.println(mDayID + " " + mDayNum);
+			
 			String dayString = "Day "
 					+ (tournamentDetails.getMatchDayDetails().size() - i)
 					+ ": " + mDayDetails.getMatchDay().getStartDate();
@@ -91,19 +90,22 @@ public class TournamentCalendarViewer {
 
 			tLayout.addComponent(mDayLayout);
 
+			List<MatchUpResult> matches = tournamentDetails.getMatchUpResults().get(mDayNum);
+			Collections.sort(matches,
+					new MatchUpPhaseComparator());
+			
+//			for (MatchDayDetails det : tournamentDetails.getMatchDayDetails()){
+//				System.out.println(det.getMatchDay().getCompactString());
+//				for (MatchUpResult res : tournamentDetails.getMatchUpResults().get(det.getNumber())){
+//					System.out.println(res.getClubGuestID() + " " + res.getClubHostID() + " " + res.getTournamentPhaseName());
+//				}
+//			}
+			
 			phaseName = "";
-
-			for (; mUpIdx < tournamentDetails.getMatchUpResults().size(); ++mUpIdx) {
-				MatchUpResult mUpRes = tournamentDetails.getMatchUpResults()
-						.get(mUpIdx);
-
-				if (!mDayID.equals(mUpRes.getMatchDayID())) {
-					break;
-				}
-
+			for (MatchUpResult mUpRes : matches) {
 				if (!mUpRes.getTournamentPhaseName().equals(phaseName)) {
+					
 					phaseName = mUpRes.getTournamentPhaseName();
-
 					mDayLayout.addComponent(new Label(phaseName));
 
 					phaseLayout = new VerticalLayout();
