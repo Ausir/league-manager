@@ -1,7 +1,7 @@
 package it.unipd.dei.db.kayak.league_manager;
 
-import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
 import it.unipd.dei.db.kayak.league_manager.data.LMUser;
+import it.unipd.dei.db.kayak.league_manager.database.Helper;
 
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
@@ -62,14 +62,14 @@ public class LoginElement {
 			public void buttonClick(ClickEvent event) {
 				String email = emailArea.getValue();
 				LMUser user = null;
-				for (LMUser u : FakeDataWarehouse.getUsers()) {
-					System.out.println("confronting " + email + " equals "
-							+ u.getEmail() + " : " + u.getEmail().equals(email));
-					if (u.getEmail().equals(email)) {
-						user = u;
-						break;
-					}
-				}
+//				for (LMUser u : FakeDataWarehouse.getUsers()) {
+//					System.out.println("confronting " + email + " equals "
+//							+ u.getEmail() + " : " + u.getEmail().equals(email));
+//					if (u.getEmail().equals(email)) {
+//						user = u;
+//						break;
+//					}
+//				}
 
 				if (user == null) {
 					// TODO: show notification about wrong login email
@@ -79,7 +79,7 @@ public class LoginElement {
 					return;
 				}
 
-				byte[] digest = FakeDataWarehouse.getHashedString(passwordArea
+				byte[] digest = Helper.getHashedString(passwordArea
 						.getValue());
 				boolean check = true;
 				for (int i = 0; i < digest.length; ++i) {

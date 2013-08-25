@@ -5,6 +5,7 @@ public class TournamentPhase {
 	// name VARCHAR(50),
 	// tournament_name LONG_NAME,
 	// tournament_year SMALLINT,
+	// num SMALLINT
 	// PRIMARY KEY (name, tournament_year, tournament_name),
 	// FOREIGN KEY (tournament_year, tournament_name) REFERENCES lm.Tournament
 	// (year, name)
@@ -12,13 +13,15 @@ public class TournamentPhase {
 	private String name;
 	private String tournamentName;
 	private int tournamentYear;
+	private int num;
 
 	public TournamentPhase(String name, String tournamentName,
-			int tournamentYear) {
+			int tournamentYear, int num) {
 		super();
 		this.name = name;
 		this.tournamentName = tournamentName;
 		this.tournamentYear = tournamentYear;
+		this.num = num;
 	}
 
 	public String getName() {
@@ -31,5 +34,9 @@ public class TournamentPhase {
 
 	public int getTournamentYear() {
 		return tournamentYear;
+	}
+	
+	public int getNum() {
+		return num;
 	}
 }

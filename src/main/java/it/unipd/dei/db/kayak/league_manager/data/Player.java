@@ -11,37 +11,33 @@ public class Player {
 	// PRIMARY KEY (id)
 	// );
 	private long id;
-	private String firstName;
-	private String lastName;
-	// private String name;
+	private String name;
 	private Date birthday;
 
-	public Player(long id, String firstName, String lastName, Date birthday) {
+	public Player(long id, String name, Date birthday) {
 		super();
 		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.name = name;
 		this.birthday = birthday;
-		// name = firstName + " " + lastName;
 	}
 
 	public long getID() {
 		return id;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
 	public String getName() {
-		return firstName + " " + lastName;
+		return name;
 	}
 
 	public Date getBirthday() {
 		return birthday;
+	}
+	
+	public String getCompactString(){
+		String ret = "";
+		ret += id + " ";
+		ret += name + " ";
+		ret += birthday + "\n";
+		return ret;
 	}
 }

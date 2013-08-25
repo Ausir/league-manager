@@ -1,13 +1,20 @@
 package it.unipd.dei.db.kayak.league_manager;
 
-import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
+import it.unipd.dei.db.kayak.league_manager.database.DML;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 public class PlayerListViewer {
@@ -17,7 +24,9 @@ public class PlayerListViewer {
 	private List<Player> playerList;
 
 	public PlayerListViewer() {
-		playerList = new ArrayList<Player>(FakeDataWarehouse.getPlayers());
+		playerList = new ArrayList<Player>(DML.retrieveAllPlayers()
+//				FakeDataWarehouse.getPlayers()
+				);
 
 		this.setUpContent();
 	}
@@ -32,11 +41,26 @@ public class PlayerListViewer {
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
-		PlayerTable playerTable = new PlayerTable();
+		final PlayerTable playerTable = new PlayerTable(playerList);
 
-		for (Player p : playerList) {
-			playerTable.addPlayer(p);
-		}
+		HorizontalLayout controlLayout = new HorizontalLayout();
+		final TextField filterField = new TextField();
+		controlLayout.addComponent(filterField);
+		filterField.setImmediate(true);
+		filterField.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				playerTable.filterPlayerNames(filterField.getValue());
+			}
+		});
+		controlLayout.addComponent(new Button("Filter Names",
+				new ClickListener() {
+					@Override
+					public void buttonClick(ClickEvent event) {
+						playerTable.filterPlayerNames(filterField.getValue());
+					}
+				}));
+		tableLayout.addComponent(controlLayout);
 
 		tableLayout.addComponent(playerTable);
 		tableLayout.setExpandRatio(playerTable, 1);

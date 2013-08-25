@@ -2,7 +2,7 @@ package it.unipd.dei.db.kayak.league_manager.data;
 
 public class LineUp {
 	// CREATE TABLE lm.LineUp (
-	// id string,
+	// id BIGSERIAL,
 	// game_ready BOOLEAN,
 	// original_lineup ID_REF,
 	// color_1 COLOR,
@@ -16,7 +16,7 @@ public class LineUp {
 	// FOREIGN KEY (manager) REFERENCES lm.ClubManager (user_email),
 	// FOREIGN KEY (club_id) REFERENCES lm.Club (id)
 	// );
-	private String id;
+	private long id;
 	private boolean gameReady;
 	private String color1;
 	private String color2;
@@ -24,7 +24,7 @@ public class LineUp {
 	private String managerEmail;
 	private long clubID;
 
-	public LineUp(String id, boolean gameReady, String color1, String color2,
+	public LineUp(long id, boolean gameReady, String color1, String color2,
 			String matchDayID, String managerEmail, long clubID) {
 		super();
 		this.id = id;
@@ -36,7 +36,7 @@ public class LineUp {
 		this.clubID = clubID;
 	}
 
-	public String getID() {
+	public long getID() {
 		return id;
 	}
 

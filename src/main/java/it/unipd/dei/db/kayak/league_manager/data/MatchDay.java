@@ -73,4 +73,18 @@ public class MatchDay {
 	public int getTournamentYear() {
 		return tournamentYear;
 	}
+	
+	public String getCompactString() {
+		String ret = "";
+		ret += id + " ";
+		ret += num + " ";
+		ret += startDate + " ";
+		ret += endDate + " ";
+		ret += clubID + " ";
+		ret += locationID + " ";
+		ret += tournamentName + " ";
+		ret += tournamentYear;
+		
+		return ret;
+	}
 }

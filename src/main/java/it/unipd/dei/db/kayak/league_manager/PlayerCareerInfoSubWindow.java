@@ -1,55 +1,51 @@
 package it.unipd.dei.db.kayak.league_manager;
 
-import it.unipd.dei.db.kayak.league_manager.data.EventResult;
-import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
-import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
-import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
-import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
+import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerEvent;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
-import it.unipd.dei.db.kayak.league_manager.data_utils.EventResultTimeComparator;
-import it.unipd.dei.db.kayak.league_manager.data_utils.OwnershipResultDateComparator;
 
-import java.util.Collections;
+import java.io.File;
 
+import com.vaadin.server.FileResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 public class PlayerCareerInfoSubWindow {
 	// private fields
 	private Window window;
-	// private VerticalLayout mainLayout;
 
-	private Player player;
 	private PlayerCareerInfo playerInfo;
 
-	public PlayerCareerInfoSubWindow(Player player, PlayerCareerInfo playerInfo) {
-		this.player = player;
+	public PlayerCareerInfoSubWindow(PlayerCareerInfo playerInfo) {
 		this.playerInfo = playerInfo;
 
-		Collections.sort(playerInfo.getOwnerships(),
-				new OwnershipResultDateComparator());
+		// Collections.sort(playerInfo.getOwnerships(),
+		// new OwnershipResultDateComparator());
 
-		Collections.sort(playerInfo.getEvents(), new EventResultTimeComparator(
-				true));
+		// Collections.sort(playerInfo.getEvents(), new
+		// EventResultTimeComparator(
+		// true));
 
 		this.setUpWindow();
 	}
 
 	public void setUpWindow() {
+		Player player = playerInfo.getPlayerData();
+
 		window = new Window();
-		window.setCaption(player.getID() + " - " + player.getFirstName() + " "
-				+ player.getLastName());
+		window.setCaption(player.getID() + " - " + player.getName());
 		window.setHeight("400px");
 		window.setWidth("600px");
 
@@ -60,7 +56,7 @@ public class PlayerCareerInfoSubWindow {
 		// tabLayout.setMargin(new MarginInfo(false, false, false, true));
 
 		tabLayout.addComponent(new Label(player.getID() + " - "
-				+ player.getFirstName() + " " + player.getLastName()));
+				+ player.getName()));
 		tabLayout.addComponent(new Label("Birthday: " + player.getBirthday()));
 
 		Label spacer = new Label();
@@ -80,10 +76,8 @@ public class PlayerCareerInfoSubWindow {
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
-		OwnershipResultTable ownershipTable = new OwnershipResultTable();
-		for (OwnershipResult o : playerInfo.getOwnerships()) {
-			ownershipTable.addOwnershipResult(o);
-		}
+		OwnershipResultTable ownershipTable = new OwnershipResultTable(
+				playerInfo.getOwnerships());
 
 		tableLayout.addComponent(ownershipTable);
 		tableLayout.setExpandRatio(ownershipTable, 1);
@@ -99,46 +93,193 @@ public class PlayerCareerInfoSubWindow {
 
 		// Events section
 		tabLayout = new VerticalLayout();
-		tabLayout.setMargin(new MarginInfo(false, false, true, false));
 
-		tabLayout.addComponent(new Label("Events"));
+		tabLayout.addComponent(new Label("Career events"));
 
-		VerticalLayout subLayout = new VerticalLayout();
-		subLayout.setMargin(new MarginInfo(false, false, false, true));
+		VerticalLayout careerLayout = new VerticalLayout();
+		careerLayout.setMargin(new MarginInfo(false, false, false, true));
+		tabLayout.addComponent(careerLayout);
 
-		for (EventResult e : playerInfo.getEvents()) {
-			MatchUpDetails details = FakeDataWarehouse.getMatchUpDetails(e
-					.getMatchUpID());
-			MatchUpResult res = details.getResult();
+		VerticalLayout tLayout = null;
+		boolean chainT = false;
+		String tName = "";
+		int tYear = 0;
 
-			HorizontalLayout eventLayout = new HorizontalLayout();
-			final String matchUpID = res.getMatchUpID();
-			eventLayout.addComponent(new Button(res.getFullyQualifiedName(),
-					new ClickListener() {
-						@Override
-						public void buttonClick(ClickEvent event) {
-							Home home = ((MyVaadinUI) UI.getCurrent())
-									.getHome();
-							home.showMatchUpDetailsSubWindow(matchUpID);
-						}
-					}));
-			String eventCaption = "    - " + e.getCompactString();
-			eventLayout.addComponent(new Label(eventCaption));
+		VerticalLayout mDayLayout = null;
+		boolean chainMDay = false;
+		String mDayID = "";
 
-			spacer = new Label();
-			eventLayout.addComponent(spacer);
-			eventLayout.setExpandRatio(spacer, 1);
+		VerticalLayout mUpLayout = null;
+		boolean chainMUp = false;
+		String mUpID = "";
 
-			subLayout.addComponent(eventLayout);
+		for (int eventIdx = 0; eventIdx < playerInfo.getCareerEvents().size(); ++eventIdx) {
+			PlayerCareerEvent cEvent = playerInfo.getCareerEvents().get(
+					eventIdx);
+
+			if (!cEvent.getTournamentName().equals(tName)
+					|| cEvent.getTournamentYear() != tYear) {
+				tName = cEvent.getTournamentName();
+				tYear = cEvent.getTournamentYear();
+
+				if (tLayout != null && chainT) {
+					tLayout.setMargin(new MarginInfo(false, false, true, true));
+				}
+				chainT = true;
+				chainMDay = false;
+				chainMUp = false;
+				tLayout = new VerticalLayout();
+				tLayout.setMargin(new MarginInfo(false, false, false, true));
+
+				String tCaption = tName + " " + tYear + " played for ";
+				if (cEvent.getPlayerClubID() == cEvent.getHostClubID()) {
+					tCaption += cEvent.getHostClubName();
+				} else {
+					tCaption += cEvent.getGuestClubName();
+				}
+
+				HorizontalLayout tControlLayout = new HorizontalLayout();
+
+				final String ftName = tName;
+				final int ftYear = tYear;
+				Button btn = new Button("", new ClickListener() {
+					@Override
+					public void buttonClick(ClickEvent event) {
+						Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+						home.showTournamentCalendarView(ftName, ftYear);
+					}
+				});
+
+				String basepath = VaadinService.getCurrent().getBaseDirectory()
+						.getAbsolutePath();
+				FileResource resource = new FileResource(new File(basepath
+						+ "/WEB-INF/images/magnifier.png"));
+				btn.setIcon(resource);
+
+				tControlLayout.addComponent(btn);
+				Label smallSpacer = new Label("");
+				smallSpacer.setWidth("10px");
+				tControlLayout.addComponent(smallSpacer);
+				tControlLayout.addComponent(new Label(tCaption));
+				careerLayout.addComponent(tControlLayout);
+
+				careerLayout.addComponent(tLayout);
+			}
+
+			if (!cEvent.getMatchDayID().equals(mDayID)) {
+				mDayID = cEvent.getMatchDayID();
+
+				if (mDayLayout != null && chainMDay) {
+					mDayLayout.setMargin(new MarginInfo(false, false, true,
+							true));
+				}
+				chainMDay = true;
+				chainMUp = false;
+				mDayLayout = new VerticalLayout();
+				mDayLayout.setMargin(new MarginInfo(false, false, false, true));
+
+				tLayout.addComponent(new Label(""
+						+ cEvent.getMatchDayStartDate() + " - "
+						+ cEvent.getMatchDayEndDate()));
+
+				tLayout.addComponent(mDayLayout);
+			}
+
+			if (!cEvent.getMatchUpID().equals(mUpID)) {
+				mUpID = cEvent.getMatchUpID();
+
+				if (mUpLayout != null && chainMUp) {
+					mUpLayout
+							.setMargin(new MarginInfo(false, false, true, true));
+				}
+				chainMUp = true;
+				mUpLayout = new VerticalLayout();
+				mUpLayout.setMargin(new MarginInfo(false, false, false, true));
+
+				HorizontalLayout mUpControlLayout = new HorizontalLayout();
+
+				final String fmUpID = mUpID;
+				Button btn = new Button("", new ClickListener() {
+					@Override
+					public void buttonClick(ClickEvent event) {
+						Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
+						home.showMatchUpDetailsSubWindow(fmUpID);
+					}
+				});
+
+				String basepath = VaadinService.getCurrent().getBaseDirectory()
+						.getAbsolutePath();
+				FileResource resource = new FileResource(new File(basepath
+						+ "/WEB-INF/images/magnifier.png"));
+				btn.setIcon(resource);
+
+				mUpControlLayout.addComponent(btn);
+				Label smallSpacer = new Label("");
+				smallSpacer.setWidth("10px");
+				mUpControlLayout.addComponent(smallSpacer);
+				mUpControlLayout.addComponent(new Label(cEvent
+						.getHostClubName()
+						+ " "
+						+ cEvent.getHostGoals()
+						+ " - "
+						+ cEvent.getGuestClubName()
+						+ " "
+						+ cEvent.getGuestGoals()));
+				mDayLayout.addComponent(mUpControlLayout);
+
+				mDayLayout.addComponent(mUpLayout);
+			}
+
+			HorizontalLayout eventLine = new HorizontalLayout();
+
+			String eventCaption = "" + (cEvent.getInstant() / 100) + ":"
+					+ (cEvent.getInstant() % 100) + " ";
+			if (cEvent.getFraction() == 0) {
+				eventCaption += "1° half";
+			} else if (cEvent.getFraction() == 1) {
+				eventCaption += "2° half";
+			} else {
+				eventCaption += "" + (cEvent.getFraction() - 1) + "° sup.";
+			}
+
+			String basepath = VaadinService.getCurrent().getBaseDirectory()
+					.getAbsolutePath();
+			String actionName = cEvent.getActionDisplay();
+			String imgName = null;
+			if (actionName.endsWith("goal")) {
+				imgName = "goal_30x20";
+			} else if (actionName.equals("goal R")) {
+				imgName = "goal_penalty_30x20";
+			} else if (actionName.startsWith("green")) {
+				imgName = "green";
+			} else if (actionName.startsWith("yellow")) {
+				imgName = "yellow";
+			} else if (actionName.startsWith("red")) {
+				imgName = "red";
+			} else if (actionName.equals("1ª palla")) {
+				imgName = "first_ball";
+			}
+			FileResource resource = new FileResource(new File(basepath
+					+ "/WEB-INF/images/" + imgName + ".png"));
+
+			eventLine.addComponent(new Label(eventCaption));
+			spacer = new Label("");
+			spacer.setWidth("5px");
+			eventLine.addComponent(spacer);
+			Image img = new Image(null, resource);
+			eventLine.addComponent(img);
+			spacer = new Label("");
+			spacer.setWidth("5px");
+			eventLine.addComponent(spacer);
+			eventLine.addComponent(new Label(" " + cEvent.getActionDisplay()));
+
+			// eventCaption += " " + cEvent.getActionDisplay();
+
+			mUpLayout.addComponent(eventLine);
 		}
 
-		tabLayout.addComponent(subLayout);
-		tabLayout.setExpandRatio(subLayout, 1);
-		subLayout.setSizeFull();
-
-		spacer = new Label("");
-		tabLayout.addComponent(spacer);
-		tabLayout.setExpandRatio(spacer, 1);
+		tabLayout.addComponent(careerLayout);
+		tabLayout.setExpandRatio(careerLayout, 1);
 
 		tabLayout.setSizeFull();
 

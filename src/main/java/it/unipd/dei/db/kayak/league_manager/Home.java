@@ -1,11 +1,11 @@
 package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
-import it.unipd.dei.db.kayak.league_manager.data.FakeDataWarehouse;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
-import it.unipd.dei.db.kayak.league_manager.data.Player;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
+import it.unipd.dei.db.kayak.league_manager.data.TournamentDetails;
+import it.unipd.dei.db.kayak.league_manager.database.DML;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.server.ClassResource;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
@@ -47,41 +46,81 @@ public class Home {
 	private Map<Long, PlayerCareerInfoSubWindow> playerCareerInfoSubWindows;
 	private Map<Long, ClubDetailsSubWindow> clubDetailsSubWindow;
 
+	private Visualizing current;
+	private String currentTName;
+	private int currentTYear;
+
+	private enum Visualizing {
+		HOME, CLUBS, TOURNAMENTS, PLAYERS, SINGLE_TOURNAMENT
+	}
+
 	// constructor
 	public Home() {
 		matchUpDetailsSubWindows = new HashMap<String, MatchUpDetailsSubWindow>();
 		playerCareerInfoSubWindows = new HashMap<Long, PlayerCareerInfoSubWindow>();
 		clubDetailsSubWindow = new HashMap<Long, ClubDetailsSubWindow>();
 
+		current = Visualizing.HOME;
+		currentTName = "";
+		currentTYear = -1;
+
 		this.setUpContent();
 	}
 
 	public void showTournamentList() {
-		mainAreaLayout.removeAllComponents();
-		mainAreaLayout.addComponent(new TournamentListViewer().getContent());
+		if (current != Visualizing.TOURNAMENTS) {
+			current = Visualizing.TOURNAMENTS;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout
+					.addComponent(new TournamentListViewer().getContent());
+		}
 	}
 
 	public void showPlayerList() {
-		mainAreaLayout.removeAllComponents();
-		mainAreaLayout.addComponent(new PlayerListViewer().getContent());
+		if (current != Visualizing.PLAYERS) {
+			current = Visualizing.PLAYERS;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout.addComponent(new PlayerListViewer().getContent());
+		}
 	}
 
 	public void showClubList() {
-		mainAreaLayout.removeAllComponents();
-		mainAreaLayout.addComponent(new ClubListViewer().getContent());
+		if (current != Visualizing.CLUBS) {
+			current = Visualizing.CLUBS;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout.addComponent(new ClubListViewer().getContent());
+		}
 	}
 
-	public void showTournamentCalendarView(Tournament tournament) {
-		mainAreaLayout.removeAllComponents();
-		mainAreaLayout.addComponent(new TournamentCalendarViewer(tournament)
-				.getContent());
+	public void showTournamentCalendarView(String tournamentName,
+			int tournamentYear) {
+		if ((current != Visualizing.SINGLE_TOURNAMENT)
+				|| (!currentTName.equals(tournamentName) || currentTYear != tournamentYear)) {
+			currentTName = tournamentName;
+			currentTYear = tournamentYear;
+			current = Visualizing.SINGLE_TOURNAMENT;
+
+			mainAreaLayout.removeAllComponents();
+
+			TournamentDetails tDetails = DML.retrieveTournamentDetails(tournamentName, tournamentYear);
+					//FakeDataWarehouse.getTournamentDetails(tournamentName, tournamentYear);
+
+			mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
+					.getContent());
+		}
 	}
 
 	public void showClubDetailsSubWindow(long clubID) {
 		if (!clubDetailsSubWindow.containsKey(clubID)) {
-			ClubDetails clubDetails = FakeDataWarehouse.getClubDetails(clubID);
+			ClubDetails clubDetails = DML.retrieveClubDetails(clubID);
+//					FakeDataWarehouse.getClubDetails(clubID);
+
 			ClubDetailsSubWindow detailsWindow = new ClubDetailsSubWindow(
 					clubDetails);
+
 			clubDetailsSubWindow.put(clubID, detailsWindow);
 			UI.getCurrent().addWindow(detailsWindow.getWindow());
 		}
@@ -95,10 +134,13 @@ public class Home {
 
 	public void showMatchUpDetailsSubWindow(String matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
-			MatchUpDetails details = FakeDataWarehouse
-					.getMatchUpDetails(matchUpID);
+			MatchUpDetails details = DML.retrieveMatchUpDetails(matchUpID); 
+//					FakeDataWarehouse
+//					.getMatchUpDetails(matchUpID);
+
 			MatchUpDetailsSubWindow detailsWindow = new MatchUpDetailsSubWindow(
 					details);
+
 			matchUpDetailsSubWindows.put(matchUpID, detailsWindow);
 			UI.getCurrent().addWindow(detailsWindow.getWindow());
 		}
@@ -112,17 +154,12 @@ public class Home {
 
 	public void showPlayerCareerInfoSubWindow(long playerID) {
 		if (!playerCareerInfoSubWindows.containsKey(playerID)) {
-			Player player = null;
-			for (Player p : FakeDataWarehouse.getPlayers()) {
-				if (p.getID() == playerID) {
-					player = p;
-					break;
-				}
-			}
-			PlayerCareerInfo playerInfo = FakeDataWarehouse
-					.getPlayerCareerInfo(playerID);
+			PlayerCareerInfo playerInfo = DML.retrievePlayerCareerInfo(playerID);
+//					FakeDataWarehouse
+//					.getPlayerCareerInfo(playerID);
+
 			PlayerCareerInfoSubWindow playerWindow = new PlayerCareerInfoSubWindow(
-					player, playerInfo);
+					playerInfo);
 
 			playerCareerInfoSubWindows.put(playerID, playerWindow);
 			UI.getCurrent().addWindow(playerWindow.getWindow());
@@ -131,8 +168,6 @@ public class Home {
 
 	public void closedPlayerCareerInfoSubWindow(long playerID) {
 		if (playerCareerInfoSubWindows.containsKey(playerID)) {
-			// System.out.println("close event of MatchUpDetailsSubWindow "
-			// + matchUpID);
 			playerCareerInfoSubWindows.remove(playerID);
 		}
 	}
@@ -159,7 +194,7 @@ public class Home {
 	}
 
 	private void setUpContent() {
-		FakeDataWarehouse.initFakeData();
+//		FakeDataWarehouse.initFakeData();
 
 		loggedInUserEmail = null;
 
@@ -167,24 +202,14 @@ public class Home {
 
 		headerLayout = new HorizontalLayout();
 
-		// Find the application directory
 		String basepath = VaadinService.getCurrent().getBaseDirectory()
 				.getAbsolutePath();
-
-		// Image as a file resource
 		FileResource resource = new FileResource(new File(basepath
 				+ "/WEB-INF/images/fick_logo_256x120.png"));
-
-		// Show the image in the application
 		Image logo = new Image(null, resource);
-		// Image logo = new Image(null, new ClassResource(
-		// "images/fick_logo_200x100.png"));
+
 		headerLayout.addComponent(logo);
 		headerLayout.setExpandRatio(logo, 1);
-		// Label bannerLabel = new Label(
-		// "PROTOTYPE BANNER - FICK LOGO + OTHER STUFF");
-		// headerLayout.addComponent(bannerLabel);
-		// headerLayout.setExpandRatio(bannerLabel, 1);
 
 		login = new LoginElement();
 		VerticalLayout loginLayout = login.getContent();
@@ -200,8 +225,9 @@ public class Home {
 
 		leftBar = new VerticalLayout();
 		leftBar.addComponent(new Label("Most recent Tournaments"));
-		List<Tournament> tournaments = FakeDataWarehouse
-				.getMostRecentTournaments();
+		List<Tournament> tournaments = DML.retrieveAllTournaments();
+//				FakeDataWarehouse
+//				.getMostRecentTournaments();
 		recentTournamentButtons = new ArrayList<Button>();
 
 		for (final Tournament t : tournaments) {
@@ -209,7 +235,7 @@ public class Home {
 					new ClickListener() {
 						@Override
 						public void buttonClick(ClickEvent event) {
-							showTournamentCalendarView(t);
+							showTournamentCalendarView(t.getName(), t.getYear());
 						}
 					});
 			recentTournamentButtons.add(btn);
@@ -253,7 +279,7 @@ public class Home {
 		Label leftBarSpacer = new Label();
 		leftBar.addComponent(leftBarSpacer);
 		leftBar.setExpandRatio(leftBarSpacer, 1);
-		leftBar.setWidth("150px");
+		leftBar.setWidth("250px");
 		leftBar.setHeight("100%");
 		bodyLayout.addComponent(leftBar);
 
@@ -272,5 +298,9 @@ public class Home {
 
 	public VerticalLayout getContent() {
 		return mainLayout;
+	}
+
+	public void close(){
+		// TODO: cleanup
 	}
 }

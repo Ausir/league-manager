@@ -5,7 +5,7 @@ import java.sql.Time;
 
 public class MatchUp {
 	// CREATE TABLE lm.MatchUp ( -- MATCH is a reserved SQL keyword
-	// id string,
+	// id BIGSERIAL,
 	// start_date DATE NOT NULL, -- meaning day of the year -- DATE is a
 	// reserved SQL keyword
 	// start_time TIME NOT NULL, -- meaning time_of_day -- TIME is a reserved
@@ -34,7 +34,7 @@ public class MatchUp {
 	// FOREIGN KEY (pitch_name, pitch_location) REFERENCES lm.Pitch (name,
 	// location)
 	// );
-	private String id;
+	private long id;
 	private Date startDate;
 	private Time startTime;
 	private String matchDayID;
@@ -47,13 +47,13 @@ public class MatchUp {
 	private String timekeeper2;
 	private String scorekeeper;
 	private String referee1;
-	private String referee2;
+	private String refereee2;
 	private String pitchName;
 	private long pitchLocationID;
 	private int goalsHost;
 	private int goalsGuest;
 
-	public MatchUp(String id, Date startDate, Time startTime, String matchDayID,
+	public MatchUp(long id, Date startDate, Time startTime, String matchDayID,
 			String tournamentPhaseName, String tournamentName,
 			int tournamentPhaseYear, String lineman1, String lineman2,
 			String timekeeper1, String timekeeper2, String scorekeeper,
@@ -73,14 +73,14 @@ public class MatchUp {
 		this.timekeeper2 = timekeeper2;
 		this.scorekeeper = scorekeeper;
 		this.referee1 = referee1;
-		this.referee2 = refereee2;
+		this.refereee2 = refereee2;
 		this.pitchName = pitchName;
 		this.pitchLocationID = pitchLocationID;
 		this.goalsHost = goalsHost;
 		this.goalsGuest = goalsGuest;
 	}
 
-	public String getID() {
+	public long getID() {
 		return id;
 	}
 
@@ -132,8 +132,8 @@ public class MatchUp {
 		return referee1;
 	}
 
-	public String getReferee2() {
-		return referee2;
+	public String getRefereee2() {
+		return refereee2;
 	}
 
 	public String getPitchName() {

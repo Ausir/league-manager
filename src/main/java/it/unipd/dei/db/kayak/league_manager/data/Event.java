@@ -21,7 +21,7 @@ public class Event {
 	// FOREIGN KEY (action) REFERENCES lm.Action (name)
 	// );
 	private long id;
-	private String matchUpID;
+	private long matchUpID;
 	private boolean editable;
 	private Date insertionTime;
 	private int instant;
@@ -30,7 +30,7 @@ public class Event {
 	private long ownershipID;
 	private String secretaryEmail;
 
-	public Event(long id, String matchUpID, boolean editable, Date insertionTime,
+	public Event(long id, long matchUpID, boolean editable, Date insertionTime,
 			int instant, int fraction, String action, long ownershipID,
 			String secretaryEmail) {
 		super();
@@ -49,7 +49,7 @@ public class Event {
 		return id;
 	}
 
-	public String getMatchUpID() {
+	public long getMatchUpID() {
 		return matchUpID;
 	}
 

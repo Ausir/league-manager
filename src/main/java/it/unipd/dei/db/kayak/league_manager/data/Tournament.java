@@ -50,4 +50,10 @@ public class Tournament {
 	public String getOrganizerEmail() {
 		return organizerEmail;
 	}
+	
+	public String getCompactString(){
+		String ret;
+		ret = name + " " + year + " " +maxAge + (sex==true?" male":" female");
+		return ret;
+	}
 }

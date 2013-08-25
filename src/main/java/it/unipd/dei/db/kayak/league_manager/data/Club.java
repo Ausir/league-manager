@@ -28,6 +28,18 @@ public class Club {
 		this.email = email;
 		this.website = website;
 	}
+	
+	public String getCompactString(){
+		String ret = "";
+		ret += id + " ";
+		ret += name + " ";
+		ret += shortName + " ";
+		ret += phone + " ";
+		ret += address + " ";
+		ret += email + " ";
+		ret += website + "\n";
+		return ret;
+	}
 
 	public long getID() {
 		return id;
@@ -48,11 +60,11 @@ public class Club {
 	public String getAddress() {
 		return address;
 	}
-
+	
 	public String getEmail() {
 		return email;
 	}
-
+	
 	public String getWebsite() {
 		return website;
 	}

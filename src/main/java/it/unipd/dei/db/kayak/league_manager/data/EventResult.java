@@ -26,22 +26,16 @@ public class EventResult {
 
 	public String getCompactString() {
 		String time;
-		switch (fraction) {
-		case 0:
-			time = "first half";
-			break;
-		case 1:
-			time = "second half";
-			break;
-		case 2:
-			time = "overtime";
-			break;
-		default:
-			time = "error 404: fraction not found";
+		if (fraction == 0) {
+			time = "1° half";
+		} else if (fraction == 1) {
+			time = "2° half";
+		} else {
+			time = "" + (fraction - 1) + "° sup.";
 		}
 
-		return "" + instant + " " + time + " " + actionDescription + " "
-				+ playerInfo.getCompactString();
+		return "" + (instant / 100) + " " + time + " " + actionDescription
+				+ " " + playerInfo.getCompactString();
 	}
 
 	public String getShortString() {
