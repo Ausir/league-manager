@@ -88,7 +88,7 @@ public class TournamentTable extends Table {
 
 		this.addItem(
 				new Object[] { btn, tournament.getName(), tournament.getYear(),
-						tournament.getSex() ? "M" : "F",
+						tournament.getSex(),
 						tournament.getMaxAge(), tournament.getOrganizerEmail(), },
 				tournament.getName() + tournament.getYear());
 	}

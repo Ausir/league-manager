@@ -48,14 +48,14 @@ public class TournamentCalendarViewer {
 		mainLayout.setMargin(new MarginInfo(true, true, true, true));
 
 		Tournament tournament = tournamentDetails.getTournament();
-		List<MatchDayDetails> matchDayDetails = tournamentDetails
+		List<MatchDayDetails> matchDays = tournamentDetails
 				.getMatchDayDetails();
 		List<MatchUpResult> matchUpResults = tournamentDetails
 				.getMatchUpResults();
 
 		String tCaption = tournament.getName() + " " + tournament.getYear()
 				+ " max age: " + tournament.getMaxAge() + " ";
-		tCaption += tournament.getSex() ? "M" : "F";
+		tCaption += tournament.getSex();
 		mainLayout.addComponent(new Label(tCaption));
 
 		VerticalLayout tLayout = new VerticalLayout();
@@ -69,7 +69,7 @@ public class TournamentCalendarViewer {
 		VerticalLayout phaseLayout = null;
 		String phaseName = "";
 
-		for (int i = 0; i < tournamentDetails.getMatchDayDetails().size(); ++i) {
+		for (int i = 0; i < matchDays.size(); ++i) {
 			MatchDayDetails mDayDetails = tournamentDetails
 					.getMatchDayDetails().get(i);
 			mDayID = mDayDetails.getMatchDay().getID();

@@ -493,7 +493,7 @@ public class DML {
 					String name = rs.getString("name");
 					int year = rs.getInt("year");
 					int maxAge = rs.getInt("max_age");
-					boolean sex = rs.getBoolean("sex");
+					String sex = rs.getString("sex");
 					String organizerEmail = rs.getString("organizer");
 					ret.add(new Tournament(name, year, maxAge, sex, organizerEmail));
 				}
@@ -553,6 +553,7 @@ public class DML {
 					"mu.scorekeeper, " +
 					"mu.referee1, " +
 					"mu.referee2, " +
+					"md.start_date as md_start_date, " +
 					"l.name as loc_name, " +
 					"ch.id as ch_id, " +
 					"ch.name as ch_name, " +
@@ -561,6 +562,7 @@ public class DML {
 					"tp.num " + 
 					"FROM lm.Plays as p " +
 					"INNER JOIN lm.MatchUp as mu ON p.match_id=mu.id " +
+					"INNER JOIN lm.MatchDay as md ON md.id = mu.match_day " +
 					"INNER JOIN lm.Location as l ON mu.pitch_location=l.id " +
 					"INNER JOIN lm.LineUp as luh ON p.lineup_host=luh.id " +
 					"INNER JOIN lm.LineUp as lug ON p.lineup_guest=lug.id " +
@@ -576,6 +578,7 @@ public class DML {
 				long locationID = rs.getLong("location_id");
 				String locationName = rs.getString("loc_name");
 				String matchDayID = rs.getString("match_day");
+				Date matchDayDate = rs.getDate("md_start_date");
 				String tournamentPhaseName = rs.getString("tournament_phase_name");
 				String tournamentName = rs.getString("tournament_name");
 				long tournamentYear = rs.getLong("tournament_phase_year");
@@ -597,7 +600,7 @@ public class DML {
 				String referee1 = rs.getString("referee1");
 				String referee2 = rs.getString("referee2");
 				int tournamentPhaseNum = rs.getInt("num");
-				MatchUpResult result = new MatchUpResult(matchUpId, matchDayID, tournamentPhaseName, tournamentPhaseNum, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time);
+				MatchUpResult result = new MatchUpResult(matchUpId, matchDayID, matchDayDate, tournamentPhaseName, tournamentPhaseNum, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time);
 				// ora faccio le query per i campi rimanenti: eventList, hostLineUp, guestLineUp
 				// per ottenere le lineup passo il relativo id ma anche il nome del club e l'id del matchup che ho già calcolato in precedenza per rendere meno onerose le query
 				List<PlayerMatchUpInfo> hostLineUp = retrieveLineUpDetails(luHost, matchUpId, teamHostName);
@@ -795,7 +798,7 @@ public class DML {
 			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 					Helper.PASSWORD);
 
-			String stm = "SELECT tp.num, mu.id as match_id, mu.match_day, mu.tournament_phase_name AS t_phase_name, mu.start_date, mu.start_time, mu.goals_host, mu.goals_guest, ch.id as host_id, ch.name as host_name, cg.id as guest_id, cg.name as guest_name " +
+			String stm = "SELECT tp.num, mu.id as match_id, mu.match_day, md.start_date as md_start_date, mu.tournament_phase_name AS t_phase_name, mu.start_date, mu.start_time, mu.goals_host, mu.goals_guest, ch.id as host_id, ch.name as host_name, cg.id as guest_id, cg.name as guest_name " +
 					"FROM lm.matchup AS mu " +
 					"INNER JOIN lm.plays AS p ON p.match_id = mu.id " +
 					"INNER JOIN lm.tournamentphase AS tp ON tp.name = mu.tournament_phase_name and tp.tournament_name = mu.tournament_name and mu.tournament_phase_year = tp.tournament_year " +
@@ -816,6 +819,7 @@ public class DML {
 				while (rs.next()) {
 					String matchUpID = rs.getString("match_id");
 					String matchDayID = rs.getString("match_day");
+					Date matchDayDate = rs.getDate("md_start_date");
 					String tournamentPhaseName = rs.getString("t_phase_name");
 					int tournamentPhaseNum = rs.getInt("num");
 					Date date = rs.getDate("start_date");
@@ -826,7 +830,7 @@ public class DML {
 					String teamHostName = rs.getString("host_name");
 					long clubGuestID = rs.getLong("guest_id");
 					String teamGuestName = rs.getString("guest_name");
-					ret.add(new MatchUpResult(matchUpID, matchDayID, tournamentPhaseName, tournamentPhaseNum, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time));
+					ret.add(new MatchUpResult(matchUpID, matchDayID, matchDayDate, tournamentPhaseName, tournamentPhaseNum, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time));
 				}
 			}
 
@@ -1281,7 +1285,7 @@ public class DML {
 					String organizerClubName = rs.getString("club_name");
 					String locationName = rs.getString("loc_name");
 					MatchDay matchDay = new MatchDay(id, num, startDate, endDate, clubID, locationID, tournamentName, tournamentYear);
-					ret.add(new MatchDayDetails(matchDay, organizerClubName, locationName));
+					ret.add(new MatchDayDetails(matchDay,num, organizerClubName, locationName));
 				}
 			}
 
@@ -1331,7 +1335,7 @@ public class DML {
 			rs = pst.executeQuery();
 			if (rs.next()) {
 				int maxAge = rs.getInt("max_age");
-				boolean sex = rs.getBoolean("sex");
+				String sex = rs.getString("sex");
 				String organizerEmail = rs.getString("organizer");
 				
 				Tournament tournament = new Tournament(tournamentName, tournamentYear, maxAge, sex, organizerEmail);
