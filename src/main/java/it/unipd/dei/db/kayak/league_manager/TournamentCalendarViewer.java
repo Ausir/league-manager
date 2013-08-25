@@ -70,8 +70,6 @@ public class TournamentCalendarViewer {
 					.getMatchDayDetails().get(i);
 			mDayID = mDayDetails.getMatchDay().getID();
 			mDayNum = mDayDetails.getMatchDay().getNum();
-
-			System.out.println(mDayID + " " + mDayNum);
 			
 			String dayString = "Day "
 					+ (tournamentDetails.getMatchDayDetails().size() - i)
@@ -93,13 +91,6 @@ public class TournamentCalendarViewer {
 			List<MatchUpResult> matches = tournamentDetails.getMatchUpResults().get(mDayNum);
 			Collections.sort(matches,
 					new MatchUpPhaseComparator());
-			
-//			for (MatchDayDetails det : tournamentDetails.getMatchDayDetails()){
-//				System.out.println(det.getMatchDay().getCompactString());
-//				for (MatchUpResult res : tournamentDetails.getMatchUpResults().get(det.getNumber())){
-//					System.out.println(res.getClubGuestID() + " " + res.getClubHostID() + " " + res.getTournamentPhaseName());
-//				}
-//			}
 			
 			phaseName = "";
 			for (MatchUpResult mUpRes : matches) {

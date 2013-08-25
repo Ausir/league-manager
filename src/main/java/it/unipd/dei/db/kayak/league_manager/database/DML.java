@@ -7,6 +7,7 @@ import it.unipd.dei.db.kayak.league_manager.data.LMUser;
 import it.unipd.dei.db.kayak.league_manager.data.Location;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDayDetails;
+import it.unipd.dei.db.kayak.league_manager.data.MatchDayMatches;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
@@ -16,10 +17,10 @@ import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerMatchUpInfo;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 import it.unipd.dei.db.kayak.league_manager.data.TournamentDetails;
+import it.unipd.dei.db.kayak.league_manager.data.TournamentEssentials;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,8 +42,8 @@ public class DML {
 
 		try {
 
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
+			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//					Helper.PASSWORD);
 			con = Helper.getConnection();
 			pst = con.prepareStatement("SELECT DISTINCT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website " +
 					"FROM lm.callsup AS l INNER JOIN lm.club AS c ON c.id = l.club_id " +
@@ -66,7 +67,7 @@ public class DML {
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DDL.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
-//	TODO		Notification.show("connection problem", description, type)
+			//	TODO		Notification.show("connection problem", description, type)
 
 		} finally {
 
@@ -77,9 +78,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DDL.class.getName());
@@ -97,8 +98,8 @@ public class DML {
 
 		try {
 
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
+			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//					Helper.PASSWORD);
 			con = Helper.getConnection();
 			// gets all players that were sometimes included in a line-up
 			pst = con.prepareStatement("SELECT DISTINCT o.player_id, p.name, p.birthday, p.id " +
@@ -130,9 +131,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DDL.class.getName());
@@ -141,7 +142,7 @@ public class DML {
 		}
 		return ret;
 	}
-	
+
 	public static List<OwnershipResult> retrieveOwnershipsFromPlayer(
 			long playerId) {
 		Connection con = null;
@@ -194,9 +195,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.SEVERE, ex.getMessage(), ex);
@@ -204,69 +205,6 @@ public class DML {
 		}
 		return ret;
 	}
-	
-	/**
-	 * è onere del programmatore inserire il matchupid corretto!!
-	 * @param eventID
-	 * @param matchUpID
-	 */
-//	private static PlayerMatchUpInfo retrievePlMaUpInfoFromPlayerAndMatch(long playerID, String matchUpID){
-//		Connection con = null;
-//		PreparedStatement pst = null;
-//		ResultSet rs = null;
-//		
-//		PlayerMatchUpInfo ret = null;
-//		
-//		try {
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
-//
-//			String stm = "SELECT o.player_id, pls.match_id, o.club_id, p.name, cu.player_number, lu.id as lineup_id " +
-//					"FROM lm.Ownership as o " +
-//					"INNER JOIN lm.Player as p ON o.player_id=p.id, " +
-//					"lm.Plays as pls " +
-//					"INNER JOIN lm.LineUp as lu on (pls.lineup_host=lu.id OR pls.lineup_guest=lu.id) " +
-//					"INNER JOIN lm.CallsUp as cu ON lu.id=cu.lineup_id " +
-//					"WHERE o.player_id=? AND pls.match_id=? AND o.club_id=cu.club_id";
-//			pst = con.prepareStatement(stm);
-//			pst.setLong(1, playerID);
-//			pst.setString(2, matchUpID);
-//			rs = pst.executeQuery();
-//			
-//			if (rs.next()) {
-//				long clubID = rs.getLong("club_id");
-//				String lineUpId = rs.getString("lineup_id");
-//				Club club = retrieveClubFromLineUp(lineUpId);
-//				String clubName = club.getName();
-//				String playerName = rs.getString("name");
-//				int number = rs.getInt("player_number");
-//				ret = new PlayerMatchUpInfo(playerID, matchUpID, clubID, playerName, clubName, number);
-//			}
-//			
-//		} catch (SQLException ex) {
-//		Logger lgr = Logger.getLogger(DML.class.getName());
-//		lgr.log(Level.SEVERE, ex.getMessage(), ex);
-//
-//	} finally {
-//
-//		try {
-//			if (rs != null) {
-//				rs.close();
-//			}
-//			if (pst != null) {
-//				pst.close();
-//			}
-//			if (con != null) {
-//				con.close();
-//			}
-//
-//			} catch (SQLException ex) {
-//				Logger lgr = Logger.getLogger(DML.class.getName());
-//				lgr.log(Level.SEVERE, ex.getMessage(), ex);
-//			}
-//		}
-//		return ret;
-//	}
 
 	// inizialmente volevo spezzare questo metodo in 2 parti ma rischia di portare a inconsistenze
 	public static List<EventResult> retrieveEventsFromPlayer(long playerId) {
@@ -277,8 +215,8 @@ public class DML {
 		List<EventResult> ret = null;
 
 		try {
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
+			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//					Helper.PASSWORD);
 			con = Helper.getConnection();
 
 			String stm = "SELECT p.name as player_name, e.id as event_id, e.match_id, a.name as action_name, e.instant, e.fraction, a.display_name, cu.player_number, c.name as club_name, c.id as club_id " +
@@ -326,9 +264,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -346,8 +284,8 @@ public class DML {
 		List<EventResult> ret = null;
 
 		try {
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
+			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//					Helper.PASSWORD);
 			con = Helper.getConnection();
 
 			String stm = "SELECT e.id as event_id, e.match_id, a.name as action_name, p.id as player_id, o.club_id, p.name, cu.player_number, e.instant, e.fraction, a.display_name, c.name as club_name " +
@@ -371,13 +309,13 @@ public class DML {
 					long eventID = rs.getLong("event_id");
 					String matchUpID = rs.getString("match_id");
 					String actionName = rs.getString("action_name");
-					
+
 					long playerID = rs.getLong("player_id");
 					long clubID = rs.getLong("club_id");
 					String playerName = rs.getString("name");
 					String clubName = rs.getString("club_name");
 					int number = rs.getInt("player_number");
-					
+
 					int instant = rs.getInt("instant");
 					int fraction = rs.getInt("fraction");
 					String actionDescription = rs.getString("display_name");
@@ -398,9 +336,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -422,8 +360,8 @@ public class DML {
 
 		List<PlayerMatchUpInfo> ret = null;
 		try {
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
+			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//					Helper.PASSWORD);
 			con = Helper.getConnection();
 
 			String stm = "SELECT o.player_id, o.club_id, p.name, cu.player_number " +
@@ -460,9 +398,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -471,7 +409,7 @@ public class DML {
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * ritorna i più recenti tornei. se viene inserito un numero negativo li restituisce tutti
 	 * @param numberOfTournaments
@@ -488,8 +426,8 @@ public class DML {
 		 * boolean sex; private String organizerEmail;
 		 */
 		try {
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
+			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//					Helper.PASSWORD);
 			con = Helper.getConnection();
 
 			String stm = "SELECT name, year, max_age, sex, organizer "
@@ -522,9 +460,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -533,7 +471,7 @@ public class DML {
 		}
 		return ret;
 	}
-	
+
 	public static MatchUpDetails retrieveMatchUpDetails(String matchUpId) {
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -542,8 +480,8 @@ public class DML {
 		MatchUpDetails ret = null;
 
 		try {
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
+			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//					Helper.PASSWORD);
 			con = Helper.getConnection();
 			String stm = "SELECT luh.id as lineup_host, " +
 					"lug.id as lineup_guest, " +
@@ -636,9 +574,141 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
+
+			} catch (SQLException ex) {
+				Logger lgr = Logger.getLogger(DML.class.getName());
+				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			}
+		}
+		return ret;
+	}
+
+	public static MatchDayMatches retrieveMatches(String md_id){
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		List<MatchUpResult> results = null;
+		MatchDayMatches ret = null;
+		try {
+			con = Helper.getConnection();
+
+			String stm = "SELECT tp.num, mu.id as match_id, mu.match_day, md.start_date as md_start_date, md.num as md_num, mu.tournament_phase_name AS t_phase_name, mu.tournament_name, mu.tournament_phase_year , mu.start_date, mu.start_time, mu.goals_host, mu.goals_guest, ch.id as host_id, ch.name as host_name, cg.id as guest_id, cg.name as guest_name " +
+					"FROM lm.matchup AS mu " +
+					"INNER JOIN lm.plays AS p ON p.match_id = mu.id " +
+					"INNER JOIN lm.tournamentphase AS tp ON tp.name = mu.tournament_phase_name and tp.tournament_name = mu.tournament_name and mu.tournament_phase_year = tp.tournament_year " +
+					"INNER JOIN lm.lineup AS luh ON luh.id = p.lineup_host " +
+					"INNER JOIN lm.lineup AS lug ON lug.id = p.lineup_guest " +
+					"INNER JOIN lm.club AS ch ON ch.id = luh.club_id " +
+					"INNER JOIN lm.club AS cg ON cg.id = lug.club_id " +
+					"INNER JOIN lm.matchday AS md ON md.id = mu.match_day " +
+					"WHERE md.id = ? " +
+					"ORDER BY mu.start_date, mu.start_time ASC;";
+
+			pst = con.prepareStatement(stm);
+			pst.setString(1, md_id);
+			rs = pst.executeQuery();
+			if (!rs.isAfterLast()) {
+				results = new ArrayList<MatchUpResult>();
+				while (rs.next()) {
+					String matchUpID = rs.getString("match_id");
+					String matchDayID = rs.getString("match_day");
+					Date matchDayDate = rs.getDate("md_start_date");
+					int matchDayNum = rs.getInt("md_num");
+					String tournamentPhaseName = rs.getString("t_phase_name");
+					int tournamentPhaseNum = rs.getInt("num");
+					Date date = rs.getDate("start_date");
+					int teamHostGoals = rs.getInt("goals_host");
+					int teamGuestGoals = rs.getInt("goals_guest");
+					Time time = rs.getTime("start_time");
+					long clubHostID = rs.getLong("host_id");
+					String teamHostName = rs.getString("host_name");
+					long clubGuestID = rs.getLong("guest_id");
+					String teamGuestName = rs.getString("guest_name");
+					String tournamentName = rs.getString("tournament_name");
+					int tournamentYear = rs.getInt("tournament_phase_year");
+
+					results.add(new MatchUpResult(matchUpID, matchDayID, matchDayDate, matchDayNum, tournamentPhaseName, tournamentPhaseNum, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time));
+				}
+
+			}
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
+
+			} catch (SQLException ex) {
+				Logger lgr = Logger.getLogger(DML.class.getName());
+				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			}
+		}
+		return new MatchDayMatches(retrieveMatchDay(md_id), results);
+	}
+	
+	public static MatchDayDetails retrieveMatchDay(String md_id){
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		MatchDayDetails ret = null;
+		try {
+			con = Helper.getConnection();
+
+			String stm = "SELECT md.id, md.num, md.start_date, md.end_date, md.club, md.location, md.tournament_name, md.tournament_year, l.city AS lcity, l.name AS lname, c.name " +
+					"FROM lm.matchday AS md " +
+					"INNER JOIN lm.club AS c ON c.id = md.club " +
+					"INNER JOIN lm.location AS l ON l.id = md.location " +
+					"where md.id = ?";
+
+			pst = con.prepareStatement(stm);
+			pst.setString(1, md_id);
+			rs = pst.executeQuery();
+			rs.next();
+
+			String id = rs.getString("id");
+			int num = rs.getInt("num");
+			Date start_date = rs.getDate("start_date");
+			Date end_date = rs.getDate("end_date");
+			long club = rs.getLong("club");
+			long location = rs.getLong("location");
+			String tournamentName = rs.getString("tournament_name");
+			int tournamentYear = rs.getInt("tournament_year");
+			String organizer = rs.getString("name");
+			String locationName =  rs.getString("lcity") + " - " +  rs.getString("lname");
+			ret = new MatchDayDetails(new MatchDay(id, num, start_date, end_date, club, location, tournamentName, tournamentYear), organizer, locationName);
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -656,8 +726,8 @@ public class DML {
 		List<PlayerCareerEvent> ret = new ArrayList<PlayerCareerEvent>();
 
 		try {
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
+			//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//					Helper.PASSWORD);
 			con = Helper.getConnection();
 			String stm = "SELECT mu.tournament_name, " +
 					"mu.tournament_phase_year, " +
@@ -736,9 +806,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -748,60 +818,6 @@ public class DML {
 		return ret;
 	}
 
-	
-//	private static Club retrieveClubFromLineUp(String lineUpId){
-//		Connection con = null;
-//		PreparedStatement pst = null;
-//		ResultSet rs = null;
-//
-//		Club ret = null;
-//
-//		try {
-//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-//					Helper.PASSWORD);
-//			String stm = "SELECT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website " +
-//					"FROM lm.Lineup as lu " +
-//					"INNER JOIN lm.Club as c ON lu.club_id=c.id " +
-//					"WHERE lu.id=?;";
-//			pst = con.prepareStatement(stm);
-//			pst.setString(1, lineUpId);
-//			rs = pst.executeQuery();
-//			if (rs.next()) {
-//				long id = rs.getLong("id");
-//				String name = rs.getString("name");
-//				String shortName = rs.getString("short_name");
-//				String phone = rs.getString("phone_number");
-//				String address = rs.getString("address");
-//				String email = rs.getString("email");
-//				String website = rs.getString("website");
-//				ret = new Club(id, name, shortName, phone, address, email, website);
-//			}
-//
-//		} catch (SQLException ex) {
-//			Logger lgr = Logger.getLogger(DML.class.getName());
-//			lgr.log(Level.SEVERE, ex.getMessage(), ex);
-//
-//		} finally {
-//
-//			try {
-//				if (rs != null) {
-//					rs.close();
-//				}
-//				if (pst != null) {
-//					pst.close();
-//				}
-//				if (con != null) {
-//					con.close();
-//				}
-//
-//			} catch (SQLException ex) {
-//				Logger lgr = Logger.getLogger(DML.class.getName());
-//				lgr.log(Level.SEVERE, ex.getMessage(), ex);
-//			}
-//		}
-//		return ret;
-//	}
-	
 	public static Map<Integer, List<MatchUpResult>> retrieveMatchResultsFromTournament(String tournamentName, int tournamentYear){
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -851,6 +867,7 @@ public class DML {
 				}
 			}
 
+
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
@@ -864,9 +881,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -875,38 +892,48 @@ public class DML {
 		}
 		return ret;
 	}
-	
-	public static List<MatchDay> retrieveAllMatchDays() {
+
+	public static Map<TournamentEssentials, List<MatchDay>> retrieveAllMatchDays() {
 		Connection con = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
-		List<MatchDay> ret = null;
+		Map<Integer, Map<String, TournamentEssentials>> tournaments = null;
+		Map<TournamentEssentials, List<MatchDay>> ret = null;
 		try {
-			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-					Helper.PASSWORD);
-			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
-			//		Helper.PASSWORD);
 			con = Helper.getConnection();
 
-			String stm = "SELECT md.id, md.num, md.start_date, md.end_date, md.club, md.location, md.tournament_name, md.tournament_year " +
-					"FROM lm.MatchDay as md";
+			String stm = "SELECT md.id, md.num AS md_num, md.start_date, md.end_date, md.club, md.location, t.name, t.year, t.num AS t_num " +
+					"FROM lm.MatchDay as md " +
+					"INNER JOIN lm.tournament AS t ON t.name = md.tournament_name and t.year = md.tournament_year " +
+					"ORDER BY t.year DESC, t.num ASC";
 
 			pst = con.prepareStatement(stm);
+
 			rs = pst.executeQuery();
 			if (!rs.isAfterLast()) {
-				ret = new ArrayList<MatchDay>();
+				ret = new HashMap<TournamentEssentials, List<MatchDay>>();
+				tournaments = new HashMap<Integer, Map<String, TournamentEssentials>>();
 				while (rs.next()) {
 					String id = rs.getString("id");
-					int num = rs.getInt("num");
+					int mdNum = rs.getInt("md_num");
 					Date startDate = rs.getDate("start_date");
 					Date endDate = rs.getDate("end_date");
 					long clubID = rs.getLong("club");
-					String tournamentName = rs.getString("tournament_name");
-					int tournamentYear = rs.getInt("tournament_year");
+					String tournamentName = rs.getString("name");
+					int tournamentYear = rs.getInt("year");
+					int tournamentNum = rs.getInt("t_num");
 					long locationID = rs.getLong("location");
-					
-					ret.add(new MatchDay(id, num, startDate, endDate, clubID, locationID, tournamentName, tournamentYear));
+					if (! tournaments.containsKey(tournamentYear)){
+						tournaments.put(tournamentYear, new HashMap<String, TournamentEssentials>());
+					}
+					if (! tournaments.get(tournamentYear).containsKey(tournamentName)){
+						tournaments.get(tournamentYear).put(tournamentName, new TournamentEssentials(tournamentName, tournamentYear, tournamentNum));
+					}
+					if (! ret.containsKey(tournaments.get(tournamentYear).get(tournamentName))) {
+						ret.put(tournaments.get(tournamentYear).get(tournamentName), new ArrayList<MatchDay>());
+					}
+					ret.get(tournaments.get(tournamentYear).get(tournamentName)).add(new MatchDay(id, mdNum, startDate, endDate, clubID, locationID, tournamentName, tournamentYear));
 				}
 			}
 
@@ -923,9 +950,6 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -957,7 +981,7 @@ public class DML {
 					long id = rs.getLong("id");
 					String city = rs.getString("city");
 					String name = rs.getString("name");
-					
+
 					ret.add(new Location(id, city, name));
 				}
 			}
@@ -975,9 +999,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -986,7 +1010,7 @@ public class DML {
 		}
 		return ret;
 	}
-	
+
 	public static List<Player> retrievePlayersFromClub(long clubId) {
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1015,7 +1039,7 @@ public class DML {
 					long id = rs.getLong("id");
 					String name = rs.getString("name");
 					Date birthday = rs.getDate("birthday");
-					
+
 					ret.add(new Player(id, name, birthday));
 				}
 			}
@@ -1033,9 +1057,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -1044,7 +1068,7 @@ public class DML {
 		}
 		return ret;
 	}
-	
+
 	public static List<LMUser> retrieveManagersFromClub(long clubId) {
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1073,7 +1097,7 @@ public class DML {
 					String firstName = rs.getString("first_name");
 					String lastName = rs.getString("last_name");
 					Date birthday = rs.getDate("birthday");
-					
+
 					ret.add(new LMUser(email, password, phone, firstName, lastName, birthday));
 				}
 			}
@@ -1091,9 +1115,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -1102,7 +1126,7 @@ public class DML {
 		}
 		return ret;
 	}
-	
+
 	public static ClubDetails retrieveClubDetails(long clubId){
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1146,9 +1170,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -1157,7 +1181,7 @@ public class DML {
 		}
 		return ret;
 	}
-	
+
 	public static EventResult retrieveEventResult(long eventId){
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1211,9 +1235,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -1222,7 +1246,7 @@ public class DML {
 		}
 		return ret;
 	}
-	
+
 	public static PlayerCareerInfo retrievePlayerCareerInfo(long playerId){
 
 		Connection con = null;
@@ -1262,9 +1286,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DDL.class.getName());
@@ -1308,11 +1332,11 @@ public class DML {
 					Date endDate = rs.getDate("end_date");
 					long clubID = rs.getLong("club");
 					long locationID = rs.getLong("loc_id");
-					
+
 					String organizerClubName = rs.getString("club_name");
 					String locationName = rs.getString("loc_name");
 					MatchDay matchDay = new MatchDay(id, num, startDate, endDate, clubID, locationID, tournamentName, tournamentYear);
-					ret.add(new MatchDayDetails(matchDay,num, organizerClubName, locationName));
+					ret.add(new MatchDayDetails(matchDay, organizerClubName, locationName));
 				}
 			}
 
@@ -1329,9 +1353,6 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
@@ -1340,7 +1361,7 @@ public class DML {
 		}
 		return ret;
 	}
-	
+
 	public static TournamentDetails retrieveTournamentDetails(
 			String tournamentName, int tournamentYear) {
 		Connection con = null;
@@ -1365,7 +1386,7 @@ public class DML {
 				int maxAge = rs.getInt("max_age");
 				String sex = rs.getString("sex");
 				String organizerEmail = rs.getString("organizer");
-				
+
 				Tournament tournament = new Tournament(tournamentName, tournamentYear, maxAge, sex, organizerEmail);
 				List<MatchDayDetails> matchDayDetails = retrieveMatchDayDetailsFromTournament(tournamentName, tournamentYear);
 				Map<Integer, List<MatchUpResult>> matchUpResults = retrieveMatchResultsFromTournament(tournamentName, tournamentYear);
@@ -1385,9 +1406,9 @@ public class DML {
 				if (pst != null) {
 					pst.close();
 				}
-//				if (con != null) {
-//					con.close();
-//				}
+				//				if (con != null) {
+				//					con.close();
+				//				}
 
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());

@@ -9,6 +9,7 @@ import java.util.List;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -20,13 +21,10 @@ import com.vaadin.ui.VerticalLayout;
 public class PlayerListViewer {
 	// private fields
 	private VerticalLayout mainLayout;
-
 	private List<Player> playerList;
 
 	public PlayerListViewer() {
-		playerList = new ArrayList<Player>(DML.retrieveAllPlayers()
-//				FakeDataWarehouse.getPlayers()
-				);
+		playerList = new ArrayList<Player>(DML.retrieveAllPlayers());
 
 		this.setUpContent();
 	}
@@ -35,7 +33,7 @@ public class PlayerListViewer {
 		mainLayout = new VerticalLayout();
 		mainLayout.setMargin(new MarginInfo(true, true, true, true));
 
-		Label presentation = new Label("Player list");
+		Label presentation = new Label("Lista giocatori");
 		mainLayout.addComponent(presentation);
 
 		VerticalLayout tableLayout = new VerticalLayout();
@@ -44,8 +42,9 @@ public class PlayerListViewer {
 		final PlayerTable playerTable = new PlayerTable(playerList);
 
 		HorizontalLayout controlLayout = new HorizontalLayout();
-		final TextField filterField = new TextField();
-		controlLayout.addComponent(filterField);
+		controlLayout.setSpacing(true);
+		
+		final TextField filterField = new TextField("Nome giocatore");
 		filterField.setImmediate(true);
 		filterField.addValueChangeListener(new ValueChangeListener() {
 			@Override
@@ -53,18 +52,23 @@ public class PlayerListViewer {
 				playerTable.filterPlayerNames(filterField.getValue());
 			}
 		});
-		controlLayout.addComponent(new Button("Filter Names",
+				
+		final Button filterBut = new Button("Cerca",
 				new ClickListener() {
 					@Override
 					public void buttonClick(ClickEvent event) {
 						playerTable.filterPlayerNames(filterField.getValue());
 					}
-				}));
+				});
+		
+		controlLayout.addComponent(filterField);
+		controlLayout.addComponent(filterBut);
+		controlLayout.setComponentAlignment(filterBut, Alignment.BOTTOM_CENTER);
+		
 		tableLayout.addComponent(controlLayout);
-
 		tableLayout.addComponent(playerTable);
 		tableLayout.setExpandRatio(playerTable, 1);
-		playerTable.setSizeFull();
+		//playerTable.setSizeFull();
 
 		mainLayout.addComponent(tableLayout);
 		mainLayout.setExpandRatio(tableLayout, 1);
