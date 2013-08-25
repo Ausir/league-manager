@@ -177,7 +177,7 @@ public class DML {
 		return true;
 	}
 
-	public static LMUserDetails getLMUserDetails(String userEmail) {
+	public static LMUserDetails retrieveLMUserDetails(String userEmail) {
 		Connection con = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
