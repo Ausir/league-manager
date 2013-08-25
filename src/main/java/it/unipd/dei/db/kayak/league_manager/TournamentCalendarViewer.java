@@ -8,15 +8,19 @@ import it.unipd.dei.db.kayak.league_manager.data_utils.MatchDayDetailsCalendarCo
 import it.unipd.dei.db.kayak.league_manager.data_utils.MatchUpPhaseComparator;
 
 import java.io.File;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
@@ -61,6 +65,7 @@ public class TournamentCalendarViewer {
 
 		int mUpIdx = 0;
 		VerticalLayout phaseLayout = null;
+		GridLayout grid = null;
 		String phaseName = "";
 
 		for (int i = 0; i < tournamentDetails.getMatchDayDetails().size(); ++i) {
@@ -91,20 +96,35 @@ public class TournamentCalendarViewer {
 					new MatchUpPhaseComparator());
 			
 			phaseName = "";
+			
 			for (MatchUpResult mUpRes : matches) {
 				if (!mUpRes.getTournamentPhaseName().equals(phaseName)) {
-					
+										
 					phaseName = mUpRes.getTournamentPhaseName();
-					mDayLayout.addComponent(new Label(phaseName));
+					mDayLayout.addComponent(new Label("<b>" + phaseName + "</b>", ContentMode.HTML));
 
-					phaseLayout = new VerticalLayout();
-					phaseLayout.setMargin(new MarginInfo(false, false, false,
-							true));
+					//phaseLayout = new VerGridLayout ticalLayout();
+					//phaseLayout.setMargin(new MarginInfo(false, false, false,
+					//		true));
 
-					mDayLayout.addComponent(phaseLayout);
+					grid = new GridLayout(6,1);
+					mDayLayout.addComponent(grid);
+					mDayLayout.setSpacing(true);
+					grid.setWidth("70%");
+
+					grid.setColumnExpandRatio(0, 0.2f);
+					grid.setColumnExpandRatio(1, 5);
+					grid.setColumnExpandRatio(2, 5);
+					grid.setColumnExpandRatio(3, 1);
+					grid.setColumnExpandRatio(4, 1);
+					grid.setColumnExpandRatio(5, 1);
+					
+					
+					
+					grid.setMargin(new MarginInfo(false, false, false, true));
 				}
 
-				HorizontalLayout resultLine = new HorizontalLayout();
+				//HorizontalLayout resultLine = new HorizontalLayout();
 
 				final String mUpID = mUpRes.getMatchUpID();
 				Button btn = new Button("", new ClickListener() {
@@ -121,18 +141,26 @@ public class TournamentCalendarViewer {
 						+ "/WEB-INF/images/magnifier.png"));
 				btn.setIcon(resource);
 
-				resultLine.addComponent(btn);
+				//resultLine.addComponent(btn);
 
-				Label smallSpacer = new Label("");
-				smallSpacer.setWidth("10px");
-				resultLine.addComponent(smallSpacer);
+				//Label smallSpacer = new Label("");
+				//smallSpacer.setWidth("10px");
+				//resultLine.addComponent(smallSpacer);
 
-				Label resultLabel = new Label(mUpRes.getCompactString());
-				resultLine.addComponent(resultLabel);
-				resultLine.setExpandRatio(resultLabel, 1);
+				//Label resultLabel = new Label(mUpRes.getCompactString());
+				//resultLine.addComponent(resultLabel);
+				//resultLine.setExpandRatio(resultLabel, 1);
 
-				phaseLayout.addComponent(resultLine);
+				//phaseLayout.addComponent(resultLine);
+				btn.setWidth("45");
+				grid.addComponent(btn);
+				grid.addComponent(new Label (mUpRes.getTeamHostName()));
+				grid.addComponent(new Label (mUpRes.getTeamGuestName()));
+				grid.addComponent(new Label (mUpRes.getTeamHostGoals() + "-" + mUpRes.getTeamGuestGoals()));
+				grid.addComponent(new Label (new SimpleDateFormat("dd/MM").format((Date)mUpRes.getDate())));
+				grid.addComponent(new Label (mUpRes.getTime().toString()));
 			}
+			
 		}
 
 		Label spacer = new Label();

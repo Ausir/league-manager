@@ -22,6 +22,8 @@ import java.util.Map;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
@@ -283,7 +285,7 @@ public void showAddPlayerView() {
 		leftBar = new VerticalLayout();
 
 		// Create the Tree,a dd to layout
-		Tree tree = new Tree("Tornei recenti");
+		final Tree tree = new Tree("Tornei recenti");
 
 		Map<TournamentEssentials, List<MatchDay>> days = DML.retrieveAllMatchDays();
 		List<TournamentEssentials> tournaments = new ArrayList<TournamentEssentials>();
@@ -333,9 +335,9 @@ public void showAddPlayerView() {
 		// Set tree to show the 'name' property as caption for items
 		//tree.setItemCaptionPropertyId(ExampleUtil.hw_PROPERTY_NAME);
 		//tree.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-
+		
+		
 		tree.addValueChangeListener(new ValueChangeListener() {
-
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				Object id = event.getProperty().getValue(); 
@@ -345,6 +347,7 @@ public void showAddPlayerView() {
 						showMatchDayCalendarView((String) treeCont.getItem(id).getItemProperty("d_id").getValue());
 					} else {
 						showTournamentCalendarView((String)treeCont.getItem(id).getItemProperty("t_name").getValue(), (Integer)treeCont.getItem(id).getItemProperty("t_year").getValue());
+						tree.expandItem(event.getProperty().getValue());
 					}
 				}
 			}
