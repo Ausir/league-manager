@@ -1,6 +1,7 @@
 package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
+import it.unipd.dei.db.kayak.league_manager.data.LMUserDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
@@ -40,7 +41,7 @@ public class Home {
 	private Button manageButton;
 
 	private LoginElement login;
-	private String loggedInUserEmail;
+	private LMUserDetails loggedInUser;
 
 	private Map<String, MatchUpDetailsSubWindow> matchUpDetailsSubWindows;
 	private Map<Long, PlayerCareerInfoSubWindow> playerCareerInfoSubWindows;
@@ -105,8 +106,10 @@ public class Home {
 
 			mainAreaLayout.removeAllComponents();
 
-			TournamentDetails tDetails = DML.retrieveTournamentDetails(tournamentName, tournamentYear);
-					//FakeDataWarehouse.getTournamentDetails(tournamentName, tournamentYear);
+			TournamentDetails tDetails = DML.retrieveTournamentDetails(
+					tournamentName, tournamentYear);
+			// FakeDataWarehouse.getTournamentDetails(tournamentName,
+			// tournamentYear);
 
 			mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
 					.getContent());
@@ -116,7 +119,7 @@ public class Home {
 	public void showClubDetailsSubWindow(long clubID) {
 		if (!clubDetailsSubWindow.containsKey(clubID)) {
 			ClubDetails clubDetails = DML.retrieveClubDetails(clubID);
-//					FakeDataWarehouse.getClubDetails(clubID);
+			// FakeDataWarehouse.getClubDetails(clubID);
 
 			ClubDetailsSubWindow detailsWindow = new ClubDetailsSubWindow(
 					clubDetails);
@@ -134,9 +137,9 @@ public class Home {
 
 	public void showMatchUpDetailsSubWindow(String matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
-			MatchUpDetails details = DML.retrieveMatchUpDetails(matchUpID); 
-//					FakeDataWarehouse
-//					.getMatchUpDetails(matchUpID);
+			MatchUpDetails details = DML.retrieveMatchUpDetails(matchUpID);
+			// FakeDataWarehouse
+			// .getMatchUpDetails(matchUpID);
 
 			MatchUpDetailsSubWindow detailsWindow = new MatchUpDetailsSubWindow(
 					details);
@@ -154,9 +157,10 @@ public class Home {
 
 	public void showPlayerCareerInfoSubWindow(long playerID) {
 		if (!playerCareerInfoSubWindows.containsKey(playerID)) {
-			PlayerCareerInfo playerInfo = DML.retrievePlayerCareerInfo(playerID);
-//					FakeDataWarehouse
-//					.getPlayerCareerInfo(playerID);
+			PlayerCareerInfo playerInfo = DML
+					.retrievePlayerCareerInfo(playerID);
+			// FakeDataWarehouse
+			// .getPlayerCareerInfo(playerID);
 
 			PlayerCareerInfoSubWindow playerWindow = new PlayerCareerInfoSubWindow(
 					playerInfo);
@@ -172,16 +176,16 @@ public class Home {
 		}
 	}
 
-	public String getLoggedInUserEmail() {
-		return loggedInUserEmail;
+	public LMUserDetails getLoggedInUser() {
+		return loggedInUser;
 	}
 
-	public void setLoggedIn(String loggedUserEmail) {
-		login.setLoggedIn(loggedUserEmail);
+	public void setLoggedIn(LMUserDetails loggedUser) {
+		login.setLoggedIn(loggedUser);
 
 		manageButton.setVisible(true);
 
-		loggedInUserEmail = loggedUserEmail;
+		loggedInUser = loggedUser;
 	}
 
 	public void setUnlogged() {
@@ -190,13 +194,13 @@ public class Home {
 		manageButton.setVisible(false);
 		// TODO: close all opened manage elements
 
-		loggedInUserEmail = null;
+		loggedInUser = null;
 	}
 
 	private void setUpContent() {
-//		FakeDataWarehouse.initFakeData();
+		// FakeDataWarehouse.initFakeData();
 
-		loggedInUserEmail = null;
+		loggedInUser = null;
 
 		mainLayout = new VerticalLayout();
 
@@ -226,8 +230,8 @@ public class Home {
 		leftBar = new VerticalLayout();
 		leftBar.addComponent(new Label("Most recent Tournaments"));
 		List<Tournament> tournaments = DML.retrieveAllTournaments();
-//				FakeDataWarehouse
-//				.getMostRecentTournaments();
+		// FakeDataWarehouse
+		// .getMostRecentTournaments();
 		recentTournamentButtons = new ArrayList<Button>();
 
 		for (final Tournament t : tournaments) {
@@ -300,7 +304,7 @@ public class Home {
 		return mainLayout;
 	}
 
-	public void close(){
+	public void close() {
 		// TODO: cleanup
 	}
 }

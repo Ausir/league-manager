@@ -4,6 +4,7 @@ import it.unipd.dei.db.kayak.league_manager.data.Club;
 import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
 import it.unipd.dei.db.kayak.league_manager.data.EventResult;
 import it.unipd.dei.db.kayak.league_manager.data.LMUser;
+import it.unipd.dei.db.kayak.league_manager.data.LMUserDetails;
 import it.unipd.dei.db.kayak.league_manager.data.Location;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDayDetails;
@@ -30,6 +31,135 @@ import java.util.logging.Logger;
 import com.vaadin.ui.Notification;
 
 public class DML {
+	public static boolean setLMUserPassword(String userEmail, byte[] password) {
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		// EXTODO: lasciare un byte libero, copiare solo i primi 31
+		// byte[] digest = new byte[32];
+		// for (int i = 0; i < digest.length; ++i) {
+		// digest[i] = password[i];
+		// }
+		// System.out.println("settin password length: " + digest.length);
+		if (password.length != 32) {
+			System.out.println("Wrong password length, should be 32; supplied "
+					+ password.length);
+			return false;
+		}
+
+		try {
+			con = Helper.getConnection();
+			String stm = "update lm.LMUser set password = ? where user_email = ?;";
+			pst = con.prepareStatement(stm);
+			pst.setString(1, new String(password, "UTF-8"));
+			pst.setString(2, userEmail);
+			rs = pst.executeQuery();
+		} catch (Exception ex) {
+			Logger lgr = Logger.getLogger(DDL.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+				Logger lgr = Logger.getLogger(DDL.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static LMUserDetails getLMUserDetails(String userEmail) {
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		LMUserDetails ret = null;
+
+		try {
+
+			// con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			// Helper.PASSWORD);
+			con = Helper.getConnection();
+			String stm = "select u.user_email as email, u.password as password, u.phone_number as phone, u.first_name as first_name, "
+					+ "u.last_name as last_name, u.birthday as birthday, s.user_email as s_email, "
+					+ "m.user_email as m_email, c.id as club_id, c.short_name as club_name "
+					+ "from lm.LMUser as u "
+					+ "left join lm.Secretary as s on u.user_email = s.user_email "
+					+ "left join lm.Manager as m on u.user_email = m.user_email "
+					+ "left join lm.Coordinates as coo on u.user_email = coo.manager "
+					+ "left join lm.Club as c on coo.club = c.id "
+					+ "where u.user_email = ?;";
+			pst = con.prepareStatement(stm);
+			pst.setString(1, userEmail);
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				String email = rs.getString("email");
+				byte[] password = rs.getString("password").getBytes();
+				String phone = rs.getString("phone");
+				String firstName = rs.getString("first_name");
+
+				String lastName = rs.getString("last_name");
+				Date birthday = rs.getDate("birthday");
+				boolean secretary = rs.getString("s_email") != null;
+				boolean manager = rs.getString("m_email") != null;
+
+				long managedClubID = rs.getLong("club_id");
+				if (managedClubID == 0) {
+					managedClubID = -1;
+				}
+				String managedClubName = rs.getString("club_name");
+				if (managedClubName == null) {
+					managedClubName = "";
+				}
+
+				LMUser user = new LMUser(email, password, phone, firstName,
+						lastName, birthday);
+				ret = new LMUserDetails(user, secretary, manager,
+						managedClubID, managedClubName);
+			}
+
+		} catch (Exception ex) {
+			Logger lgr = Logger.getLogger(DDL.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+				Logger lgr = Logger.getLogger(DDL.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+			}
+		}
+		return ret;
+	}
 
 	public static List<Club> retrieveAllClubs() {
 		Connection con = null;

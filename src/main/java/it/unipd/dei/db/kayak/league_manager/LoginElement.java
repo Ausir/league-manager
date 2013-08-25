@@ -1,7 +1,10 @@
 package it.unipd.dei.db.kayak.league_manager;
 
-import it.unipd.dei.db.kayak.league_manager.data.LMUser;
+import it.unipd.dei.db.kayak.league_manager.data.LMUserDetails;
+import it.unipd.dei.db.kayak.league_manager.database.DML;
 import it.unipd.dei.db.kayak.league_manager.database.Helper;
+
+import java.io.UnsupportedEncodingException;
 
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
@@ -29,11 +32,11 @@ public class LoginElement {
 		setUnlogged();
 	}
 
-	public void setLoggedIn(String loggedInEmail) {
+	public void setLoggedIn(LMUserDetails loggedIn) {
 		mainLayout.removeAllComponents();
 
 		mainLayout.addComponent(new Label("Logged in as"));
-		mainLayout.addComponent(new Label(loggedInEmail));
+		mainLayout.addComponent(new Label(loggedIn.getUserData().getEmail()));
 
 		mainLayout.addComponent(new Button("Logout", new ClickListener() {
 			@Override
@@ -61,15 +64,7 @@ public class LoginElement {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				String email = emailArea.getValue();
-				LMUser user = null;
-//				for (LMUser u : FakeDataWarehouse.getUsers()) {
-//					System.out.println("confronting " + email + " equals "
-//							+ u.getEmail() + " : " + u.getEmail().equals(email));
-//					if (u.getEmail().equals(email)) {
-//						user = u;
-//						break;
-//					}
-//				}
+				LMUserDetails user = DML.getLMUserDetails(email);
 
 				if (user == null) {
 					// TODO: show notification about wrong login email
@@ -79,11 +74,27 @@ public class LoginElement {
 					return;
 				}
 
-				byte[] digest = Helper.getHashedString(passwordArea
-						.getValue());
+				byte[] digest;
+				try {
+					// digest = Helper.getHashedString(passwordArea.getValue());
+					digest = (new String(Helper.getHashedString(passwordArea
+							.getValue()), "UTF-8")).getBytes("UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+					return;
+				}
+
+				// DML.setLMUserPassword(email, digest);
+				// user = DML.getLMUserDetails(email);
+//				System.out.println("login password length: " + digest.length);
+//				System.out.println("true  password length: "
+//						+ user.getUserData().getPassword().length);
 				boolean check = true;
-				for (int i = 0; i < digest.length; ++i) {
-					check &= (digest[i] == user.getPassword()[i]);
+				for (int i = 0; i < user.getUserData().getPassword().length - 1; ++i) {
+					if (digest[i] != user.getUserData().getPassword()[i]) {
+						check = false;
+						break;
+					}
 				}
 
 				if (!check) {
@@ -91,12 +102,12 @@ public class LoginElement {
 					Notification.show("Login Error", "Invalid password",
 							Notification.Type.WARNING_MESSAGE);
 					System.out.println("invalid password: "
-							+ passwordArea.getCaption());
+							+ passwordArea.getValue());
 					return;
 				}
 
 				Home home = ((MyVaadinUI) UI.getCurrent()).getHome();
-				home.setLoggedIn(email);
+				home.setLoggedIn(user);
 			}
 		}));
 	}
