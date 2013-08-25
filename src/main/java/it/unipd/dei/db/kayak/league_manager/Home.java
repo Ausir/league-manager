@@ -38,7 +38,9 @@ public class Home {
 	private Button allTournamentsButton;
 	private Button allPlayersButton;
 	private Button allClubsButton;
-	private Button manageButton;
+
+	private Button addPlayerButton;
+	private Button addOwnershipButton;
 
 	private LoginElement login;
 	private LMUserDetails loggedInUser;
@@ -52,7 +54,7 @@ public class Home {
 	private int currentTYear;
 
 	private enum Visualizing {
-		HOME, CLUBS, TOURNAMENTS, PLAYERS, SINGLE_TOURNAMENT
+		HOME, CLUBS, TOURNAMENTS, PLAYERS, SINGLE_TOURNAMENT, ADD_PLAYER, ADD_OWNERSHIP
 	}
 
 	// constructor
@@ -113,6 +115,24 @@ public class Home {
 
 			mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
 					.getContent());
+		}
+	}
+
+	public void showAddPlayerView() {
+		if (current != Visualizing.ADD_PLAYER) {
+			current = Visualizing.ADD_PLAYER;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout.addComponent(new AddPlayerView().getContent());
+		}
+	}
+
+	public void showAddOwnershipView() {
+		if (current != Visualizing.ADD_OWNERSHIP) {
+			current = Visualizing.ADD_OWNERSHIP;
+
+			mainAreaLayout.removeAllComponents();
+			mainAreaLayout.addComponent(new AddOwnershipView().getContent());
 		}
 	}
 
@@ -183,7 +203,10 @@ public class Home {
 	public void setLoggedIn(LMUserDetails loggedUser) {
 		login.setLoggedIn(loggedUser);
 
-		manageButton.setVisible(true);
+		if (loggedUser.isSectretary()) {
+			addPlayerButton.setVisible(true);
+			addOwnershipButton.setVisible(true);
+		}
 
 		loggedInUser = loggedUser;
 		// System.out.println("user email: "
@@ -197,7 +220,8 @@ public class Home {
 	public void setUnlogged() {
 		login.setUnlogged();
 
-		manageButton.setVisible(false);
+		addPlayerButton.setVisible(false);
+		addOwnershipButton.setVisible(false);
 		// TODO: close all opened manage elements
 
 		loggedInUser = null;
@@ -277,14 +301,27 @@ public class Home {
 		});
 		leftBar.addComponent(allClubsButton);
 
-		manageButton = new Button("Manage Something", new ClickListener() {
+		addPlayerButton = new Button("Add Player", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				System.out.println("Manage something");
+				if (loggedInUser != null) {
+					showAddPlayerView();
+				}
 			}
 		});
-		leftBar.addComponent(manageButton);
-		manageButton.setVisible(false);
+		leftBar.addComponent(addPlayerButton);
+		addPlayerButton.setVisible(false);
+
+		addOwnershipButton = new Button("Add Ownership", new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				if (loggedInUser != null) {
+					showAddOwnershipView();
+				}
+			}
+		});
+		leftBar.addComponent(addOwnershipButton);
+		addOwnershipButton.setVisible(false);
 
 		Label leftBarSpacer = new Label();
 		leftBar.addComponent(leftBarSpacer);

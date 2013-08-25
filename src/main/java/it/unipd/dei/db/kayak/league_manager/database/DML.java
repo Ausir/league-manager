@@ -10,6 +10,7 @@ import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDayDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
+import it.unipd.dei.db.kayak.league_manager.data.Ownership;
 import it.unipd.dei.db.kayak.league_manager.data.OwnershipResult;
 import it.unipd.dei.db.kayak.league_manager.data.Player;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerEvent;
@@ -35,6 +36,96 @@ import java.util.logging.Logger;
 import com.vaadin.ui.Notification;
 
 public class DML {
+	public static boolean addPlayer(Player player) {
+		if (player == null) {
+			return false;
+		}
+
+		Connection con = null;
+		PreparedStatement pst = null;
+		int returnValue = 0;
+
+		try {
+			con = Helper.getConnection();
+			String stm = "insert into lm.Player values (?, ?, ?);";
+			pst = con.prepareStatement(stm);
+			pst.setLong(1, player.getID());
+			pst.setString(2, player.getName());
+			pst.setDate(3, player.getBirthday());
+
+			returnValue = pst.executeUpdate();
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DDL.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+		} finally {
+			try {
+				if (pst != null) {
+					pst.close();
+				}
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+				Logger lgr = Logger.getLogger(DDL.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean addOwnership(Ownership ownership) {
+		if (ownership == null) {
+			return false;
+		}
+
+		Connection con = null;
+		PreparedStatement pst = null;
+		int returnValue = 0;
+
+		try {
+			con = Helper.getConnection();
+			// id | player_id | club_id | isborrowed | start_date | end_date
+			String stm = "insert into lm.Ownership (player_id, club_id, isborrowed, start_date,  end_date) "
+					+ "values (?, ?, ?, ?, ?);";
+			pst = con.prepareStatement(stm);
+			pst.setLong(1, ownership.getPlayerID());
+			pst.setLong(2, ownership.getClubID());
+			pst.setBoolean(3, ownership.isBorrowed());
+			pst.setDate(4, ownership.getStartDate());
+			pst.setDate(5, ownership.getStartDate());
+
+			returnValue = pst.executeUpdate();
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DDL.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			Notification.show("Connection Problem", ex.getMessage(),
+					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+		} finally {
+			try {
+				if (pst != null) {
+					pst.close();
+				}
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+				Logger lgr = Logger.getLogger(DDL.class.getName());
+				lgr.log(Level.WARNING, ex.getMessage(), ex);
+				Notification.show("Connection Problem", ex.getMessage(),
+						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public static boolean setLMUserPassword(String userEmail, byte[] password) {
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -243,6 +334,8 @@ public class DML {
 							+ "FROM lm.callsup AS c INNER JOIN lm.ownership AS o ON c.ownership_id = o.id "
 							+ "INNER JOIN lm.player AS p on p.id = o.player_id "
 							+ "ORDER BY p.name ASC;");
+			// pst = con.prepareStatement("SELECT * " + "FROM lm.player "
+			// + "ORDER BY name ASC;");
 			rs = pst.executeQuery();
 
 			if (!rs.isAfterLast()) {
