@@ -31,7 +31,7 @@ public class TournamentYearComparator implements Comparator<Tournament> {
 		}
 
 		if (o1.getSex() != o2.getSex()) {
-			if (o1.getSex()) {
+			if (o1.getSex().equals("M")) {
 				return increasing ? -1 : 1;
 			} else {
 				return increasing ? 1 : -1;

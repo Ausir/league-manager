@@ -910,7 +910,7 @@ public class DML {
 		try {
 			con = Helper.getConnection();
 
-			String stm = "SELECT md.id, md.num, md.start_date, md.end_date, md.club, md.location, md.tournament_name, md.tournament_year, l.city AS lcity, l.name AS lname, c.name " +
+			String stm = "SELECT md.id, md.num, md.name, md.start_date, md.end_date, md.club, md.location, md.tournament_name, md.tournament_year, l.city AS lcity, l.name AS lname, c.name AS club_name " +
 					"FROM lm.matchday AS md " +
 					"INNER JOIN lm.club AS c ON c.id = md.club " +
 					"INNER JOIN lm.location AS l ON l.id = md.location " +
@@ -923,15 +923,16 @@ public class DML {
 
 			String id = rs.getString("id");
 			int num = rs.getInt("num");
+			String name = rs.getString("name");
 			Date start_date = rs.getDate("start_date");
 			Date end_date = rs.getDate("end_date");
 			long club = rs.getLong("club");
 			long location = rs.getLong("location");
 			String tournamentName = rs.getString("tournament_name");
 			int tournamentYear = rs.getInt("tournament_year");
-			String organizer = rs.getString("name");
+			String organizer = rs.getString("club_name");
 			String locationName =  rs.getString("lcity") + " - " +  rs.getString("lname");
-			ret = new MatchDayDetails(new MatchDay(id, num, start_date, end_date, club, location, tournamentName, tournamentYear), organizer, locationName);
+			ret = new MatchDayDetails(new MatchDay(id, num, start_date, end_date, club, location, tournamentName, tournamentYear, name), organizer, locationName);
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
@@ -1204,10 +1205,10 @@ public class DML {
 		try {
 			con = Helper.getConnection();
 
-			String stm = "SELECT md.id, md.num AS md_num, md.start_date, md.end_date, md.club, md.location, t.name, t.year, t.num AS t_num " +
+			String stm = "SELECT md.id, md.num AS md_num, md.name AS md_name, md.start_date, md.end_date, md.club, md.location, t.name AS t_name, t.year, t.num AS t_num " +
 					"FROM lm.MatchDay as md " +
 					"INNER JOIN lm.tournament AS t ON t.name = md.tournament_name and t.year = md.tournament_year " +
-					"ORDER BY t.year DESC, t.num ASC";
+					"ORDER BY t.year DESC, t.num ASC, md.start_date DESC";
 
 			pst = con.prepareStatement(stm);
 
@@ -1221,10 +1222,11 @@ public class DML {
 					Date startDate = rs.getDate("start_date");
 					Date endDate = rs.getDate("end_date");
 					long clubID = rs.getLong("club");
-					String tournamentName = rs.getString("name");
+					String tournamentName = rs.getString("t_name");
 					int tournamentYear = rs.getInt("year");
 					int tournamentNum = rs.getInt("t_num");
 					long locationID = rs.getLong("location");
+					String mdName = rs.getString("md_name");
 					if (! tournaments.containsKey(tournamentYear)){
 						tournaments.put(tournamentYear, new HashMap<String, TournamentEssentials>());
 					}
@@ -1234,7 +1236,7 @@ public class DML {
 					if (! ret.containsKey(tournaments.get(tournamentYear).get(tournamentName))) {
 						ret.put(tournaments.get(tournamentYear).get(tournamentName), new ArrayList<MatchDay>());
 					}
-					ret.get(tournaments.get(tournamentYear).get(tournamentName)).add(new MatchDay(id, mdNum, startDate, endDate, clubID, locationID, tournamentName, tournamentYear));
+					ret.get(tournaments.get(tournamentYear).get(tournamentName)).add(new MatchDay(id, mdNum, startDate, endDate, clubID, locationID, tournamentName, tournamentYear, mdName));
 				}
 			}
 
@@ -1637,7 +1639,7 @@ public class DML {
 			//		Helper.PASSWORD);
 			con = Helper.getConnection();
 
-			String stm = "SELECT md.id, md.num, md.start_date, md.end_date, md.club, md.location, c.name as club_name,l.id as loc_id, l.name as loc_name " +
+			String stm = "SELECT md.id, md.num, md.name, md.start_date, md.end_date, md.club, md.location, c.name as club_name,l.id as loc_id, l.name as loc_name " +
 					"FROM lm.MatchDay as md " +
 					"LEFT JOIN lm.Club as c ON md.club=c.id " +
 					"INNER JOIN lm.Location as l ON md.location=l.id " +
@@ -1657,11 +1659,12 @@ public class DML {
 					Date endDate = rs.getDate("end_date");
 					long clubID = rs.getLong("club");
 					long locationID = rs.getLong("loc_id");
+					String name = rs.getString("name");
 					
 					String organizerClubName = rs.getString("club_name");
 					String locationName = rs.getString("loc_name");
-					MatchDay matchDay = new MatchDay(id, num, startDate, endDate, clubID, locationID, tournamentName, tournamentYear);
-					ret.add(new MatchDayDetails(matchDay,num, organizerClubName, locationName));
+					MatchDay matchDay = new MatchDay(id, num, startDate, endDate, clubID, locationID, tournamentName, tournamentYear, name);
+					ret.add(new MatchDayDetails(matchDay, organizerClubName, locationName));
 				}
 			}
 

@@ -2,9 +2,10 @@ package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
 import it.unipd.dei.db.kayak.league_manager.data.LMUserDetails;
+import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
+import it.unipd.dei.db.kayak.league_manager.data.MatchDayMatches;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerCareerInfo;
-import it.unipd.dei.db.kayak.league_manager.data.Tournament;
 import it.unipd.dei.db.kayak.league_manager.data.TournamentDetails;
 import it.unipd.dei.db.kayak.league_manager.data.TournamentEssentials;
 import it.unipd.dei.db.kayak.league_manager.database.DML;
@@ -293,6 +294,7 @@ public void showAddPlayerView() {
 		treeCont.addContainerProperty("t_year", Integer.class, null);
 		treeCont.addContainerProperty("t_name", String.class, null);
 		treeCont.addContainerProperty("d_id", String.class, null);
+		
 		treeCont.addContainerProperty("caption", String.class, null);
 
 		for (TournamentEssentials t : tournaments) {
@@ -304,13 +306,14 @@ public void showAddPlayerView() {
 
 			for (MatchDay day : days.get(t)) {
 				String d_id = day.getID();
-				SimpleDateFormat df =
-						new SimpleDateFormat("dd-MM-yyyy");
-				String d_date = df.format((Date)day.getStartDate());
 
+				String start_day = new SimpleDateFormat("dd").format((Date)day.getStartDate());
+				String end_day = new SimpleDateFormat("dd/MM").format((Date)day.getEndDate());
+				String caption = start_day + "-" + end_day + " - " + day.getName();
+				
 				Object child_id = treeCont.addItem();
 				treeCont.getItem(child_id).getItemProperty("d_id").setValue(d_id);
-				treeCont.getItem(child_id).getItemProperty("caption").setValue(d_date);
+				treeCont.getItem(child_id).getItemProperty("caption").setValue(caption);
 				
 				treeCont.setParent(child_id, parent_id);
 				treeCont.setChildrenAllowed(child_id, false);

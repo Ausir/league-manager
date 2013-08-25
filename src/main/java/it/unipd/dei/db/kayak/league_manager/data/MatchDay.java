@@ -27,10 +27,11 @@ public class MatchDay {
 	private long locationID;
 	private String tournamentName;
 	private int tournamentYear;
+	private String name;
 
 	public MatchDay(String id, int num, Date startDate, Date endDate,
 			long clubID, long locationID, String tournamentName,
-			int tournamentYear) {
+			int tournamentYear, String name) {
 		super();
 		this.id = id;
 		this.num = num;
@@ -40,6 +41,7 @@ public class MatchDay {
 		this.locationID = locationID;
 		this.tournamentName = tournamentName;
 		this.tournamentYear = tournamentYear;
+		this.name = name;
 	}
 
 	public String getID() {
@@ -72,6 +74,10 @@ public class MatchDay {
 
 	public int getTournamentYear() {
 		return tournamentYear;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public String getCompactString() {

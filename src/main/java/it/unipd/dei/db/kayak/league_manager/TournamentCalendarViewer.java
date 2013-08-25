@@ -48,7 +48,7 @@ public class TournamentCalendarViewer {
 		
 		String tCaption = tournament.getName() + " " + tournament.getYear()
 				+ " max age: " + tournament.getMaxAge() + " ";
-		tCaption += tournament.getSex() ? "M" : "F";
+		tCaption += tournament.getSex();
 		mainLayout.addComponent(new Label(tCaption));
 
 		VerticalLayout tLayout = new VerticalLayout();
