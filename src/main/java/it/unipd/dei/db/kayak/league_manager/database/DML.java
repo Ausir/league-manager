@@ -568,7 +568,8 @@ public class DML {
 					"ch.id as ch_id, " +
 					"ch.name as ch_name, " +
 					"cg.id as cg_id, " +
-					"cg.name as cg_name " + 
+					"cg.name as cg_name, " +
+					"tp.num " + 
 					"FROM lm.Plays as p " +
 					"INNER JOIN lm.MatchUp as mu ON p.match_id=mu.id " +
 					"INNER JOIN lm.Location as l ON mu.pitch_location=l.id " +
@@ -576,6 +577,7 @@ public class DML {
 					"INNER JOIN lm.LineUp as lug ON p.lineup_guest=lug.id " +
 					"INNER JOIN lm.Club as ch ON luh.club_id=ch.id " +
 					"INNER JOIN lm.Club as cg ON lug.club_id=cg.id " +
+					"INNER JOIN lm.tournamentphase as tp ON tp.name = mu.tournament_phase_name and tp.tournament_name = mu.tournament_name and tp.tournament_year = mu.tournament_phase_year " +
 					"WHERE mu.id=?";
 			pst = con.prepareStatement(stm);
 			pst.setString(1, matchUpId);
@@ -605,7 +607,8 @@ public class DML {
 				String scorekeeper = rs.getString("scorekeeper");
 				String referee1 = rs.getString("referee1");
 				String referee2 = rs.getString("referee2");
-				MatchUpResult result = new MatchUpResult(matchUpId, matchDayID, tournamentPhaseName, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time);
+				int tournamentPhaseNum = rs.getInt("num");
+				MatchUpResult result = new MatchUpResult(matchUpId, matchDayID, tournamentPhaseName, tournamentPhaseNum, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time);
 				// ora faccio le query per i campi rimanenti: eventList, hostLineUp, guestLineUp
 				// per ottenere le lineup passo il relativo id ma anche il nome del club e l'id del matchup che ho già calcolato in precedenza per rendere meno onerose le query
 				List<PlayerMatchUpInfo> hostLineUp = retrieveLineUpDetails(luHost, matchUpId, teamHostName);
@@ -805,17 +808,17 @@ public class DML {
 //					Helper.PASSWORD);
 			con = Helper.getConnection();
 
-			String stm = "SELECT p.match_id, mu.match_day, tp.name as t_phase_name, mu.start_date, mu.start_time, mu.goals_host, mu.goals_guest, chost.id as host_id, chost.name as host_name, cguest.id as guest_id, cguest.name as guest_name " +
-					"FROM lm.Tournament as t " +
-					"INNER JOIN lm.TournamentPhase as tp ON t.name=tp.tournament_name AND t.year=tp.tournament_year " +
-					"INNER JOIN lm.MatchDay as md ON t.name=md.tournament_name AND t.year=md.tournament_year " +
-					"INNER JOIN lm.MatchUp as mu ON md.id=mu.match_day " +
-					"INNER JOIN lm.Plays as p ON mu.id=p.match_id " +
-					"INNER JOIN lm.LineUp as lhost ON p.lineup_host=lhost.id " +
-					"INNER JOIN lm.Club as chost ON lhost.club_id=chost.id " + 
-					"INNER JOIN lm.LineUp as lguest ON p.lineup_guest=lguest.id " +
-					"INNER JOIN lm.Club as cguest ON lguest.club_id=cguest.id " + 
-					"WHERE t.name=? AND t.year=?";
+			String stm = "SELECT tp.num, mu.id as match_id, mu.match_day, mu.tournament_phase_name AS t_phase_name, mu.start_date, mu.start_time, mu.goals_host, mu.goals_guest, ch.id as host_id, ch.name as host_name, cg.id as guest_id, cg.name as guest_name " +
+					"FROM lm.matchup AS mu " +
+					"INNER JOIN lm.plays AS p ON p.match_id = mu.id " +
+					"INNER JOIN lm.tournamentphase AS tp ON tp.name = mu.tournament_phase_name and tp.tournament_name = mu.tournament_name and mu.tournament_phase_year = tp.tournament_year " +
+					"INNER JOIN lm.lineup AS luh ON luh.id = p.lineup_host " +
+					"INNER JOIN lm.lineup AS lug ON lug.id = p.lineup_guest " +
+					"INNER JOIN lm.club AS ch ON ch.id = luh.club_id " +
+					"INNER JOIN lm.club AS cg ON cg.id = lug.club_id " +
+					"INNER JOIN lm.matchday AS md ON md.id = mu.match_day " +
+					"WHERE mu.tournament_name=? AND mu.tournament_phase_year=? " +
+					"ORDER BY md.start_date, md.id, mu.start_date, mu.start_time ASC;";
 
 			pst = con.prepareStatement(stm);
 			pst.setString(1, tournamentName);
@@ -827,6 +830,7 @@ public class DML {
 					String matchUpID = rs.getString("match_id");
 					String matchDayID = rs.getString("match_day");
 					String tournamentPhaseName = rs.getString("t_phase_name");
+					int tournamentPhaseNum = rs.getInt("num");
 					Date date = rs.getDate("start_date");
 					int teamHostGoals = rs.getInt("goals_host");
 					int teamGuestGoals = rs.getInt("goals_guest");
@@ -835,7 +839,7 @@ public class DML {
 					String teamHostName = rs.getString("host_name");
 					long clubGuestID = rs.getLong("guest_id");
 					String teamGuestName = rs.getString("guest_name");
-					ret.add(new MatchUpResult(matchUpID, matchDayID, tournamentPhaseName, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time));
+					ret.add(new MatchUpResult(matchUpID, matchDayID, tournamentPhaseName, tournamentPhaseNum, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time));
 				}
 			}
 

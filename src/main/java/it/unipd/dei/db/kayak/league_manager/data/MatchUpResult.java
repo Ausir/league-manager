@@ -8,6 +8,7 @@ public class MatchUpResult {
 	private String matchUpID;
 	private String matchDayID;
 	private String tournamentPhaseName;
+	private int tournamentPhaseNum;
 	private String tournamentName;
 	private long tournamentYear;
 	private long clubHostID;
@@ -21,7 +22,7 @@ public class MatchUpResult {
 	private Time time;
 
 	public MatchUpResult(String matchUpID, String matchDayID,
-			String tournamentPhaseName, String tournamentName,
+			String tournamentPhaseName, int tournamentPhaseNum, String tournamentName,
 			long tournamentYear, long clubHostID, long clubGuestID, Date date,
 			String teamHostName, String teamGuestName, int teamHostGoals,
 			int teamGuestGoals, Time time) {
@@ -29,6 +30,7 @@ public class MatchUpResult {
 		this.matchUpID = matchUpID;
 		this.matchDayID = matchDayID;
 		this.tournamentPhaseName = tournamentPhaseName;
+		this.tournamentPhaseNum = tournamentPhaseNum;
 		this.tournamentName = tournamentName;
 		this.tournamentYear = tournamentYear;
 		this.clubHostID = clubHostID;
@@ -63,6 +65,10 @@ public class MatchUpResult {
 
 	public String getTournamentPhaseName() {
 		return tournamentPhaseName;
+	}
+	
+	public int getTournamentPhaseNum() {
+		return tournamentPhaseNum;
 	}
 
 	public String getTournamentName() {
