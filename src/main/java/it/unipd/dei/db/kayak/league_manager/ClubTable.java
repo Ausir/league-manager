@@ -1,13 +1,11 @@
 package it.unipd.dei.db.kayak.league_manager;
 
+import it.unipd.dei.db.kayak.league_manager.data.Club;
+
 import java.io.File;
 import java.util.Collection;
 
-import it.unipd.dei.db.kayak.league_manager.data.Club;
-
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
@@ -17,16 +15,9 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 
+// table for showing clubs, searchable by club name
 public class ClubTable extends Table {
 	private StringPropertyFilter nameFilter;
-
-	// private StringPropertyFilter phoneFilter;
-	// private StringPropertyFilter addressFilter;
-	// private StringPropertyFilter websiteFilter;
-	// private StringPropertyFilter emailFilter;
-	
-	private ClubTable() {
-	}
 
 	public ClubTable(Collection<Club> clubs) {
 		super("");
@@ -49,14 +40,6 @@ public class ClubTable extends Table {
 		Filterable filterable = (Filterable) clubContainer;
 		nameFilter = new StringPropertyFilter("", "Name");
 		filterable.addContainerFilter(nameFilter);
-		// phoneFilter = new StringPropertyFilter("", "Phone");
-		// filterable.addContainerFilter(phoneFilter);
-		// addressFilter = new StringPropertyFilter("", "Address");
-		// filterable.addContainerFilter(addressFilter);
-		// websiteFilter = new StringPropertyFilter("", "Website");
-		// filterable.addContainerFilter(websiteFilter);
-		// emailFilter = new StringPropertyFilter("", "Email");
-		// filterable.addContainerFilter(emailFilter);
 
 		this.setColumnExpandRatio("", 0);
 		this.setColumnWidth("", 45);

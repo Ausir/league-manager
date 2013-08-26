@@ -15,19 +15,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Helper {
-	private static int port = 5555;
-	final public static String URL = "jdbc:postgresql://localhost:" + port + "/Kayak";
+	// only right for local development
+	//private static int port = 5555;
+	final public static String URL = "jdbc:postgresql://localhost:5555/Kayak";
 	final public static String USER = "Kayak";
 	final public static String PASSWORD = "aijaevau";
 	private static Connection CON;
 
-	static int getPort() {
-		return port;
-	}
+//	static int getPort() {
+//		return port;
+//	}
 
-	static void setPort(int p) {
-		port = p;
-	}
+//	static void setPort(int p) {
+//		port = p;
+//	}
 
 	static String readFileAsString(String filePath) throws IOException {
 		StringBuffer fileData = new StringBuffer();
@@ -67,7 +68,7 @@ public class Helper {
 			}
 
 		} catch (SQLException ex) {
-			Logger lgr = Logger.getLogger(DDL.class.getName());
+			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
 
 		} finally {
@@ -83,13 +84,14 @@ public class Helper {
 				}
 
 			} catch (SQLException ex) {
-				Logger lgr = Logger.getLogger(DDL.class.getName());
+				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 			}
 		}
 		return ret;
 	}
 
+	// builds the hash for the string
 	public static byte[] getHashedString(String text) {
 		MessageDigest md = null;
 		try {

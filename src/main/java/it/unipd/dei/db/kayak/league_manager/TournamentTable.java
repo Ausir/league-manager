@@ -1,34 +1,32 @@
 package it.unipd.dei.db.kayak.league_manager;
 
+import it.unipd.dei.db.kayak.league_manager.data.Tournament;
+
 import java.io.File;
 import java.util.Collection;
 
-import it.unipd.dei.db.kayak.league_manager.data.Tournament;
-
 import com.vaadin.data.Container;
-import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 
+// create the table for the all-tournaments view
 public class TournamentTable extends Table {
 	private StringPropertyFilter nameFilter;
 	private StringPropertyFilter emailFilter;
 
-	private TournamentTable() {
-	}
 
 	public TournamentTable(Collection<Tournament> tournaments) {
 		super("");
 
 		Container tournamentContainer = new IndexedContainer();
 
+		// add properties to the data container
 		tournamentContainer.addContainerProperty("", Button.class, null);
 		tournamentContainer.addContainerProperty("Name", String.class, null);
 		tournamentContainer.addContainerProperty("Year", Integer.class, null);
@@ -44,12 +42,14 @@ public class TournamentTable extends Table {
 			this.addTournament(t);
 		}
 
+		// set up filterability
 		Filterable filterable = (Filterable) tournamentContainer;
 		nameFilter = new StringPropertyFilter("", "Name");
 		filterable.addContainerFilter(nameFilter);
 		emailFilter = new StringPropertyFilter("", "Organizer Email");
 		filterable.addContainerFilter(emailFilter);
 
+		// set up style
 		this.setColumnExpandRatio("", 0);
 		this.setColumnWidth("", 45);
 		this.setColumnExpandRatio("Name", 1);
@@ -68,7 +68,8 @@ public class TournamentTable extends Table {
 		}
 	}
 
-	public void addTournament(Tournament tournament) {
+	// service method for adding single items to the container
+	private void addTournament(Tournament tournament) {
 		final String tournamentName = tournament.getName();
 		final int tournamentYear = tournament.getYear();
 

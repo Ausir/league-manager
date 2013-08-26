@@ -2,7 +2,6 @@ package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.LMUserDetails;
 import it.unipd.dei.db.kayak.league_manager.data.Ownership;
-import it.unipd.dei.db.kayak.league_manager.data.Player;
 import it.unipd.dei.db.kayak.league_manager.database.DML;
 
 import java.sql.Date;

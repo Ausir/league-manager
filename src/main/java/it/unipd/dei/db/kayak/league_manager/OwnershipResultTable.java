@@ -7,7 +7,6 @@ import java.sql.Date;
 import java.util.Collection;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
@@ -19,9 +18,6 @@ import com.vaadin.ui.UI;
 
 public class OwnershipResultTable extends Table {
 	private StringPropertyFilter clubFilter;
-	
-	private OwnershipResultTable() {
-	}
 
 	public OwnershipResultTable(Collection<OwnershipResult> ownershipResults) {
 		super("");

@@ -22,10 +22,9 @@ import java.util.Map;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -37,16 +36,17 @@ import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * Builds the main layout and initializes the menus and login fields.
+ */
 public class Home {
 	// private fields
 	private VerticalLayout mainLayout;
 	private HorizontalLayout headerLayout;
-	// private HorizontalLayout buttonsLayout;
 	private HorizontalLayout bodyLayout;
 	private VerticalLayout leftBar;
 	private VerticalLayout mainAreaLayout;
 
-	private List<Button> recentTournamentButtons;
 	private Button allTournamentsButton;
 	private Button allPlayersButton;
 	private Button allClubsButton;
@@ -76,23 +76,27 @@ public class Home {
 		playerCareerInfoSubWindows = new HashMap<Long, PlayerCareerInfoSubWindow>();
 		clubDetailsSubWindow = new HashMap<Long, ClubDetailsSubWindow>();
 
+		// flags for current visualization
 		current = Visualizing.HOME;
 		currentTName = "";
 		currentTYear = -1;
+		currentMID = "";
 
 		this.setUpContent();
 	}
 
+	// display the list of all tournaments
 	public void showTournamentList() {
 		if (current != Visualizing.TOURNAMENTS) {
 			current = Visualizing.TOURNAMENTS;
 
 			mainAreaLayout.removeAllComponents();
 			mainAreaLayout
-					.addComponent(new TournamentListViewer().getContent());
+			.addComponent(new TournamentListViewer().getContent());
 		}
 	}
 
+	// display the list of all players
 	public void showPlayerList() {
 		if (current != Visualizing.PLAYERS) {
 			current = Visualizing.PLAYERS;
@@ -102,6 +106,7 @@ public class Home {
 		}
 	}
 
+	// display the list of clubs
 	public void showClubList() {
 		if (current != Visualizing.CLUBS) {
 			current = Visualizing.CLUBS;
@@ -110,7 +115,8 @@ public class Home {
 			mainAreaLayout.addComponent(new ClubListViewer().getContent());
 		}
 	}
-
+	
+	// display the list of match day and single matches for a tournament
 	public void showTournamentCalendarView(String tournamentName,
 			int tournamentYear) {
 		if ((current != Visualizing.SINGLE_TOURNAMENT)
@@ -122,13 +128,13 @@ public class Home {
 			mainAreaLayout.removeAllComponents();
 
 			TournamentDetails tDetails = DML.retrieveTournamentDetails(tournamentName, tournamentYear);
-					//FakeDataWarehouse.getTournamentDetails(tournamentName, tournamentYear);
 
 			mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
 			.getContent());
 		}
 	}
 
+	// display the list of matches for a single match day
 	public void showMatchDayCalendarView(String matchday_id) {
 		if ((current != Visualizing.SINGLE_MATCHDAY)
 				|| (!currentMID.equals(matchday_id))) {
@@ -144,7 +150,8 @@ public class Home {
 		}
 	}
 
-public void showAddPlayerView() {
+	// show the form to add a player
+	public void showAddPlayerView() {
 		if (current != Visualizing.ADD_PLAYER) {
 			current = Visualizing.ADD_PLAYER;
 
@@ -152,7 +159,7 @@ public void showAddPlayerView() {
 			mainAreaLayout.addComponent(new AddPlayerView().getContent());
 		}
 	}
-
+	// show the form to add an ownership
 	public void showAddOwnershipView() {
 		if (current != Visualizing.ADD_OWNERSHIP) {
 			current = Visualizing.ADD_OWNERSHIP;
@@ -162,11 +169,10 @@ public void showAddPlayerView() {
 		}
 	}
 
+	// pops up a subwindow to show club details
 	public void showClubDetailsSubWindow(long clubID) {
 		if (!clubDetailsSubWindow.containsKey(clubID)) {
 			ClubDetails clubDetails = DML.retrieveClubDetails(clubID);
-//					FakeDataWarehouse.getClubDetails(clubID);
-
 			ClubDetailsSubWindow detailsWindow = new ClubDetailsSubWindow(
 					clubDetails);
 
@@ -180,13 +186,10 @@ public void showAddPlayerView() {
 			clubDetailsSubWindow.remove(clubID);
 		}
 	}
-
+	// pops up a subwindow to show match detaisls
 	public void showMatchUpDetailsSubWindow(String matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
 			MatchUpDetails details = DML.retrieveMatchUpDetails(matchUpID); 
-//					FakeDataWarehouse
-//					.getMatchUpDetails(matchUpID);
-
 			MatchUpDetailsSubWindow detailsWindow = new MatchUpDetailsSubWindow(
 					details);
 
@@ -200,13 +203,10 @@ public void showAddPlayerView() {
 			matchUpDetailsSubWindows.remove(matchUpID);
 		}
 	}
-
+	// pops up a subwindow to show player details
 	public void showPlayerCareerInfoSubWindow(long playerID) {
 		if (!playerCareerInfoSubWindows.containsKey(playerID)) {
 			PlayerCareerInfo playerInfo = DML.retrievePlayerCareerInfo(playerID);
-//					FakeDataWarehouse
-//					.getPlayerCareerInfo(playerID);
-
 			PlayerCareerInfoSubWindow playerWindow = new PlayerCareerInfoSubWindow(
 					playerInfo);
 
@@ -225,6 +225,7 @@ public void showAddPlayerView() {
 		return loggedInUser;
 	}
 
+	// set buttons visibility on login
 	public void setLoggedIn(LMUserDetails loggedUser) {
 		login.setLoggedIn(loggedUser);
 
@@ -234,12 +235,6 @@ public void showAddPlayerView() {
 		}
 
 		loggedInUser = loggedUser;
-		// System.out.println("user email: "
-		// + loggedInUser.getUserData().getEmail());
-		// System.out.println("is secretary: " + loggedInUser.isSectretary());
-		// System.out.println("is manager: " + loggedInUser.isManager());
-		// System.out.println("is club manager: "
-		// + (loggedInUser.getManagedClubID() != -1));
 	}
 
 	public void setUnlogged() {
@@ -252,15 +247,20 @@ public void showAddPlayerView() {
 		loggedInUser = null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void setUpContent() {
-//		FakeDataWarehouse.initFakeData();
+		// the whole window
+		mainLayout = new VerticalLayout();
+		// the title pane
+		headerLayout = new HorizontalLayout();
+		// the content pane
+		bodyLayout = new HorizontalLayout();
+		// the menu pane
+		leftBar = new VerticalLayout();
 
 		loggedInUser = null;
-
-		mainLayout = new VerticalLayout();
-
-		headerLayout = new HorizontalLayout();
-
+		
+		// get FICK logo
 		String basepath = VaadinService.getCurrent().getBaseDirectory()
 				.getAbsolutePath();
 		FileResource resource = new FileResource(new File(basepath
@@ -280,27 +280,25 @@ public void showAddPlayerView() {
 
 		mainLayout.addComponent(headerLayout);
 
-		bodyLayout = new HorizontalLayout();
-
-		leftBar = new VerticalLayout();
-
-		// Create the Tree,a dd to layout
+		// create the tournament menu tree
 		final Tree tree = new Tree("Tornei recenti");
-
+		
+		// the data needed for drawing the menu
 		Map<TournamentEssentials, List<MatchDay>> days = DML.retrieveAllMatchDays();
 		List<TournamentEssentials> tournaments = new ArrayList<TournamentEssentials>();
 		tournaments.addAll(0, days.keySet());
 		Collections.sort(tournaments);
 
+		// data binding for the menu
 		final HierarchicalContainer treeCont = new HierarchicalContainer();
 		treeCont.addContainerProperty("t_year", Integer.class, null);
 		treeCont.addContainerProperty("t_name", String.class, null);
 		treeCont.addContainerProperty("d_id", String.class, null);
-		
+
 		treeCont.addContainerProperty("caption", String.class, null);
 
 		for (TournamentEssentials t : tournaments) {
-			// insert and update object
+			// insert data in the tree
 			Object parent_id = treeCont.addItem();
 			treeCont.getItem(parent_id).getItemProperty("t_name").setValue(t.getName());
 			treeCont.getItem(parent_id).getItemProperty("t_year").setValue(t.getYear());
@@ -312,37 +310,34 @@ public void showAddPlayerView() {
 				String start_day = new SimpleDateFormat("dd").format((Date)day.getStartDate());
 				String end_day = new SimpleDateFormat("dd/MM").format((Date)day.getEndDate());
 				String caption = start_day + "-" + end_day + " - " + day.getName();
-				
+
 				Object child_id = treeCont.addItem();
 				treeCont.getItem(child_id).getItemProperty("d_id").setValue(d_id);
 				treeCont.getItem(child_id).getItemProperty("caption").setValue(caption);
-				
+
 				treeCont.setParent(child_id, parent_id);
 				treeCont.setChildrenAllowed(child_id, false);
 			}
-			// Expand the subtree.
+			// collapse the subtree
 			tree.collapseItem(parent_id);
 		}
-
+		
+		// set the binding between the data container and the tree
 		tree.setContainerDataSource(treeCont);
+		// specify the property to be used as caption
 		tree.setItemCaptionPropertyId("caption");
 		tree.setItemCaptionMode(ItemCaptionMode.PROPERTY);
 
-
-		// Cause valueChange immediately when the user selects
+		// value changes immediately when the user selects
 		tree.setImmediate(true);
 
-		// Set tree to show the 'name' property as caption for items
-		//tree.setItemCaptionPropertyId(ExampleUtil.hw_PROPERTY_NAME);
-		//tree.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-		
-		
+		// determine what happens when a value changes (the user clicks)
 		tree.addValueChangeListener(new ValueChangeListener() {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				Object id = event.getProperty().getValue(); 
 				if (id != null){
-					
+
 					if (treeCont.getItem(id).getItemProperty("t_name").getValue() == null){
 						showMatchDayCalendarView((String) treeCont.getItem(id).getItemProperty("d_id").getValue());
 					} else {
@@ -357,11 +352,11 @@ public void showAddPlayerView() {
 
 		allTournamentsButton = new Button("All Tournaments",
 				new ClickListener() {
-					@Override
-					public void buttonClick(ClickEvent event) {
-						showTournamentList();
-					}
-				});
+			@Override
+			public void buttonClick(ClickEvent event) {
+				showTournamentList();
+			}
+		});
 		leftBar.addComponent(allTournamentsButton);
 
 		allPlayersButton = new Button("All Players", new ClickListener() {
@@ -403,6 +398,7 @@ public void showAddPlayerView() {
 		addOwnershipButton.setVisible(false);
 
 		Label leftBarSpacer = new Label();
+		leftBar.setMargin(new MarginInfo(false, false, false, true));
 		leftBar.addComponent(leftBarSpacer);
 		leftBar.setExpandRatio(leftBarSpacer, 1);
 		leftBar.setWidth("250px");
@@ -410,7 +406,7 @@ public void showAddPlayerView() {
 		bodyLayout.addComponent(leftBar);
 
 		mainAreaLayout = new VerticalLayout();
-		mainAreaLayout.addComponent(new Label("Main Area Layout"));
+		//mainAreaLayout.addComponent(new Label("Main Area Layout"));
 		mainAreaLayout.setSizeFull();
 
 		bodyLayout.addComponent(mainAreaLayout);

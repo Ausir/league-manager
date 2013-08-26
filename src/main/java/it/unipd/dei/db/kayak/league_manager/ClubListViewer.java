@@ -24,9 +24,7 @@ public class ClubListViewer {
 	private List<Club> clubList;
 
 	public ClubListViewer() {
-		clubList = new ArrayList<Club>(DML.retrieveAllClubs()
-				//FakeDataWarehouse.getClubs()
-				);
+		clubList = new ArrayList<Club>(DML.retrieveAllClubs());
 
 		this.setUpContent();
 	}

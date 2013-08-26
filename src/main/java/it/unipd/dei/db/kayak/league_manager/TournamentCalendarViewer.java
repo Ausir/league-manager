@@ -1,5 +1,6 @@
 package it.unipd.dei.db.kayak.league_manager;
 
+import it.unipd.dei.db.kayak.league_manager.data.MatchDay;
 import it.unipd.dei.db.kayak.league_manager.data.MatchDayDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.Tournament;
@@ -21,11 +22,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+// builds the layout for showing the list of match days and matches in a tournament
 public class TournamentCalendarViewer {
 	// private fields
 	private VerticalLayout mainLayout;
@@ -38,7 +39,7 @@ public class TournamentCalendarViewer {
 		// order match days by date
 		Collections.sort(tournamentDetails.getMatchDayDetails(),
 				new MatchDayDetailsCalendarComparator());
-		
+
 		this.setUpContent();
 	}
 
@@ -47,85 +48,76 @@ public class TournamentCalendarViewer {
 		mainLayout.setMargin(new MarginInfo(true, true, true, true));
 
 		Tournament tournament = tournamentDetails.getTournament();
-		List<MatchDayDetails> matchDayDetails = tournamentDetails
-				.getMatchDayDetails();
-		
-		String tCaption = tournament.getName() + " " + tournament.getYear()
-				+ " max age: " + tournament.getMaxAge() + " ";
-		tCaption += tournament.getSex();
-		mainLayout.addComponent(new Label(tCaption));
+
+		// prepare tournament heading
+		String tCaption = "<span style = 'font-size:200%'>" + tournament.getName() + " " + tournament.getYear() + "</span>";
+		mainLayout.addComponent(new Label(tCaption, ContentMode.HTML));
+
+		// insert gap after tournament name
+		Label gap = new Label();
+		gap.setHeight("1em");
+		mainLayout.addComponent(gap);
 
 		VerticalLayout tLayout = new VerticalLayout();
 		tLayout.setMargin(new MarginInfo(false, false, false, true));
 		mainLayout.addComponent(tLayout);
 
 		VerticalLayout mDayLayout = null;
-		String mDayID = "";
 		int mDayNum;
 
-		int mUpIdx = 0;
-		VerticalLayout phaseLayout = null;
 		GridLayout grid = null;
 		String phaseName = "";
-
+		
+		// iterate over match days
 		for (int i = 0; i < tournamentDetails.getMatchDayDetails().size(); ++i) {
 			MatchDayDetails mDayDetails = tournamentDetails
 					.getMatchDayDetails().get(i);
-			mDayID = mDayDetails.getMatchDay().getID();
+			MatchDay day = mDayDetails.getMatchDay();
 			mDayNum = mDayDetails.getMatchDay().getNum();
-			
-			String dayString = "Day "
-					+ (tournamentDetails.getMatchDayDetails().size() - i)
-					+ ": " + mDayDetails.getMatchDay().getStartDate();
-			if (mDayDetails.getMatchDay().getStartDate()
-					.compareTo(mDayDetails.getMatchDay().getEndDate()) != 0) {
-				dayString += " - " + mDayDetails.getMatchDay().getEndDate();
-			}
 
-			dayString += " managed by " + mDayDetails.getOrganizerClubName()
-					+ " at " + mDayDetails.getLocationName();
-			tLayout.addComponent(new Label(dayString));
+			// prepare match day caption
+			String start_day = new SimpleDateFormat("dd").format((Date)day.getStartDate());
+			String end_day = new SimpleDateFormat("dd/MM").format((Date)day.getEndDate());
+			String caption = "<span style = 'font-size:130%'>" 
+					+ start_day + "-" + end_day + " - <b>" + day.getName() + "</b> - " + mDayDetails.getLocationName() + "</span>" ;
+			tLayout.addComponent(new Label(caption, ContentMode.HTML));
 
 			mDayLayout = new VerticalLayout();
-			mDayLayout.setMargin(new MarginInfo(false, false, false, true));
+			mDayLayout.setMargin(new MarginInfo(false, false, true, true));
 
 			tLayout.addComponent(mDayLayout);
 
 			List<MatchUpResult> matches = tournamentDetails.getMatchUpResults().get(mDayNum);
 			Collections.sort(matches,
 					new MatchUpPhaseComparator());
-			
+
 			phaseName = "";
-			
+
+			// iterate over matches
 			for (MatchUpResult mUpRes : matches) {
+				// phase name has changed, prepare a new subsection
 				if (!mUpRes.getTournamentPhaseName().equals(phaseName)) {
-										
+
 					phaseName = mUpRes.getTournamentPhaseName();
 					mDayLayout.addComponent(new Label("<b>" + phaseName + "</b>", ContentMode.HTML));
 
-					//phaseLayout = new VerGridLayout ticalLayout();
-					//phaseLayout.setMargin(new MarginInfo(false, false, false,
-					//		true));
-
+					// prepare a new grid layout
 					grid = new GridLayout(6,1);
 					mDayLayout.addComponent(grid);
 					mDayLayout.setSpacing(true);
-					grid.setWidth("70%");
+					grid.setWidth("85%");
 
+					// set grid width details
 					grid.setColumnExpandRatio(0, 0.2f);
 					grid.setColumnExpandRatio(1, 5);
 					grid.setColumnExpandRatio(2, 5);
 					grid.setColumnExpandRatio(3, 1);
 					grid.setColumnExpandRatio(4, 1);
 					grid.setColumnExpandRatio(5, 1);
-					
-					
-					
 					grid.setMargin(new MarginInfo(false, false, false, true));
 				}
 
-				//HorizontalLayout resultLine = new HorizontalLayout();
-
+				// prepare icon
 				final String mUpID = mUpRes.getMatchUpID();
 				Button btn = new Button("", new ClickListener() {
 					@Override
@@ -140,19 +132,9 @@ public class TournamentCalendarViewer {
 				FileResource resource = new FileResource(new File(basepath
 						+ "/WEB-INF/images/magnifier.png"));
 				btn.setIcon(resource);
-
-				//resultLine.addComponent(btn);
-
-				//Label smallSpacer = new Label("");
-				//smallSpacer.setWidth("10px");
-				//resultLine.addComponent(smallSpacer);
-
-				//Label resultLabel = new Label(mUpRes.getCompactString());
-				//resultLine.addComponent(resultLabel);
-				//resultLine.setExpandRatio(resultLabel, 1);
-
-				//phaseLayout.addComponent(resultLine);
 				btn.setWidth("45");
+				
+				// insert elements into the grid
 				grid.addComponent(btn);
 				grid.addComponent(new Label (mUpRes.getTeamHostName()));
 				grid.addComponent(new Label (mUpRes.getTeamGuestName()));
@@ -160,7 +142,7 @@ public class TournamentCalendarViewer {
 				grid.addComponent(new Label (new SimpleDateFormat("dd/MM").format((Date)mUpRes.getDate())));
 				grid.addComponent(new Label (mUpRes.getTime().toString()));
 			}
-			
+
 		}
 
 		Label spacer = new Label();

@@ -18,6 +18,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+// create layout for all-players view
 public class PlayerListViewer {
 	// private fields
 	private VerticalLayout mainLayout;

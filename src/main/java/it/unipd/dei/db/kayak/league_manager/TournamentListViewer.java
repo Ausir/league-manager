@@ -17,6 +17,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+// create the layout for the all-tournaments table
 public class TournamentListViewer {
 	// private fields
 	private VerticalLayout mainLayout;
@@ -25,8 +26,7 @@ public class TournamentListViewer {
 
 	public TournamentListViewer() {
 		tournamentList = new ArrayList<Tournament>(DML.retrieveAllTournaments()
-//				FakeDataWarehouse.getTournaments()
-				);
+			);
 
 		this.setUpContent();
 	}
@@ -41,9 +41,11 @@ public class TournamentListViewer {
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
 
+		// create the table itself
 		final TournamentTable tournamentTable = new TournamentTable(
 				tournamentList);
 
+		// create filter for search
 		HorizontalLayout controlLayout = new HorizontalLayout();
 		final TextField filterField = new TextField();
 		controlLayout.addComponent(filterField);
@@ -66,7 +68,8 @@ public class TournamentListViewer {
 
 		tableLayout.addComponent(tournamentTable);
 		tableLayout.setExpandRatio(tournamentTable, 1);
-		tournamentTable.setSizeFull();
+		//tournamentTable.setSizeFull();
+		tournamentTable.setWidth("100%");
 
 		mainLayout.addComponent(tableLayout);
 		mainLayout.setExpandRatio(tableLayout, 1);

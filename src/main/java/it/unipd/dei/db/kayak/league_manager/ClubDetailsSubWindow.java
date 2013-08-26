@@ -2,7 +2,6 @@ package it.unipd.dei.db.kayak.league_manager;
 
 import it.unipd.dei.db.kayak.league_manager.data.ClubDetails;
 import it.unipd.dei.db.kayak.league_manager.data.LMUser;
-import it.unipd.dei.db.kayak.league_manager.data.Player;
 
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Label;
@@ -13,6 +12,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
+// create subwindow containing club details
 public class ClubDetailsSubWindow {
 	private Window window;
 

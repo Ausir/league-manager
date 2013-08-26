@@ -18,6 +18,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 
+// table for player presentation with filter over name
 public class PlayerTable extends Table {
 	private StringPropertyFilter nameFilter;
 
