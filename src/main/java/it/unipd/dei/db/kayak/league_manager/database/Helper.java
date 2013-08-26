@@ -67,7 +67,7 @@ public class Helper {
 			}
 
 		} catch (SQLException ex) {
-			Logger lgr = Logger.getLogger(DDL.class.getName());
+			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
 
 		} finally {
@@ -83,7 +83,7 @@ public class Helper {
 				}
 
 			} catch (SQLException ex) {
-				Logger lgr = Logger.getLogger(DDL.class.getName());
+				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 			}
 		}
@@ -105,31 +105,5 @@ public class Helper {
 			e.printStackTrace();
 		}
 		return md.digest();
-	}
-
-	public static Connection getConnection() {
-		try {
-			if (CON == null) {
-				CON = DriverManager.getConnection(Helper.URL, Helper.USER,
-						Helper.PASSWORD);
-			}
-		} catch (SQLException e) {
-			Logger lgr = Logger.getLogger(Helper.class.getName());
-			lgr.log(Level.SEVERE, e.getMessage(), e);
-		}
-
-		return CON;
-	}
-
-	public static void closeConnection() {
-		try {
-			if (CON != null) {
-				CON.close();
-			}
-
-		} catch (SQLException ex) {
-			Logger lgr = Logger.getLogger(DML.class.getName());
-			lgr.log(Level.SEVERE, ex.getMessage(), ex);
-		}
 	}
 }

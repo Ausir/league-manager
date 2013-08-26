@@ -15,6 +15,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class ClubListViewer {
@@ -24,7 +25,8 @@ public class ClubListViewer {
 	private List<Club> clubList;
 
 	public ClubListViewer() {
-		clubList = new ArrayList<Club>(DML.retrieveAllClubs()
+		MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+		clubList = new ArrayList<Club>(DML.retrieveAllClubs(ui.getConnection())
 				//FakeDataWarehouse.getClubs()
 				);
 

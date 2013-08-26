@@ -97,7 +97,8 @@ public class AddOwnershipView {
 					Notification.show("Error in input values");
 				}
 
-				if (!DML.addOwnership(ownership)) {
+				MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+				if (!DML.addOwnership(ui.getConnection(), ownership)) {
 					Notification.show("Error during commit");
 				} else {
 					Notification.show("Ownership correctly added");

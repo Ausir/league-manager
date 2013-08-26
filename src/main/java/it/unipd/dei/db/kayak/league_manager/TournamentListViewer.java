@@ -15,6 +15,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class TournamentListViewer {
@@ -24,7 +25,8 @@ public class TournamentListViewer {
 	private List<Tournament> tournamentList;
 
 	public TournamentListViewer() {
-		tournamentList = new ArrayList<Tournament>(DML.retrieveAllTournaments()
+		MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+		tournamentList = new ArrayList<Tournament>(DML.retrieveAllTournaments(ui.getConnection())
 //				FakeDataWarehouse.getTournaments()
 				);
 

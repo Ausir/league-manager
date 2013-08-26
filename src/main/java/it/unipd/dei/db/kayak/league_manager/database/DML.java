@@ -38,17 +38,15 @@ import java.util.logging.Logger;
 import com.vaadin.ui.Notification;
 
 public class DML {
-	public static boolean addPlayer(Player player) {
+	public static boolean addPlayer(Connection con, Player player) {
 		if (player == null) {
 			return false;
 		}
 
-		Connection con = null;
 		PreparedStatement pst = null;
 		int returnValue = 0;
 
 		try {
-			con = Helper.getConnection();
 			String stm = "insert into lm.Player values (?, ?, ?);";
 			pst = con.prepareStatement(stm);
 			pst.setLong(1, player.getID());
@@ -57,7 +55,7 @@ public class DML {
 
 			returnValue = pst.executeUpdate();
 		} catch (SQLException ex) {
-			Logger lgr = Logger.getLogger(DDL.class.getName());
+			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -71,7 +69,7 @@ public class DML {
 				// }
 
 			} catch (Exception ex) {
-				Logger lgr = Logger.getLogger(DDL.class.getName());
+				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 				Notification.show("Connection Problem", ex.getMessage(),
 						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -81,17 +79,15 @@ public class DML {
 		return true;
 	}
 
-	public static boolean addOwnership(Ownership ownership) {
+	public static boolean addOwnership(Connection con, Ownership ownership) {
 		if (ownership == null) {
 			return false;
 		}
 
-		Connection con = null;
 		PreparedStatement pst = null;
 		int returnValue = 0;
 
 		try {
-			con = Helper.getConnection();
 			// id | player_id | club_id | isborrowed | start_date | end_date
 			String stm = "insert into lm.Ownership (player_id, club_id, isborrowed, start_date,  end_date) "
 					+ "values (?, ?, ?, ?, ?);";
@@ -104,7 +100,7 @@ public class DML {
 
 			returnValue = pst.executeUpdate();
 		} catch (SQLException ex) {
-			Logger lgr = Logger.getLogger(DDL.class.getName());
+			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -118,7 +114,7 @@ public class DML {
 				// }
 
 			} catch (Exception ex) {
-				Logger lgr = Logger.getLogger(DDL.class.getName());
+				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 				Notification.show("Connection Problem", ex.getMessage(),
 						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -128,8 +124,7 @@ public class DML {
 		return true;
 	}
 
-	public static boolean setLMUserPassword(String userEmail, byte[] password) {
-		Connection con = null;
+	public static boolean setLMUserPassword(Connection con, String userEmail, byte[] password) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		// EXTODO: lasciare un byte libero, copiare solo i primi 31
@@ -145,14 +140,13 @@ public class DML {
 		}
 
 		try {
-			con = Helper.getConnection();
 			String stm = "update lm.LMUser set password = ? where user_email = ?;";
 			pst = con.prepareStatement(stm);
 			pst.setString(1, new String(password, "UTF-8"));
 			pst.setString(2, userEmail);
 			rs = pst.executeQuery();
 		} catch (Exception ex) {
-			Logger lgr = Logger.getLogger(DDL.class.getName());
+			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -169,7 +163,7 @@ public class DML {
 				// }
 
 			} catch (Exception ex) {
-				Logger lgr = Logger.getLogger(DDL.class.getName());
+				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 				Notification.show("Connection Problem", ex.getMessage(),
 						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -179,8 +173,7 @@ public class DML {
 		return true;
 	}
 
-	public static LMUserDetails retrieveLMUserDetails(String userEmail) {
-		Connection con = null;
+	public static LMUserDetails retrieveLMUserDetails(Connection con, String userEmail) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		LMUserDetails ret = null;
@@ -189,7 +182,6 @@ public class DML {
 
 			// con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			// Helper.PASSWORD);
-			con = Helper.getConnection();
 			String stm = "select u.user_email as email, u.password as password, u.phone_number as phone, u.first_name as first_name, "
 					+ "u.last_name as last_name, u.birthday as birthday, s.user_email as s_email, "
 					+ "m.user_email as m_email, c.id as club_id, c.short_name as club_name "
@@ -230,7 +222,7 @@ public class DML {
 			}
 
 		} catch (Exception ex) {
-			Logger lgr = Logger.getLogger(DDL.class.getName());
+			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -249,7 +241,7 @@ public class DML {
 				// }
 
 			} catch (Exception ex) {
-				Logger lgr = Logger.getLogger(DDL.class.getName());
+				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 				Notification.show("Connection Problem", ex.getMessage(),
 						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -258,15 +250,13 @@ public class DML {
 		return ret;
 	}
 
-	public static List<Club> retrieveAllClubs() {
-		Connection con = null;
+	public static List<Club> retrieveAllClubs(Connection con) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		List<Club> ret = null;
 
 		try {
 
-			con = Helper.getConnection();
 			pst = con
 					.prepareStatement("SELECT DISTINCT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website "
 							+ "FROM lm.callsup AS l INNER JOIN lm.club AS c ON c.id = l.club_id "
@@ -288,7 +278,7 @@ public class DML {
 			}
 
 		} catch (SQLException ex) {
-			Logger lgr = Logger.getLogger(DDL.class.getName());
+			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -307,7 +297,7 @@ public class DML {
 //				}
 
 			} catch (SQLException ex) {
-				Logger lgr = Logger.getLogger(DDL.class.getName());
+				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 				Notification.show("Connection Problem", ex.getMessage(),
 						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -316,15 +306,13 @@ public class DML {
 		return ret;
 	}
 
-	public static List<Player> retrieveAllPlayers() {
-		Connection con = null;
+	public static List<Player> retrieveAllPlayers(Connection con) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		List<Player> ret = null;
 
 		try {
 
-			con = Helper.getConnection();
 			// gets all players that were sometimes included in a line-up
 			pst = con.prepareStatement("SELECT DISTINCT o.player_id, p.name, p.birthday, p.id " +
 					"FROM lm.callsup AS c INNER JOIN lm.ownership AS o ON c.ownership_id = o.id " +
@@ -343,7 +331,7 @@ public class DML {
 			}
 
 		} catch (SQLException ex) {
-			Logger lgr = Logger.getLogger(DDL.class.getName());
+			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
 
 		} finally {
@@ -357,16 +345,15 @@ public class DML {
 				}
 
 			} catch (SQLException ex) {
-				Logger lgr = Logger.getLogger(DDL.class.getName());
+				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 			}
 		}
 		return ret;
 	}
 	
-	public static List<OwnershipResult> retrieveOwnershipsFromPlayer(
+	public static List<OwnershipResult> retrieveOwnershipsFromPlayer(Connection con, 
 			long playerId) {
-		Connection con = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -375,7 +362,6 @@ public class DML {
 		try {
 			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			//		Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT o.id as ownership_id, " +
 					"c.id as club_id, " +
@@ -428,8 +414,7 @@ public class DML {
 	}
 
 	// inizialmente volevo spezzare questo metodo in 2 parti ma rischia di portare a inconsistenze
-	public static List<EventResult> retrieveEventsFromPlayer(long playerId) {
-		Connection con = null;
+	public static List<EventResult> retrieveEventsFromPlayer(Connection con, long playerId) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -438,7 +423,6 @@ public class DML {
 		try {
 //			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 //					Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT p.name as player_name, e.id as event_id, e.match_id, a.name as action_name, e.instant, e.fraction, a.display_name, cu.player_number, c.name as club_name, c.id as club_id " +
 					"FROM lm.Event as e " +
@@ -499,8 +483,7 @@ public class DML {
 		return ret;
 	}
 
-	public static List<EventResult> retrieveEventsFromMatchUp(String matchUpId) {
-		Connection con = null;
+	public static List<EventResult> retrieveEventsFromMatchUp(Connection con, String matchUpId) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -509,7 +492,6 @@ public class DML {
 		try {
 //			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 //					Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT e.id as event_id, e.match_id, a.name as action_name, p.id as player_id, o.club_id, p.name, cu.player_number, e.instant, e.fraction, a.display_name, c.name as club_name " +
 					"FROM lm.event as e " +
@@ -580,8 +562,7 @@ public class DML {
 	 * richiede matchUpId e clubName per rendere più snelle le query risparmiando un inner join
 	 * @return
 	 */
-	private static List<PlayerMatchUpInfo> retrieveLineUpDetails(String lineUpId, String matchUpId, String clubName){
-		Connection con = null;
+	private static List<PlayerMatchUpInfo> retrieveLineUpDetails(Connection con, String lineUpId, String matchUpId, String clubName){
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -589,7 +570,6 @@ public class DML {
 		try {
 //			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 //					Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT o.player_id, o.club_id, p.name, cu.player_number " +
 					"FROM lm.LineUp as lu " +
@@ -646,8 +626,7 @@ public class DML {
 	 * @param numberOfTournaments
 	 * @return
 	 */
-	public static List<Tournament> retrieveAllTournaments() {
-		Connection con = null;
+	public static List<Tournament> retrieveAllTournaments(Connection con) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -659,7 +638,6 @@ public class DML {
 		try {
 //			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 //					Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT name, year, max_age, sex, organizer "
 					+ "FROM lm.Tournament";
@@ -707,8 +685,7 @@ public class DML {
 		return ret;
 	}
 	
-	public static MatchUpDetails retrieveMatchUpDetails(String matchUpId) {
-		Connection con = null;
+	public static MatchUpDetails retrieveMatchUpDetails(Connection con, String matchUpId) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -717,7 +694,6 @@ public class DML {
 		try {
 //			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 //					Helper.PASSWORD);
-			con = Helper.getConnection();
 			String stm = "SELECT luh.id as lineup_host, " +
 					"lug.id as lineup_guest, " +
 					"mu.pitch_name, " +
@@ -789,10 +765,10 @@ public class DML {
 				MatchUpResult result = new MatchUpResult(matchUpId, matchDayID, matchDayDate, matchDayNum, tournamentPhaseName, tournamentPhaseNum, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time);
 				// ora faccio le query per i campi rimanenti: eventList, hostLineUp, guestLineUp
 				// per ottenere le lineup passo il relativo id ma anche il nome del club e l'id del matchup che ho già calcolato in precedenza per rendere meno onerose le query
-				List<PlayerMatchUpInfo> hostLineUp = retrieveLineUpDetails(luHost, matchUpId, teamHostName);
-				List<PlayerMatchUpInfo> guestLineUp = retrieveLineUpDetails(luGuest, matchUpId, teamGuestName);;
+				List<PlayerMatchUpInfo> hostLineUp = retrieveLineUpDetails(con, luHost, matchUpId, teamHostName);
+				List<PlayerMatchUpInfo> guestLineUp = retrieveLineUpDetails(con, luGuest, matchUpId, teamGuestName);;
 				// per rendere le query più snelle potrei passare al metodo anche le lineup
-				List<EventResult> eventList = retrieveEventsFromMatchUp(matchUpId);
+				List<EventResult> eventList = retrieveEventsFromMatchUp(con, matchUpId);
 				ret = new MatchUpDetails(luHost, luGuest, pitchName, locationID, result, locationName, eventList, hostLineUp, guestLineUp, lineman1, lineman2, timekeeper1, timekeeper2, scorekeeper, referee1, referee2);
 			}
 
@@ -826,15 +802,13 @@ public class DML {
 	}
 
 
-	public static MatchDayMatches retrieveMatches(String md_id){
-		Connection con = null;
+	public static MatchDayMatches retrieveMatches(Connection con, String md_id){
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<MatchUpResult> results = null;
 		MatchDayMatches ret = null;
 		try {
-			con = Helper.getConnection();
 
 			String stm = "SELECT tp.num, mu.id as match_id, mu.match_day, md.start_date as md_start_date, md.num as md_num, mu.tournament_phase_name AS t_phase_name, mu.tournament_name, mu.tournament_phase_year , mu.start_date, mu.start_time, mu.goals_host, mu.goals_guest, ch.id as host_id, ch.name as host_name, cg.id as guest_id, cg.name as guest_name " +
 					"FROM lm.matchup AS mu " +
@@ -898,17 +872,15 @@ public class DML {
 				lgr.log(Level.SEVERE, ex.getMessage(), ex);
 			}
 		}
-		return new MatchDayMatches(retrieveMatchDay(md_id), results);
+		return new MatchDayMatches(retrieveMatchDay(con, md_id), results);
 	}
 	
-	public static MatchDayDetails retrieveMatchDay(String md_id){
-		Connection con = null;
+	public static MatchDayDetails retrieveMatchDay(Connection con, String md_id){
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		MatchDayDetails ret = null;
 		try {
-			con = Helper.getConnection();
 
 			String stm = "SELECT md.id, md.num, md.name, md.start_date, md.end_date, md.club, md.location, md.tournament_name, md.tournament_year, l.city AS lcity, l.name AS lname, c.name AS club_name " +
 					"FROM lm.matchday AS md " +
@@ -959,8 +931,7 @@ public class DML {
 		return ret;
 	}
 
-	public static List<PlayerCareerEvent> retrievePlayerCareerEvents(long playerId){
-		Connection con = null;
+	public static List<PlayerCareerEvent> retrievePlayerCareerEvents(Connection con, long playerId){
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -969,7 +940,6 @@ public class DML {
 		try {
 //			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 //					Helper.PASSWORD);
-			con = Helper.getConnection();
 			String stm = "SELECT mu.tournament_name, " +
 					"mu.tournament_phase_year, " +
 					"mu.match_day, e.match_id, " +
@@ -1063,16 +1033,13 @@ public class DML {
 		return ret;
 	}
 
-	private static Club retrieveClubFromLineUp(String lineUpId) {
-		Connection con = null;
+	private static Club retrieveClubFromLineUp(Connection con, String lineUpId) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		Club ret = null;
 
 		try {
-			con = DriverManager.getConnection(Helper.URL, Helper.USER,
-					Helper.PASSWORD);
 			String stm = "SELECT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website "
 					+ "FROM lm.Lineup as lu "
 					+ "INNER JOIN lm.Club as c ON lu.club_id=c.id "
@@ -1117,14 +1084,12 @@ public class DML {
 		return ret;
 	}
 
-	public static Map<Integer, List<MatchUpResult>> retrieveMatchResultsFromTournament(String tournamentName, int tournamentYear){
-		Connection con = null;
+	public static Map<Integer, List<MatchUpResult>> retrieveMatchResultsFromTournament(Connection con, String tournamentName, int tournamentYear){
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		Map<Integer, List<MatchUpResult>> ret = null;
 		try {
-			con = Helper.getConnection();
 
 			String stm = "SELECT tp.num, mu.id as match_id, mu.match_day, md.start_date as md_start_date, md.num as md_num, mu.tournament_phase_name AS t_phase_name, mu.start_date, mu.start_time, mu.goals_host, mu.goals_guest, ch.id as host_id, ch.name as host_name, cg.id as guest_id, cg.name as guest_name " +
 					"FROM lm.matchup AS mu " +
@@ -1195,15 +1160,13 @@ public class DML {
 		return ret;
 	}
 	
-	public static Map<TournamentEssentials, List<MatchDay>> retrieveAllMatchDays() {
-		Connection con = null;
+	public static Map<TournamentEssentials, List<MatchDay>> retrieveAllMatchDays(Connection con) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		Map<Integer, Map<String, TournamentEssentials>> tournaments = null;
 		Map<TournamentEssentials, List<MatchDay>> ret = null;
 		try {
-			con = Helper.getConnection();
 
 			String stm = "SELECT md.id, md.num AS md_num, md.name AS md_name, md.start_date, md.end_date, md.club, md.location, t.name AS t_name, t.year, t.num AS t_num " +
 					"FROM lm.MatchDay as md " +
@@ -1266,8 +1229,7 @@ public class DML {
 		return ret;
 	}
 
-	public static List<Location> retrieveAllLocations() {
-		Connection con = null;
+	public static List<Location> retrieveAllLocations(Connection con) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -1275,7 +1237,6 @@ public class DML {
 		try {
 			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			//		Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT l.id, l.city, l.name " +
 					"FROM lm.Location as l";
@@ -1322,8 +1283,7 @@ public class DML {
 		return ret;
 	}
 	
-	public static List<Player> retrievePlayersFromClub(long clubId) {
-		Connection con = null;
+	public static List<Player> retrievePlayersFromClub(Connection con, long clubId) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -1331,7 +1291,6 @@ public class DML {
 		try {
 			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			//		Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT DISTINCT p.id, p.name, p.birthday " +
 					"FROM lm.Club as c " +
@@ -1384,8 +1343,7 @@ public class DML {
 		return ret;
 	}
 	
-	public static List<LMUser> retrieveManagersFromClub(long clubId) {
-		Connection con = null;
+	public static List<LMUser> retrieveManagersFromClub(Connection con, long clubId) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -1393,7 +1351,6 @@ public class DML {
 		try {
 			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			//		Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT u.user_email, u.password, u.phone_number, u.first_name, u.last_name, u.birthday " +
 					"FROM lm.Coordinates as c " +
@@ -1446,8 +1403,7 @@ public class DML {
 		return ret;
 	}
 	
-	public static ClubDetails retrieveClubDetails(long clubId){
-		Connection con = null;
+	public static ClubDetails retrieveClubDetails(Connection con, long clubId){
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -1455,7 +1411,6 @@ public class DML {
 		try {
 			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			//		Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT c.name, c.phone_number, c.email, c.address, c.website " +
 					"FROM lm.Club as c " +
@@ -1470,8 +1425,8 @@ public class DML {
 				String address = rs.getString("address");
 				String email = rs.getString("email");
 				String website = rs.getString("website");
-				List<Player> clubPlayers = retrievePlayersFromClub(clubId);
-				List<LMUser> clubManagers = retrieveManagersFromClub(clubId);
+				List<Player> clubPlayers = retrievePlayersFromClub(con, clubId);
+				List<LMUser> clubManagers = retrieveManagersFromClub(con, clubId);
 				ret = new ClubDetails(clubId, name, phone, address, email,
 						website, clubPlayers, clubManagers);
 			}
@@ -1503,8 +1458,7 @@ public class DML {
 		return ret;
 	}
 	
-	public static EventResult retrieveEventResult(long eventId){
-		Connection con = null;
+	public static EventResult retrieveEventResult(Connection con, long eventId){
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -1512,7 +1466,6 @@ public class DML {
 		try {
 			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			//		Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT p.id as player_id, e.match_id, c.id as club_id, p.name as player_name, c.name as club_name, cu.player_number, a.name as action_name, e.instant, e.fraction, a.display_name " +
 					"FROM lm.Event as e " +
@@ -1572,9 +1525,8 @@ public class DML {
 		return ret;
 	}
 	
-	public static PlayerCareerInfo retrievePlayerCareerInfo(long playerId){
+	public static PlayerCareerInfo retrievePlayerCareerInfo(Connection con, long playerId){
 
-		Connection con = null;
 		String stm = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
@@ -1584,7 +1536,6 @@ public class DML {
 
 			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			//		Helper.PASSWORD);
-			con = Helper.getConnection();
 			stm = "SELECT p.id, p.name, p.birthday FROM lm.Player as p "
 					+ "WHERE p.id=?";
 			pst = con.prepareStatement(stm);
@@ -1599,7 +1550,7 @@ public class DML {
 			}
 
 		} catch (SQLException ex) {
-			Logger lgr = Logger.getLogger(DDL.class.getName());
+			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.WARNING, ex.getMessage(), ex);
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
@@ -1618,18 +1569,17 @@ public class DML {
 //				}
 
 			} catch (SQLException ex) {
-				Logger lgr = Logger.getLogger(DDL.class.getName());
+				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 			}
 		}
-		List<OwnershipResult> ownerships = retrieveOwnershipsFromPlayer(playerId);
-		List<PlayerCareerEvent> careerEvents = retrievePlayerCareerEvents(playerId);
+		List<OwnershipResult> ownerships = retrieveOwnershipsFromPlayer(con, playerId);
+		List<PlayerCareerEvent> careerEvents = retrievePlayerCareerEvents(con, playerId);
 		return new PlayerCareerInfo(playerData, ownerships, careerEvents);
 	}
 
-	private static List<MatchDayDetails> retrieveMatchDayDetailsFromTournament(
+	private static List<MatchDayDetails> retrieveMatchDayDetailsFromTournament(Connection con, 
 			String tournamentName, int tournamentYear){
-		Connection con = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -1637,7 +1587,6 @@ public class DML {
 		try {
 			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			//		Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT md.id, md.num, md.name, md.start_date, md.end_date, md.club, md.location, c.name as club_name,l.id as loc_id, l.name as loc_name " +
 					"FROM lm.MatchDay as md " +
@@ -1697,9 +1646,8 @@ public class DML {
 		return ret;
 	}
 	
-	public static TournamentDetails retrieveTournamentDetails(
+	public static TournamentDetails retrieveTournamentDetails(Connection con, 
 			String tournamentName, int tournamentYear) {
-		Connection con = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -1707,7 +1655,6 @@ public class DML {
 		try {
 			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
 			//		Helper.PASSWORD);
-			con = Helper.getConnection();
 
 			String stm = "SELECT t.max_age, t.sex, t.organizer " +
 					"FROM lm.Tournament as t " +
@@ -1723,8 +1670,8 @@ public class DML {
 				String organizerEmail = rs.getString("organizer");
 				
 				Tournament tournament = new Tournament(tournamentName, tournamentYear, maxAge, sex, organizerEmail);
-				List<MatchDayDetails> matchDayDetails = retrieveMatchDayDetailsFromTournament(tournamentName, tournamentYear);
-				Map<Integer, List<MatchUpResult>> matchUpResults = retrieveMatchResultsFromTournament(tournamentName, tournamentYear);
+				List<MatchDayDetails> matchDayDetails = retrieveMatchDayDetailsFromTournament(con, tournamentName, tournamentYear);
+				Map<Integer, List<MatchUpResult>> matchUpResults = retrieveMatchResultsFromTournament(con, tournamentName, tournamentYear);
 				ret = new TournamentDetails(tournament, matchDayDetails, matchUpResults);
 			}
 

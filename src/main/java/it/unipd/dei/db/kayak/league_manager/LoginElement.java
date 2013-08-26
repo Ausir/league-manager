@@ -64,7 +64,8 @@ public class LoginElement {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				String email = emailArea.getValue();
-				LMUserDetails user = DML.retrieveLMUserDetails(email);
+				MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+				LMUserDetails user = DML.retrieveLMUserDetails(ui.getConnection(), email);
 
 				if (user == null) {
 					// TODO: show notification about wrong login email

@@ -75,7 +75,8 @@ public class AddPlayerView {
 					Notification.show("Error in input values");
 				}
 
-				if (!DML.addPlayer(player)) {
+				MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+				if (!DML.addPlayer(ui.getConnection(), player)) {
 					Notification.show("Error during commit");
 				} else {
 					Notification.show("Player correctly added");

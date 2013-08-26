@@ -120,8 +120,8 @@ public class Home {
 			current = Visualizing.SINGLE_TOURNAMENT;
 
 			mainAreaLayout.removeAllComponents();
-
-			TournamentDetails tDetails = DML.retrieveTournamentDetails(tournamentName, tournamentYear);
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			TournamentDetails tDetails = DML.retrieveTournamentDetails(ui.getConnection(), tournamentName, tournamentYear);
 					//FakeDataWarehouse.getTournamentDetails(tournamentName, tournamentYear);
 
 			mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
@@ -138,7 +138,8 @@ public class Home {
 
 			mainAreaLayout.removeAllComponents();
 
-			MatchDayMatches mDetails = DML.retrieveMatches(matchday_id);
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			MatchDayMatches mDetails = DML.retrieveMatches(ui.getConnection(), matchday_id);
 
 			mainAreaLayout.addComponent(new MatchDayCalendarViewer(mDetails).getContent());
 		}
@@ -164,7 +165,8 @@ public void showAddPlayerView() {
 
 	public void showClubDetailsSubWindow(long clubID) {
 		if (!clubDetailsSubWindow.containsKey(clubID)) {
-			ClubDetails clubDetails = DML.retrieveClubDetails(clubID);
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			ClubDetails clubDetails = DML.retrieveClubDetails(ui.getConnection(), clubID);
 //					FakeDataWarehouse.getClubDetails(clubID);
 
 			ClubDetailsSubWindow detailsWindow = new ClubDetailsSubWindow(
@@ -183,7 +185,8 @@ public void showAddPlayerView() {
 
 	public void showMatchUpDetailsSubWindow(String matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
-			MatchUpDetails details = DML.retrieveMatchUpDetails(matchUpID); 
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			MatchUpDetails details = DML.retrieveMatchUpDetails(ui.getConnection(), matchUpID); 
 //					FakeDataWarehouse
 //					.getMatchUpDetails(matchUpID);
 
@@ -203,7 +206,8 @@ public void showAddPlayerView() {
 
 	public void showPlayerCareerInfoSubWindow(long playerID) {
 		if (!playerCareerInfoSubWindows.containsKey(playerID)) {
-			PlayerCareerInfo playerInfo = DML.retrievePlayerCareerInfo(playerID);
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			PlayerCareerInfo playerInfo = DML.retrievePlayerCareerInfo(ui.getConnection(), playerID);
 //					FakeDataWarehouse
 //					.getPlayerCareerInfo(playerID);
 
@@ -254,6 +258,8 @@ public void showAddPlayerView() {
 
 	private void setUpContent() {
 //		FakeDataWarehouse.initFakeData();
+		MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+		ui.initConnection();
 
 		loggedInUser = null;
 
@@ -286,8 +292,7 @@ public void showAddPlayerView() {
 
 		// Create the Tree,a dd to layout
 		final Tree tree = new Tree("Tornei recenti");
-
-		Map<TournamentEssentials, List<MatchDay>> days = DML.retrieveAllMatchDays();
+		Map<TournamentEssentials, List<MatchDay>> days = DML.retrieveAllMatchDays(ui.getConnection());
 		List<TournamentEssentials> tournaments = new ArrayList<TournamentEssentials>();
 		tournaments.addAll(0, days.keySet());
 		Collections.sort(tournaments);
@@ -427,6 +432,7 @@ public void showAddPlayerView() {
 	}
 
 	public void close(){
-		// TODO: cleanup
+		MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+		ui.closeConnection();
 	}
 }
