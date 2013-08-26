@@ -37,22 +37,36 @@ import java.util.logging.Logger;
 import com.vaadin.ui.Notification;
 
 public class DML {
+<<<<<<< HEAD
 	
 	/**
 	 * Inserts the specified player into the database, if the id is not yet in use.
 	 * @param player the object containing the player info
 	 * @return true if the insertion was successful, false otherwise
 	 */
-public static boolean addPlayer(Connection con, Player player) {
+	public static boolean addPlayer(Player player) {
 		// just check
 		if (player == null) {
 			return false;
 		}
+		
+		Connection con = null;
+=======
+	public static boolean addPlayer(Connection con, Player player) {
+		if (player == null) {
+			return false;
+		}
 
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
 			String stm = "INSERT INTO lm.Player VALUES (?, ?, ?);";
+=======
+			String stm = "insert into lm.Player values (?, ?, ?);";
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			pst = con.prepareStatement(stm);
 			pst.setLong(1, player.getID());
 			pst.setString(2, player.getName());
@@ -61,7 +75,11 @@ public static boolean addPlayer(Connection con, Player player) {
 			pst.executeUpdate();
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
+<<<<<<< HEAD
 			lgr.log(Level.WARNING, ex.getMessage(), ex);
+=======
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			return false;
@@ -70,7 +88,15 @@ public static boolean addPlayer(Connection con, Player player) {
 				if (pst != null) {
 					pst.close();
 				}
+<<<<<<< HEAD
 			} catch (SQLException ex) {
+=======
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 				Notification.show("Connection Problem", ex.getMessage(),
@@ -80,21 +106,35 @@ public static boolean addPlayer(Connection con, Player player) {
 		}
 		return true;
 	}
+<<<<<<< HEAD
 	
 	/**
 	 * Adds a new owenrship to the database.
 	 * @param ownership the ownership data to be inserted
 	 * @return true if the insertion was successful, false otherwise
 	 */
-public static boolean addOwnership(Connection con, Ownership ownership) {
+	public static boolean addOwnership(Ownership ownership) {
+		// just check
+=======
+
+	public static boolean addOwnership(Connection con, Ownership ownership) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		if (ownership == null) {
 			return false;
 		}
+
 		PreparedStatement pst = null;
 
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
 			String stm = "INSERT INTO lm.Ownership (player_id, club_id, isborrowed, start_date,  end_date) "
 					+ "VALUES (?, ?, ?, ?, ?);";
+=======
+			// id | player_id | club_id | isborrowed | start_date | end_date
+			String stm = "insert into lm.Ownership (player_id, club_id, isborrowed, start_date,  end_date) "
+					+ "values (?, ?, ?, ?, ?);";
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			pst = con.prepareStatement(stm);
 			pst.setLong(1, ownership.getPlayerID());
 			pst.setLong(2, ownership.getClubID());
@@ -105,7 +145,11 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 			pst.executeUpdate();
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
+<<<<<<< HEAD
 			lgr.log(Level.WARNING, ex.getMessage(), ex);
+=======
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			return false;
@@ -114,7 +158,15 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 				if (pst != null) {
 					pst.close();
 				}
+<<<<<<< HEAD
 			} catch (SQLException ex) {
+=======
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 				Notification.show("Connection Problem", ex.getMessage(),
@@ -124,7 +176,7 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 		}
 		return true;
 	}
-
+<<<<<<< HEAD
 	
 	/**
 	 * Updates the password for the specified user.
@@ -132,7 +184,12 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 	 * @param password the new password as sha32
 	 * @return true if the update was successful, false otherwise
 	 */
+	public static boolean setLMUserPassword(String userEmail, byte[] password) {
+		Connection con = null;
+=======
+
 	public static boolean setLMUserPassword(Connection con, String userEmail, byte[] password) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		if (password.length != 32) {
@@ -142,14 +199,23 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 		}
 
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
 			String stm = "UPDATE lm.LMUser SET password = ? WHERE user_email = ?;";
+=======
+			String stm = "update lm.LMUser set password = ? where user_email = ?;";
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			pst = con.prepareStatement(stm);
 			pst.setString(1, new String(password, "UTF-8"));
 			pst.setString(2, userEmail);
 			rs = pst.executeQuery();
 		} catch (Exception ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
+<<<<<<< HEAD
 			lgr.log(Level.WARNING, ex.getMessage(), ex);
+=======
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			return false;
@@ -161,7 +227,15 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 				if (pst != null) {
 					pst.close();
 				}
+<<<<<<< HEAD
 			} catch (SQLException ex) {
+=======
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 				Notification.show("Connection Problem", ex.getMessage(),
@@ -172,18 +246,25 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 		return true;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Retrieves the details of a user given its email (id).
 	 * @param userEmail the email of the user to be retrieved
 	 * @return LMUserDetails if the retrieve process was succesful, null otherwise
 	 */
+	public static LMUserDetails retrieveLMUserDetails(String userEmail) {
+		Connection con = null;
+=======
 	public static LMUserDetails retrieveLMUserDetails(Connection con, String userEmail) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		LMUserDetails ret = null;
 
 		try {
 
+<<<<<<< HEAD
+			con = Helper.getConnection();
 			String stm = "SELECT u.user_email AS email, u.password AS password, u.phone_number AS phone, u.first_name AS first_name, "
 					+ "u.last_name AS last_name, u.birthday AS birthday, s.user_email AS s_email, "
 					+ "m.user_email AS m_email, c.id AS club_id, c.short_name AS club_name "
@@ -193,6 +274,19 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 					+ "LEFT JOIN lm.Coordinates AS coo ON u.user_email = coo.manager "
 					+ "LEFT JOIN lm.Club AS c ON coo.club = c.id "
 					+ "WHERE u.user_email = ?;";
+=======
+			// con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			// Helper.PASSWORD);
+			String stm = "select u.user_email as email, u.password as password, u.phone_number as phone, u.first_name as first_name, "
+					+ "u.last_name as last_name, u.birthday as birthday, s.user_email as s_email, "
+					+ "m.user_email as m_email, c.id as club_id, c.short_name as club_name "
+					+ "from lm.LMUser as u "
+					+ "left join lm.Secretary as s on u.user_email = s.user_email "
+					+ "left join lm.Manager as m on u.user_email = m.user_email "
+					+ "left join lm.Coordinates as coo on u.user_email = coo.manager "
+					+ "left join lm.Club as c on coo.club = c.id "
+					+ "where u.user_email = ?;";
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			pst = con.prepareStatement(stm);
 			pst.setString(1, userEmail);
 			rs = pst.executeQuery();
@@ -224,9 +318,15 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 						managedClubID, managedClubName);
 			}
 
+<<<<<<< HEAD
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.WARNING, ex.getMessage(), ex);
+=======
+		} catch (Exception ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
@@ -239,7 +339,15 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 				if (pst != null) {
 					pst.close();
 				}
+<<<<<<< HEAD
 			} catch (SQLException ex) {
+=======
+				// if (con != null) {
+				// con.close();
+				// }
+
+			} catch (Exception ex) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
 				Notification.show("Connection Problem", ex.getMessage(),
@@ -249,17 +357,26 @@ public static boolean addOwnership(Connection con, Ownership ownership) {
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Retrieves the complete list of clubs.
 	 * @return a list of Club objects or null if problems occurred
 	 */
-public static List<Club> retrieveAllClubs(Connection con) {
+	public static List<Club> retrieveAllClubs() {
+		Connection con = null;
+=======
+	public static List<Club> retrieveAllClubs(Connection con) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		List<Club> ret = null;
 
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
 
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			pst = con
 					.prepareStatement("SELECT DISTINCT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website "
 							+ "FROM lm.callsup AS l INNER JOIN lm.club AS c ON c.id = l.club_id "
@@ -282,7 +399,11 @@ public static List<Club> retrieveAllClubs(Connection con) {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
+<<<<<<< HEAD
 			lgr.log(Level.WARNING, ex.getMessage(), ex);
+=======
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 
@@ -305,11 +426,16 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Retrieves the complete list of players that ever played or where scheduled to play in a match.
 	 * @return a list of Player objects or null if a problem occurred
 	 */
+	public static List<Player> retrieveAllPlayers() {
+		Connection con = null;
+=======
 	public static List<Player> retrieveAllPlayers(Connection con) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		List<Player> ret = null;
@@ -335,9 +461,14 @@ public static List<Club> retrieveAllClubs(Connection con) {
 
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
+<<<<<<< HEAD
 			lgr.log(Level.WARNING, ex.getMessage(), ex);
 			Notification.show("Connection Problem", ex.getMessage(),
 					com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
+=======
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		} finally {
 
 			try {
@@ -358,12 +489,16 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Retrieve the list of clubs that owned a specific player, in the form of Ownership objects.
 	 * @param playerId the id of the player
 	 * @return a list of OwnershipResult objects or null if a problem occurred
 	 */
+	public static List<OwnershipResult> retrieveOwnershipsFromPlayer(
+=======
 	public static List<OwnershipResult> retrieveOwnershipsFromPlayer(Connection con, 
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			long playerId) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
@@ -371,6 +506,12 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		List<OwnershipResult> ret = null;
 
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//		Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 
 			String stm = "SELECT o.id AS ownership_id, " +
 					"c.id AS club_id, " +
@@ -423,19 +564,30 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Retrieves a list of actions played by a specific player.
 	 * @param playerId the id of the player whose actions have to be retrieved
 	 * @return a list of EventResult objects or null if problems occurred
-	*/
+	 */
+	public static List<EventResult> retrieveEventsFromPlayer(long playerId) {
+		Connection con = null;
+=======
+	// inizialmente volevo spezzare questo metodo in 2 parti ma rischia di portare a inconsistenze
 	public static List<EventResult> retrieveEventsFromPlayer(Connection con, long playerId) {
-
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<EventResult> ret = null;
 
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 
 			String stm = "SELECT p.name AS player_name, e.id AS event_id, e.match_id, a.name AS action_name, e.instant, e.fraction, a.display_name, cu.player_number, c.name AS club_name, c.id AS club_id " +
 					"FROM lm.Event AS e " +
@@ -468,7 +620,6 @@ public static List<Club> retrieveAllClubs(Connection con) {
 					ret.add(new EventResult(eventID, matchUpID, actionName, playerMuInfo, instant, fraction, actionDescription));
 				}
 			}
-
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.WARNING, ex.getMessage(), ex);
@@ -494,18 +645,29 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Retrieves the list of actions played in a specific match.
 	 * @param matchUpId the id of the requires match
 	 * @return a list of EventResult or null if problems occurred
 	 */
+	public static List<EventResult> retrieveEventsFromMatchUp(String matchUpId) {
+		Connection con = null;
+=======
 	public static List<EventResult> retrieveEventsFromMatchUp(Connection con, String matchUpId) {
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<EventResult> ret = null;
 
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 
 			String stm = "SELECT e.id AS event_id, e.match_id, a.name AS action_name, p.id AS player_id, o.club_id, p.name, cu.player_number, e.instant, e.fraction, a.display_name, c.name as club_name " +
 					"FROM lm.event AS e " +
@@ -578,6 +740,14 @@ public static List<Club> retrieveAllClubs(Connection con) {
 
 		List<PlayerMatchUpInfo> ret = null;
 		try {
+<<<<<<< HEAD
+			
+			con = Helper.getConnection();
+=======
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
+
 			String stm = "SELECT o.player_id, o.club_id, p.name, cu.player_number " +
 					"FROM lm.LineUp as lu " +
 					"INNER JOIN lm.CallsUp as cu ON lu.id=cu.lineup_id " +
@@ -614,6 +784,7 @@ public static List<Club> retrieveAllClubs(Connection con) {
 				if (pst != null) {
 					pst.close();
 				}
+
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
@@ -629,12 +800,18 @@ public static List<Club> retrieveAllClubs(Connection con) {
 	 * @return a list of tournament objects or null if a problem occurrs
 	 */
 	public static List<Tournament> retrieveAllTournaments(Connection con) {
-
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<Tournament> ret = null;
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
+
 			String stm = "SELECT name, year, max_age, sex, organizer "
 					+ "FROM lm.Tournament";
 
@@ -677,22 +854,33 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Retrieve all the details of a match.
 	 * @param matchUpId the id of the specified match
 	 * @return a MatchUpDetails object containing the requested information
 	 */
+	public static MatchUpDetails retrieveMatchUpDetails(String matchUpId) {
+		Connection con = null;
+=======
 	public static MatchUpDetails retrieveMatchUpDetails(Connection con, String matchUpId) {
-
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		MatchUpDetails ret = null;
 
 		try {
-
+<<<<<<< HEAD
+			con = Helper.getConnection();
 			String stm = "SELECT luh.id AS lineup_host, " +
 					"lug.id AS lineup_guest, " +
+=======
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
+			String stm = "SELECT luh.id as lineup_host, " +
+					"lug.id as lineup_guest, " +
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 					"mu.pitch_name, " +
 					"mu.pitch_location AS location_id, " +
 					"mu.match_day, " +
@@ -794,20 +982,25 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Retrieve the matches of a specific match day.
 	 * @param md_id the match day id
 	 * @return a MatchDayMatches object containing the required information or null if problems occurred
 	 */
+	public static MatchDayMatches retrieveMatches(String md_id){
+		Connection con = null;
+=======
 
 	public static MatchDayMatches retrieveMatches(Connection con, String md_id){
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<MatchUpResult> results = null;
 		MatchDayMatches ret = null;
-		try {
 
+		try {
 
 			String stm = "SELECT tp.num, mu.id as match_id, mu.match_day, md.start_date as md_start_date, md.num as md_num, mu.tournament_phase_name AS t_phase_name, mu.tournament_name, mu.tournament_phase_year , mu.start_date, mu.start_time, mu.goals_host, mu.goals_guest, ch.id as host_id, ch.name as host_name, cg.id as guest_id, cg.name as guest_name " +
 					"FROM lm.matchup AS mu " +
@@ -824,6 +1017,7 @@ public static List<Club> retrieveAllClubs(Connection con) {
 			pst = con.prepareStatement(stm);
 			pst.setString(1, md_id);
 			rs = pst.executeQuery();
+			
 			if (!rs.isAfterLast()) {
 				results = new ArrayList<MatchUpResult>();
 				while (rs.next()) {
@@ -846,7 +1040,7 @@ public static List<Club> retrieveAllClubs(Connection con) {
 
 					results.add(new MatchUpResult(matchUpID, matchDayID, matchDayDate, matchDayNum, tournamentPhaseName, tournamentPhaseNum, tournamentName, tournamentYear, clubHostID, clubGuestID, date, teamHostName, teamGuestName, teamHostGoals, teamGuestGoals, time));
 				}
-				ret = new MatchDayMatches(retrieveMatchDay(con, md_id), results);
+				ret = new MatchDayMatches(retrieveMatchDay(md_id), results);
 			}
 
 		} catch (SQLException ex) {
@@ -871,6 +1065,7 @@ public static List<Club> retrieveAllClubs(Connection con) {
 						com.vaadin.ui.Notification.Type.ERROR_MESSAGE);
 			}
 		}
+<<<<<<< HEAD
 		return ret;
 	}
 	
@@ -879,8 +1074,14 @@ public static List<Club> retrieveAllClubs(Connection con) {
 	 * @param md_id the id of the requested match day
 	 * @return a MatchDayDetails object containing the requested information, or null if problems occurred
 	 */
+	public static MatchDayDetails retrieveMatchDay(String md_id){
+		Connection con = null;
+=======
+		return new MatchDayMatches(retrieveMatchDay(con, md_id), results);
+	}
+	
 	public static MatchDayDetails retrieveMatchDay(Connection con, String md_id){
-
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -935,18 +1136,30 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		}
 		return ret;
 	}
+
+<<<<<<< HEAD
 	/**
 	 * Retrieves a list of actions by a specific player
 	 * @param playerId the id of the specified player
 	 * @return a list of PlayerCareerEvent containing the requested info
 	 */
+	public static List<PlayerCareerEvent> retrievePlayerCareerEvents(long playerId){
+		Connection con = null;
+=======
 	public static List<PlayerCareerEvent> retrievePlayerCareerEvents(Connection con, long playerId){
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<PlayerCareerEvent> ret = new ArrayList<PlayerCareerEvent>();
 
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+//			con = DriverManager.getConnection(Helper.URL, Helper.USER,
+//					Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			String stm = "SELECT mu.tournament_name, " +
 					"mu.tournament_phase_year, " +
 					"mu.match_day, e.match_id, " +
@@ -1037,14 +1250,70 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 
+<<<<<<< HEAD
+	
 	/**
 	 * Retrieves a set of lists of match results given a specific tournament.
 	 * @param tournamentName the name of the tournament
 	 * @param tournamentYear the year of the tournament
 	 * @return a map with the match day indexes as keys and a list of the corresponding matches as the values
 	 */
-	public static Map<Integer, List<MatchUpResult>> retrieveMatchResultsFromTournament(Connection con, String tournamentName, int tournamentYear){
+	public static Map<Integer, List<MatchUpResult>> retrieveMatchResultsFromTournament(String tournamentName, int tournamentYear){
+		Connection con = null;
+=======
+	private static Club retrieveClubFromLineUp(Connection con, String lineUpId) {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
 
+		Club ret = null;
+
+		try {
+			String stm = "SELECT c.id, c.name, c.short_name, c.phone_number, c.address, c.email, c.website "
+					+ "FROM lm.Lineup as lu "
+					+ "INNER JOIN lm.Club as c ON lu.club_id=c.id "
+					+ "WHERE lu.id=?;";
+			pst = con.prepareStatement(stm);
+			pst.setString(1, lineUpId);
+			rs = pst.executeQuery();
+			if (rs.next()) {
+				long id = rs.getLong("id");
+				String name = rs.getString("name");
+				String shortName = rs.getString("short_name");
+				String phone = rs.getString("phone_number");
+				String address = rs.getString("address");
+				String email = rs.getString("email");
+				String website = rs.getString("website");
+				ret = new Club(id, name, shortName, phone, address, email,
+						website);
+			}
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(DML.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pst != null) {
+					pst.close();
+				}
+//				if (con != null) {
+//					con.close();
+//				}
+
+			} catch (SQLException ex) {
+				Logger lgr = Logger.getLogger(DML.class.getName());
+				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			}
+		}
+		return ret;
+	}
+
+	public static Map<Integer, List<MatchUpResult>> retrieveMatchResultsFromTournament(Connection con, String tournamentName, int tournamentYear){
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
@@ -1117,20 +1386,22 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Retrieves a list of match days nested under the appropriate tournament
 	 * @return a map with TournamentEssentials objects as indexes and lists of match days details as keys
 	 */
-
+	public static Map<TournamentEssentials, List<MatchDay>> retrieveAllMatchDays() {
+		Connection con = null;
+=======
 	public static Map<TournamentEssentials, List<MatchDay>> retrieveAllMatchDays(Connection con) {
-
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		Map<Integer, Map<String, TournamentEssentials>> tournaments = null;
 		Map<TournamentEssentials, List<MatchDay>> ret = null;
 		try {
-
 
 			String stm = "SELECT md.id, md.num AS md_num, md.name AS md_name, md.start_date, md.end_date, md.club, md.location, t.name AS t_name, t.year, t.num AS t_num " +
 					"FROM lm.MatchDay as md " +
@@ -1193,17 +1464,27 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Retrieve a list of all the locations
 	 * @return a list of Location objects
 	 */
+	public static List<Location> retrieveAllLocations() {
+		Connection con = null;
+=======
 	public static List<Location> retrieveAllLocations(Connection con) {
-
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<Location> ret = null;
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//		Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 
 			String stm = "SELECT l.id, l.city, l.name " +
 					"FROM lm.Location AS l";
@@ -1247,19 +1528,28 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Retrieves the list of player that are playing for the specified club, i.e. for which the end date of the ownership is set after the current date. 
 	 * @param clubId the id of the required club
 	 * @return the list of requested Player objects
 	 */
-
+	public static List<Player> retrievePlayersFromClub(long clubId) {
+		Connection con = null;
+=======
 	public static List<Player> retrievePlayersFromClub(Connection con, long clubId) {
-
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<Player> ret = null;
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//		Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 
 			String stm = "SELECT DISTINCT p.id, p.name, p.birthday " +
 					"FROM lm.Club as c " +
@@ -1298,7 +1588,6 @@ public static List<Club> retrieveAllClubs(Connection con) {
 				if (pst != null) {
 					pst.close();
 				}
-
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
@@ -1309,18 +1598,29 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Retrieves the list of managers for a specific club.
 	 * @param clubId the id of the club
 	 * @return the list of LMUser objects
 	 */
+	public static List<LMUser> retrieveManagersFromClub(long clubId) {
+		Connection con = null;
+=======
 	public static List<LMUser> retrieveManagersFromClub(Connection con, long clubId) {
-
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<LMUser> ret = null;
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//		Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
+
 			String stm = "SELECT u.user_email, u.password, u.phone_number, u.first_name, u.last_name, u.birthday " +
 					"FROM lm.Coordinates as c " +
 					"INNER JOIN lm.LMUser as u ON c.manager=u.user_email " +
@@ -1358,7 +1658,6 @@ public static List<Club> retrieveAllClubs(Connection con) {
 				if (pst != null) {
 					pst.close();
 				}
-
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
@@ -1369,18 +1668,29 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Retrieves the details for a specific club.
 	 * @param clubId the club's id
 	 * @return the details of the club in a ClubDetails object
 	 */
+	public static ClubDetails retrieveClubDetails(long clubId){
+		Connection con = null;
+=======
 	public static ClubDetails retrieveClubDetails(Connection con, long clubId){
-
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		ClubDetails ret = null;
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//		Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
+
 			String stm = "SELECT c.name, c.phone_number, c.email, c.address, c.website " +
 					"FROM lm.Club as c " +
 					"WHERE c.id=?";
@@ -1415,6 +1725,7 @@ public static List<Club> retrieveAllClubs(Connection con) {
 				if (pst != null) {
 					pst.close();
 				}
+
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
@@ -1423,12 +1734,29 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 	
+<<<<<<< HEAD
+	/**
+	 * 
+	 * @param eventId
+	 * @return
+	 */
+	public static EventResult retrieveEventResult(long eventId){
+		Connection con = null;
+=======
 	public static EventResult retrieveEventResult(Connection con, long eventId){
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		EventResult ret = null;
 		try {
+<<<<<<< HEAD
+			
+			con = Helper.getConnection();
+=======
+			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//		Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 
 			String stm = "SELECT p.id as player_id, e.match_id, c.id as club_id, p.name as player_name, c.name as club_name, cu.player_number, a.name as action_name, e.instant, e.fraction, a.display_name " +
 					"FROM lm.Event as e " +
@@ -1484,12 +1812,17 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		}
 		return ret;
 	}
+	
+<<<<<<< HEAD
 	/**
 	 * Retrieves a collection of all the relevant information for a player.
 	 * @param playerId the id of the requested player
 	 * @return a PlayerCareerInfor containing the requested information
 	 */
+	public static PlayerCareerInfo retrievePlayerCareerInfo(long playerId){
+=======
 	public static PlayerCareerInfo retrievePlayerCareerInfo(Connection con, long playerId){
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 
 		String stm = null;
 		PreparedStatement pst = null;
@@ -1497,7 +1830,13 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		Player playerData = null;
 
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
 
+			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//		Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 			stm = "SELECT p.id, p.name, p.birthday FROM lm.Player as p "
 					+ "WHERE p.id=?";
 			pst = con.prepareStatement(stm);
@@ -1526,6 +1865,7 @@ public static List<Club> retrieveAllClubs(Connection con) {
 				if (pst != null) {
 					pst.close();
 				}
+
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);
@@ -1540,14 +1880,19 @@ public static List<Club> retrieveAllClubs(Connection con) {
 
 	private static List<MatchDayDetails> retrieveMatchDayDetailsFromTournament(Connection con, 
 			String tournamentName, int tournamentYear){
-
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<MatchDayDetails> ret = null;
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//		Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
 
-			String stm = "SELECT md.id, md.num, md.name, md.start_date, md.end_date, md.club, md.location, c.name as club_name,l.id as loc_id, l.name as loc_name " +
+			String stm = "SELECT md.id, md.num, md.name, md.start_date, md.end_date, md.club, md.location, c.name as club_name,l.id AS loc_id, l.name AS loc_name, l.city AS loc_city " +
 					"FROM lm.MatchDay as md " +
 					"LEFT JOIN lm.Club as c ON md.club=c.id " +
 					"INNER JOIN lm.Location as l ON md.location=l.id " +
@@ -1602,21 +1947,30 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		return ret;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Retrieves all the details of a specific tournament.
 	 * @param tournamentName the name of the tournament
 	 * @param tournamentYear the year of the tournament
 	 * @return a TournamentDetails object containing the requested info, or null if problems occurred
 	 */
-
-		public static TournamentDetails retrieveTournamentDetails(Connection con, 
-			String tournamentName, int tournamentYear) {	
-
+	public static TournamentDetails retrieveTournamentDetails(
+=======
+	public static TournamentDetails retrieveTournamentDetails(Connection con, 
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
+			String tournamentName, int tournamentYear) {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		TournamentDetails ret = null;
 		try {
+<<<<<<< HEAD
+			con = Helper.getConnection();
+=======
+			//con = DriverManager.getConnection(Helper.URL, Helper.USER,
+			//		Helper.PASSWORD);
+>>>>>>> bc6489b3a38d7b4ff04b47c3ed9252db89241b11
+
 			String stm = "SELECT t.max_age, t.sex, t.organizer " +
 					"FROM lm.Tournament as t " +
 					"WHERE t.name=? AND t.year=?";
@@ -1651,7 +2005,6 @@ public static List<Club> retrieveAllClubs(Connection con) {
 				if (pst != null) {
 					pst.close();
 				}
-
 			} catch (SQLException ex) {
 				Logger lgr = Logger.getLogger(DML.class.getName());
 				lgr.log(Level.WARNING, ex.getMessage(), ex);

@@ -16,6 +16,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 // create layout for all-players view
@@ -25,7 +26,8 @@ public class PlayerListViewer {
 	private List<Player> playerList;
 
 	public PlayerListViewer() {
-		playerList = new ArrayList<Player>(DML.retrieveAllPlayers());
+		MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+		playerList = new ArrayList<Player>(DML.retrieveAllPlayers(ui.getConnection()));
 
 		this.setUpContent();
 	}

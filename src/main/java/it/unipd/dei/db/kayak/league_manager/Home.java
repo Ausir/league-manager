@@ -22,6 +22,8 @@ import java.util.Map;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.MarginInfo;
@@ -126,8 +128,9 @@ public class Home {
 			current = Visualizing.SINGLE_TOURNAMENT;
 
 			mainAreaLayout.removeAllComponents();
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			TournamentDetails tDetails = DML.retrieveTournamentDetails(ui.getConnection(), tournamentName, tournamentYear);
 
-			TournamentDetails tDetails = DML.retrieveTournamentDetails(tournamentName, tournamentYear);
 
 			mainAreaLayout.addComponent(new TournamentCalendarViewer(tDetails)
 			.getContent());
@@ -144,7 +147,8 @@ public class Home {
 
 			mainAreaLayout.removeAllComponents();
 
-			MatchDayMatches mDetails = DML.retrieveMatches(matchday_id);
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			MatchDayMatches mDetails = DML.retrieveMatches(ui.getConnection(), matchday_id);
 
 			mainAreaLayout.addComponent(new MatchDayCalendarViewer(mDetails).getContent());
 		}
@@ -172,7 +176,9 @@ public class Home {
 	// pops up a subwindow to show club details
 	public void showClubDetailsSubWindow(long clubID) {
 		if (!clubDetailsSubWindow.containsKey(clubID)) {
-			ClubDetails clubDetails = DML.retrieveClubDetails(clubID);
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			ClubDetails clubDetails = DML.retrieveClubDetails(ui.getConnection(), clubID);
+
 			ClubDetailsSubWindow detailsWindow = new ClubDetailsSubWindow(
 					clubDetails);
 
@@ -189,7 +195,9 @@ public class Home {
 	// pops up a subwindow to show match detaisls
 	public void showMatchUpDetailsSubWindow(String matchUpID) {
 		if (!matchUpDetailsSubWindows.containsKey(matchUpID)) {
-			MatchUpDetails details = DML.retrieveMatchUpDetails(matchUpID); 
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			MatchUpDetails details = DML.retrieveMatchUpDetails(ui.getConnection(), matchUpID); 
+
 			MatchUpDetailsSubWindow detailsWindow = new MatchUpDetailsSubWindow(
 					details);
 
@@ -206,7 +214,8 @@ public class Home {
 	// pops up a subwindow to show player details
 	public void showPlayerCareerInfoSubWindow(long playerID) {
 		if (!playerCareerInfoSubWindows.containsKey(playerID)) {
-			PlayerCareerInfo playerInfo = DML.retrievePlayerCareerInfo(playerID);
+			MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+			PlayerCareerInfo playerInfo = DML.retrievePlayerCareerInfo(ui.getConnection(), playerID);
 			PlayerCareerInfoSubWindow playerWindow = new PlayerCareerInfoSubWindow(
 					playerInfo);
 
@@ -247,11 +256,15 @@ public class Home {
 		loggedInUser = null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void setUpContent() {
-		// the whole window
+
+		MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+		ui.initConnection();
+
+		loggedInUser = null;
+
 		mainLayout = new VerticalLayout();
-		// the title pane
+
 		headerLayout = new HorizontalLayout();
 		// the content pane
 		bodyLayout = new HorizontalLayout();
@@ -284,7 +297,7 @@ public class Home {
 		final Tree tree = new Tree("Tornei recenti");
 		
 		// the data needed for drawing the menu
-		Map<TournamentEssentials, List<MatchDay>> days = DML.retrieveAllMatchDays();
+		Map<TournamentEssentials, List<MatchDay>> days = DML.retrieveAllMatchDays(ui.getConnection());
 		List<TournamentEssentials> tournaments = new ArrayList<TournamentEssentials>();
 		tournaments.addAll(0, days.keySet());
 		Collections.sort(tournaments);
@@ -294,7 +307,7 @@ public class Home {
 		treeCont.addContainerProperty("t_year", Integer.class, null);
 		treeCont.addContainerProperty("t_name", String.class, null);
 		treeCont.addContainerProperty("d_id", String.class, null);
-
+		
 		treeCont.addContainerProperty("caption", String.class, null);
 
 		for (TournamentEssentials t : tournaments) {
@@ -310,11 +323,11 @@ public class Home {
 				String start_day = new SimpleDateFormat("dd").format((Date)day.getStartDate());
 				String end_day = new SimpleDateFormat("dd/MM").format((Date)day.getEndDate());
 				String caption = start_day + "-" + end_day + " - " + day.getName();
-
+				
 				Object child_id = treeCont.addItem();
 				treeCont.getItem(child_id).getItemProperty("d_id").setValue(d_id);
 				treeCont.getItem(child_id).getItemProperty("caption").setValue(caption);
-
+				
 				treeCont.setParent(child_id, parent_id);
 				treeCont.setChildrenAllowed(child_id, false);
 			}
@@ -337,7 +350,7 @@ public class Home {
 			public void valueChange(ValueChangeEvent event) {
 				Object id = event.getProperty().getValue(); 
 				if (id != null){
-
+					
 					if (treeCont.getItem(id).getItemProperty("t_name").getValue() == null){
 						showMatchDayCalendarView((String) treeCont.getItem(id).getItemProperty("d_id").getValue());
 					} else {
@@ -423,6 +436,7 @@ public class Home {
 	}
 
 	public void close(){
-		// TODO: cleanup
+		MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+		ui.closeConnection();
 	}
 }

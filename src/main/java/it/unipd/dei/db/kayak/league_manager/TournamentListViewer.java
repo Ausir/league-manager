@@ -15,6 +15,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 // create the layout for the all-tournaments table
@@ -25,8 +26,9 @@ public class TournamentListViewer {
 	private List<Tournament> tournamentList;
 
 	public TournamentListViewer() {
-		tournamentList = new ArrayList<Tournament>(DML.retrieveAllTournaments()
-			);
+		MyVaadinUI ui=(MyVaadinUI) UI.getCurrent();
+		tournamentList = new ArrayList<Tournament>(DML.retrieveAllTournaments(ui.getConnection())
+				);
 
 		this.setUpContent();
 	}
@@ -68,7 +70,6 @@ public class TournamentListViewer {
 
 		tableLayout.addComponent(tournamentTable);
 		tableLayout.setExpandRatio(tournamentTable, 1);
-		//tournamentTable.setSizeFull();
 		tournamentTable.setWidth("100%");
 
 		mainLayout.addComponent(tableLayout);
