@@ -363,7 +363,7 @@ public class Home {
 
 		leftBar.addComponent(tree);
 
-		allTournamentsButton = new Button("All Tournaments",
+		allTournamentsButton = new Button("Tornei",
 				new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -372,7 +372,7 @@ public class Home {
 		});
 		leftBar.addComponent(allTournamentsButton);
 
-		allPlayersButton = new Button("All Players", new ClickListener() {
+		allPlayersButton = new Button("Giocatori", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				showPlayerList();
@@ -380,7 +380,7 @@ public class Home {
 		});
 		leftBar.addComponent(allPlayersButton);
 
-		allClubsButton = new Button("All Clubs", new ClickListener() {
+		allClubsButton = new Button("Società", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				showClubList();
@@ -388,7 +388,7 @@ public class Home {
 		});
 		leftBar.addComponent(allClubsButton);
 
-		addPlayerButton = new Button("Add Player", new ClickListener() {
+		addPlayerButton = new Button("Aggiungi giocatore", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if (loggedInUser != null) {
