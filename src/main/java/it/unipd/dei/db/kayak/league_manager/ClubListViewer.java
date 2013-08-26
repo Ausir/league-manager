@@ -36,7 +36,7 @@ public class ClubListViewer {
 		mainLayout = new VerticalLayout();
 		mainLayout.setMargin(new MarginInfo(true, true, true, true));
 
-		Label presentation = new Label("Club list");
+		Label presentation = new Label("Lista delle società");
 		mainLayout.addComponent(presentation);
 
 		VerticalLayout tableLayout = new VerticalLayout();
@@ -54,7 +54,7 @@ public class ClubListViewer {
 				clubTable.filterClubNames(filterField.getValue());
 			}
 		});
-		controlLayout.addComponent(new Button("Filter Names",
+		controlLayout.addComponent(new Button("Ricerca per nome",
 				new ClickListener() {
 					@Override
 					public void buttonClick(ClickEvent event) {

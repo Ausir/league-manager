@@ -517,7 +517,7 @@ public static List<Club> retrieveAllClubs(Connection con) {
 					"INNER JOIN lm.action AS a ON a.name=e.action " +
 					"INNER JOIN lm.Club AS c ON o.club_id=c.id " + 
 					"WHERE e.match_id=? AND lu.club_id=o.club_id " +
-					"ORDER BY fraction ASC, instant ASC";
+					"ORDER BY fraction ASC, instant DESC";
 
 			pst = con.prepareStatement(stm);
 			pst.setString(1, matchUpId);
@@ -1547,7 +1547,7 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		List<MatchDayDetails> ret = null;
 		try {
 
-			String stm = "SELECT md.id, md.num, md.name, md.start_date, md.end_date, md.club, md.location, c.name as club_name,l.id as loc_id, l.name as loc_name " +
+			String stm = "SELECT md.id, md.num, md.name, md.start_date, md.end_date, md.club, md.location as loc_city, c.name as club_name,l.id as loc_id, l.name as loc_name " +
 					"FROM lm.MatchDay as md " +
 					"LEFT JOIN lm.Club as c ON md.club=c.id " +
 					"INNER JOIN lm.Location as l ON md.location=l.id " +

@@ -56,7 +56,7 @@ public class MatchUpDetailsSubWindow {
 				+ mRes.getTournamentYear() + " - " + mRes.getDate() + ": "
 				+ mRes.getTournamentPhaseName();
 		tabLayout.addComponent(new Label(matchUpCaption));
-		tabLayout.addComponent(new Label("Played at "
+		tabLayout.addComponent(new Label("Giocata in "
 				+ matchUpDetails.getPitchName()));
 
 		HorizontalLayout eventLine = new HorizontalLayout();
@@ -80,14 +80,19 @@ public class MatchUpDetailsSubWindow {
 
 			HorizontalLayout eventLayout = new HorizontalLayout();
 
-			String eventCaption = "" + (event.getInstant() / 100) + ":"
-					+ (event.getInstant() % 100) + " ";
-			if (event.getFraction() == 0) {
-				eventCaption += "1° half";
-			} else if (event.getFraction() == 1) {
-				eventCaption += "2° half";
+			int min = event.getInstant() / 100;
+			Integer sec = event.getInstant() % 100;
+			String secondi;
+			if(sec < 10) secondi = "0"+sec;
+			else secondi = sec.toString();
+			String eventCaption = "" + min + ":"
+					+ secondi + " ";
+			if (event.getFraction() == 1) {
+				eventCaption += "1° tempo";
+			} else if (event.getFraction() == 2) {
+				eventCaption += "2° tempo";
 			} else {
-				eventCaption += "" + (event.getFraction() - 1) + "° sup.";
+				eventCaption += "" + (event.getFraction() - 2) + "° sup.";
 			}
 			eventLayout.addComponent(new Label(eventCaption));
 			Label spacer = new Label();
@@ -171,7 +176,7 @@ public class MatchUpDetailsSubWindow {
 
 		tabLayout.setSizeFull();
 
-		tabs.addTab(tabLayout, "Events");
+		tabs.addTab(tabLayout, "Eventi");
 
 		// content of LineUps
 		tabLayout = new VerticalLayout();
@@ -257,13 +262,13 @@ public class MatchUpDetailsSubWindow {
 		tabLayout.setExpandRatio(tabLayoutSplitter, 1);
 		tabLayoutSplitter.setSizeFull();
 
-		tabs.addTab(tabLayout, "LineUps");
+		tabs.addTab(tabLayout, "Formazioni");
 
 		// content of Judge Staff
 		tabLayout = new VerticalLayout();
 		// tabLayout.setMargin(new MarginInfo(true, true, true, true));
 
-		tabLayout.addComponent(new Label("Referees:"));
+		tabLayout.addComponent(new Label("Arbitri:"));
 		VerticalLayout tabSubLayout = new VerticalLayout();
 		tabSubLayout.setMargin(new MarginInfo(false, false, false, true));
 		tabSubLayout.addComponent(new Label(matchUpDetails.getReferee1()));
@@ -273,13 +278,13 @@ public class MatchUpDetailsSubWindow {
 		}
 		tabLayout.addComponent(tabSubLayout);
 
-		tabLayout.addComponent(new Label("Scorekeeper:"));
+		tabLayout.addComponent(new Label("Segnapunti:"));
 		tabSubLayout = new VerticalLayout();
 		tabSubLayout.setMargin(new MarginInfo(false, false, false, true));
 		tabSubLayout.addComponent(new Label(matchUpDetails.getScorekeeper()));
 		tabLayout.addComponent(tabSubLayout);
 
-		tabLayout.addComponent(new Label("Timekeepers:"));
+		tabLayout.addComponent(new Label("Cronometristi:"));
 		tabSubLayout = new VerticalLayout();
 		tabSubLayout.setMargin(new MarginInfo(false, false, false, true));
 		tabSubLayout.addComponent(new Label(matchUpDetails.getTimekeeper1()));
@@ -289,7 +294,7 @@ public class MatchUpDetailsSubWindow {
 		}
 		tabLayout.addComponent(tabSubLayout);
 
-		tabLayout.addComponent(new Label("Linemen:"));
+		tabLayout.addComponent(new Label("Guardalinee:"));
 		tabSubLayout = new VerticalLayout();
 		tabSubLayout.setMargin(new MarginInfo(false, false, false, true));
 		tabSubLayout.addComponent(new Label(matchUpDetails.getLineman1()));
@@ -299,7 +304,7 @@ public class MatchUpDetailsSubWindow {
 		}
 		tabLayout.addComponent(tabSubLayout);
 
-		tabs.addTab(tabLayout, "Judge Staff");
+		tabs.addTab(tabLayout, "Staff arbitrale");
 
 		window.setContent(tabs);
 		tabs.setSizeFull();

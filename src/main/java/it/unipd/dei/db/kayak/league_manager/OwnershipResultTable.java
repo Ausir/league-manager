@@ -33,6 +33,11 @@ public class OwnershipResultTable extends Table {
 
 		this.setContainerDataSource(ownershipContainer);
 
+		this.setColumnHeader("Club", "Società");
+		this.setColumnHeader("Start", "Data di inizio");
+		this.setColumnHeader("End", "Data di fine");
+		this.setColumnHeader("Borrowed", "In prestito");
+
 		for (OwnershipResult o : ownershipResults) {
 			this.addOwnershipResult(o);
 		}

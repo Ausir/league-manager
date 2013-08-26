@@ -48,6 +48,12 @@ public class ClubTable extends Table {
 		this.setColumnExpandRatio("Website", 1);
 		this.setColumnExpandRatio("Email", 1);
 		this.setColumnExpandRatio("Phone", 0);
+
+		this.setColumnHeader("Name", "Nome");
+		this.setColumnHeader("Address", "Indirizzo");
+		this.setColumnHeader("Website", "Sito Web");
+		this.setColumnHeader("Email", "Email");
+		this.setColumnHeader("Phone", "Telefono");
 	}
 
 	public void filterClubNames(String text) {

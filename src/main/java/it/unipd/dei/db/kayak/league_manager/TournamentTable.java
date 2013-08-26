@@ -37,6 +37,12 @@ public class TournamentTable extends Table {
 				String.class, null);
 
 		this.setContainerDataSource(tournamentContainer);
+		
+		this.setColumnHeader("Name", "Nome");
+		this.setColumnHeader("Year", "Anno");
+		this.setColumnHeader("Sex", "Sesso");
+		this.setColumnHeader("Max Age", "Età massima");
+		this.setColumnHeader("Organizer Email", "Email dell'organizzatore");
 
 		for (Tournament t : tournaments) {
 			this.addTournament(t);

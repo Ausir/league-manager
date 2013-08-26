@@ -45,11 +45,11 @@ public class PlayerTable extends Table {
 		playerContainer.addContainerProperty("name", String.class, null);
 		playerContainer.addContainerProperty("birthday", Date.class, null);
 
+		this.setContainerDataSource(playerContainer);
 		
 		this.setColumnHeader("name", "nome");
-		this.setColumnHeader("birtdhday", "data di nascita");
+		this.setColumnHeader("birthday", "data di nascita");
 
-		this.setContainerDataSource(playerContainer);
 
 		for (Player p:players) {
 			this.addPlayer(p);

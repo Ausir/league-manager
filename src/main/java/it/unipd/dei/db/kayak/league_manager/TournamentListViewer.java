@@ -37,7 +37,7 @@ public class TournamentListViewer {
 		mainLayout = new VerticalLayout();
 		mainLayout.setMargin(new MarginInfo(true, true, true, true));
 
-		Label presentation = new Label("Tournament list");
+		Label presentation = new Label("Lista dei tornei");
 		mainLayout.addComponent(presentation);
 
 		VerticalLayout tableLayout = new VerticalLayout();
@@ -58,7 +58,7 @@ public class TournamentListViewer {
 				tournamentTable.filterTournamentNames(filterField.getValue());
 			}
 		});
-		controlLayout.addComponent(new Button("Filter Names",
+		controlLayout.addComponent(new Button("Rierca per nome",
 				new ClickListener() {
 					@Override
 					public void buttonClick(ClickEvent event) {

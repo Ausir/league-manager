@@ -30,41 +30,41 @@ public class AddOwnershipView {
 		mainlLayout = new VerticalLayout();
 		mainlLayout.setMargin(new MarginInfo(true, true, true, true));
 
-		mainlLayout.addComponent(new Label("Add player to database"));
+		mainlLayout.addComponent(new Label("Aggiungi contratto al database"));
 
-		mainlLayout.addComponent(new Label("Club ID"));
+		mainlLayout.addComponent(new Label("ID della società"));
 		final TextField clubIdField = new TextField();
 		mainlLayout.addComponent(clubIdField);
 
-		mainlLayout.addComponent(new Label("Player ID"));
+		mainlLayout.addComponent(new Label("ID del giocatore"));
 		final TextField playerIdField = new TextField();
 		mainlLayout.addComponent(playerIdField);
 
-		mainlLayout.addComponent(new Label("Start Date"));
+		mainlLayout.addComponent(new Label("Data di inizio contratto"));
 		HorizontalLayout startDateLayout = new HorizontalLayout();
-		final TextField startDayField = new TextField("Day");
+		final TextField startDayField = new TextField("Giorno");
 		startDateLayout.addComponent(startDayField);
-		final TextField startMonthField = new TextField("Month");
+		final TextField startMonthField = new TextField("Mese");
 		startDateLayout.addComponent(startMonthField);
-		final TextField startYearField = new TextField("Year");
+		final TextField startYearField = new TextField("Anno");
 		startDateLayout.addComponent(startYearField);
 		mainlLayout.addComponent(startDateLayout);
 
-		mainlLayout.addComponent(new Label("End Date"));
+		mainlLayout.addComponent(new Label("Data di fine contratto"));
 		HorizontalLayout endDateLayout = new HorizontalLayout();
-		final TextField endDayField = new TextField("Day");
+		final TextField endDayField = new TextField("Giorno");
 		endDateLayout.addComponent(endDayField);
-		final TextField endMonthField = new TextField("Month");
+		final TextField endMonthField = new TextField("Mese");
 		endDateLayout.addComponent(endMonthField);
-		final TextField endYearField = new TextField("Year");
+		final TextField endYearField = new TextField("Anno");
 		endDateLayout.addComponent(endYearField);
 		mainlLayout.addComponent(endDateLayout);
 
-		final CheckBox borrowedCheckBox = new CheckBox("Borrowed", false);
+		final CheckBox borrowedCheckBox = new CheckBox("In prestito", false);
 		mainlLayout.addComponent(borrowedCheckBox);
 
 		HorizontalLayout commitLayout = new HorizontalLayout();
-		Button commitButton = new Button("Commit", new ClickListener() {
+		Button commitButton = new Button("Inserisci", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				Home home = ((MyVaadinUI) UI.getCurrent()).getHome();

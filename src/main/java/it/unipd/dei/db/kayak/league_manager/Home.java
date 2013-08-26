@@ -399,7 +399,7 @@ public class Home {
 		leftBar.addComponent(addPlayerButton);
 		addPlayerButton.setVisible(false);
 
-		addOwnershipButton = new Button("Add Ownership", new ClickListener() {
+		addOwnershipButton = new Button("Aggiungi contratto", new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if (loggedInUser != null) {

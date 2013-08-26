@@ -39,11 +39,11 @@ public class ClubDetailsSubWindow {
 
 		tabLayout.addComponent(new Label(clubDetails.getName()));
 		tabLayout
-				.addComponent(new Label("Address: " + clubDetails.getAddress()));
+				.addComponent(new Label("Indirizzo: " + clubDetails.getAddress()));
 		tabLayout
-				.addComponent(new Label("Website: " + clubDetails.getWebsite()));
-		tabLayout.addComponent(new Label("email: " + clubDetails.getEmail()));
-		tabLayout.addComponent(new Label("Managers:"));
+				.addComponent(new Label("Sito web: " + clubDetails.getWebsite()));
+		tabLayout.addComponent(new Label("Email: " + clubDetails.getEmail()));
+		tabLayout.addComponent(new Label("Responsabili:"));
 
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
@@ -63,13 +63,13 @@ public class ClubDetailsSubWindow {
 
 		tabLayout.setSizeFull();
 
-		tabs.addTab(tabLayout, "Contacts");
+		tabs.addTab(tabLayout, "Contatti");
 
 		// content of Players
 		tabLayout = new VerticalLayout();
 		tabLayout.setMargin(new MarginInfo(false, false, true, false));
 
-		tabLayout.addComponent(new Label("Currently owned players"));
+		tabLayout.addComponent(new Label("Giocatori attualmente di proprietà del club"));
 
 		tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
@@ -86,7 +86,7 @@ public class ClubDetailsSubWindow {
 
 		tabLayout.setSizeFull();
 
-		tabs.addTab(tabLayout, "Current Players");
+		tabs.addTab(tabLayout, "Giocatori attuali");
 
 		window.setContent(tabs);
 		tabs.setSizeFull();

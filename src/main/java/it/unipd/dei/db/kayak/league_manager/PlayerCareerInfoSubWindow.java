@@ -57,7 +57,7 @@ public class PlayerCareerInfoSubWindow {
 
 		tabLayout.addComponent(new Label(player.getID() + " - "
 				+ player.getName()));
-		tabLayout.addComponent(new Label("Birthday: " + player.getBirthday()));
+		tabLayout.addComponent(new Label("Data di nascita: " + player.getBirthday()));
 
 		Label spacer = new Label();
 		tabLayout.addComponent(spacer);
@@ -65,13 +65,13 @@ public class PlayerCareerInfoSubWindow {
 
 		tabLayout.setSizeFull();
 
-		tabs.addTab(tabLayout, "Player Info");
+		tabs.addTab(tabLayout, "Informazioni del giocatore");
 
 		// Ownerships section
 		tabLayout = new VerticalLayout();
 		tabLayout.setMargin(new MarginInfo(false, false, true, false));
 
-		tabLayout.addComponent(new Label("Ownerships contracts"));
+		tabLayout.addComponent(new Label("Contratti"));
 
 		VerticalLayout tableLayout = new VerticalLayout();
 		tableLayout.setMargin(new MarginInfo(false, false, false, true));
@@ -89,12 +89,12 @@ public class PlayerCareerInfoSubWindow {
 
 		tabLayout.setSizeFull();
 
-		tabs.addTab(tabLayout, "Ownerships");
+		tabs.addTab(tabLayout, "Contratti");
 
 		// Events section
 		tabLayout = new VerticalLayout();
 
-		tabLayout.addComponent(new Label("Career events"));
+		tabLayout.addComponent(new Label("Eventi di carriera"));
 
 		VerticalLayout careerLayout = new VerticalLayout();
 		careerLayout.setMargin(new MarginInfo(false, false, false, true));
@@ -131,7 +131,7 @@ public class PlayerCareerInfoSubWindow {
 				tLayout = new VerticalLayout();
 				tLayout.setMargin(new MarginInfo(false, false, false, true));
 
-				String tCaption = tName + " " + tYear + " played for ";
+				String tCaption = tName + " " + tYear + " giocato per ";
 				if (cEvent.getPlayerClubID() == cEvent.getHostClubID()) {
 					tCaption += cEvent.getHostClubName();
 				} else {
@@ -232,14 +232,19 @@ public class PlayerCareerInfoSubWindow {
 
 			HorizontalLayout eventLine = new HorizontalLayout();
 
-			String eventCaption = "" + (cEvent.getInstant() / 100) + ":"
-					+ (cEvent.getInstant() % 100) + " ";
-			if (cEvent.getFraction() == 0) {
-				eventCaption += "1° half";
-			} else if (cEvent.getFraction() == 1) {
-				eventCaption += "2° half";
+			int min = cEvent.getInstant() / 100;
+			Integer sec = cEvent.getInstant() % 100;
+			String secondi;
+			if(sec < 10) secondi = "0"+sec;
+			else secondi = sec.toString();
+			String eventCaption = "" + min + ":"
+					+ secondi + " ";
+			if (cEvent.getFraction() == 1) {
+				eventCaption += "1° tempo";
+			} else if (cEvent.getFraction() == 2) {
+				eventCaption += "2° tempo";
 			} else {
-				eventCaption += "" + (cEvent.getFraction() - 1) + "° sup.";
+				eventCaption += "" + (cEvent.getFraction() - 2) + "° sup.";
 			}
 
 			String basepath = VaadinService.getCurrent().getBaseDirectory()
@@ -283,7 +288,7 @@ public class PlayerCareerInfoSubWindow {
 
 		tabLayout.setSizeFull();
 
-		tabs.addTab(tabLayout, "Events");
+		tabs.addTab(tabLayout, "Eventi");
 
 		window.setContent(tabs);
 		tabs.setSizeFull();

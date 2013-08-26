@@ -14,10 +14,10 @@ public class LMUserTable extends Table {
 
 		Container userContainer = (IndexedContainer) this
 				.getContainerDataSource();
-		userContainer.addContainerProperty("First Name", String.class, null);
-		userContainer.addContainerProperty("Last Name", String.class, null);
+		userContainer.addContainerProperty("Nome", String.class, null);
+		userContainer.addContainerProperty("Cognome", String.class, null);
 		userContainer.addContainerProperty("Email", String.class, null);
-		userContainer.addContainerProperty("Phone", String.class, null);
+		userContainer.addContainerProperty("Telefono", String.class, null);
 
 		this.setContainerDataSource(userContainer);
 	}
