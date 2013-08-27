@@ -352,8 +352,8 @@ public class Home {
 					if (treeCont.getItem(id).getItemProperty("t_name").getValue() == null){
 						showMatchDayCalendarView((String) treeCont.getItem(id).getItemProperty("d_id").getValue());
 					} else {
-						showTournamentCalendarView((String)treeCont.getItem(id).getItemProperty("t_name").getValue(), (Integer)treeCont.getItem(id).getItemProperty("t_year").getValue());
 						tree.expandItem(event.getProperty().getValue());
+						showTournamentCalendarView((String)treeCont.getItem(id).getItemProperty("t_name").getValue(), (Integer)treeCont.getItem(id).getItemProperty("t_year").getValue());
 					}
 				}
 			}

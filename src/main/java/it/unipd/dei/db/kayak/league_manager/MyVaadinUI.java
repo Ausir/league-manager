@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.vaadin.annotations.Title;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
@@ -13,6 +14,7 @@ import com.vaadin.ui.UI;
  * Main UI class
  */
 @SuppressWarnings("serial")
+@Title("League Manager")
 public class MyVaadinUI extends UI {
 	private Home home;
 	private Connection con;

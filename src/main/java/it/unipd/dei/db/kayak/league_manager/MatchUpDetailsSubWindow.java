@@ -1,13 +1,11 @@
 package it.unipd.dei.db.kayak.league_manager;
 
 import java.io.File;
-import java.util.Collections;
 
 import it.unipd.dei.db.kayak.league_manager.data.EventResult;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpDetails;
 import it.unipd.dei.db.kayak.league_manager.data.MatchUpResult;
 import it.unipd.dei.db.kayak.league_manager.data.PlayerMatchUpInfo;
-import it.unipd.dei.db.kayak.league_manager.data_utils.EventResultTimeComparator;
 
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
@@ -32,10 +30,6 @@ public class MatchUpDetailsSubWindow {
 
 	public MatchUpDetailsSubWindow(MatchUpDetails matchUpDetails) {
 		this.matchUpDetails = matchUpDetails;
-
-		Collections.sort(matchUpDetails.getEventList(),
-				new EventResultTimeComparator(true));
-
 		this.setUpWindow();
 	}
 

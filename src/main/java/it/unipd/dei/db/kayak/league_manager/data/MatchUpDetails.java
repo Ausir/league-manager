@@ -42,12 +42,12 @@ public class MatchUpDetails {
 		this.result = result;
 		this.locationName = locationName;
 		this.eventList = new ArrayList<EventResult>(eventList);
-		Collections.sort(this.eventList, new EventResultTimeComparator(false));
+		//Collections.sort(this.eventList, new EventResultTimeComparator(false));
 		PlayerMatchUpInfoLineUpComparator playerComp = new PlayerMatchUpInfoLineUpComparator();
 		this.hostLineUp = new ArrayList<PlayerMatchUpInfo>(hostLineUp);
-		Collections.sort(this.hostLineUp, playerComp);
+		//Collections.sort(this.hostLineUp, playerComp);
 		this.guestLineUp = new ArrayList<PlayerMatchUpInfo>(guestLineUp);
-		Collections.sort(this.guestLineUp, playerComp);
+		//Collections.sort(this.guestLineUp, playerComp);
 		this.lineman1 = lineman1;
 		this.lineman2 = lineman2;
 		this.timekeeper1 = timekeeper1;

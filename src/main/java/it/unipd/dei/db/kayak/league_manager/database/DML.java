@@ -317,10 +317,15 @@ public static List<Club> retrieveAllClubs(Connection con) {
 		try {
 
 			// gets all players that were sometimes included in a line-up
-			pst = con.prepareStatement("SELECT DISTINCT o.player_id, p.name, p.birthday, p.id " +
-					"FROM lm.callsup AS c INNER JOIN lm.ownership AS o ON c.ownership_id = o.id " +
-					"INNER JOIN lm.player AS p on p.id = o.player_id " +
+//			pst = con.prepareStatement("SELECT DISTINCT o.player_id, p.name, p.birthday, p.id " +
+//					"FROM lm.callsup AS c INNER JOIN lm.ownership AS o ON c.ownership_id = o.id " +
+//					"INNER JOIN lm.player AS p on p.id = o.player_id " +
+//					"ORDER BY p.name ASC;");
+
+			pst = con.prepareStatement("SELECT DISTINCT p.name, p.birthday, p.id " +
+					"FROM lm.player AS p " +
 					"ORDER BY p.name ASC;");
+
 			rs = pst.executeQuery();
 
 			if (!rs.isAfterLast()) {
