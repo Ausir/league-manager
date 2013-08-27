@@ -35,9 +35,15 @@ public class MyVaadinUI extends UI {
 
 	public void initConnection() {
 		try {
+
+			Class.forName("org.postgresql.Driver");
 			con = DriverManager.getConnection(Helper.URL, Helper.USER,
 					Helper.PASSWORD);
-		} catch (SQLException e) {
+			
+		} catch(ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}

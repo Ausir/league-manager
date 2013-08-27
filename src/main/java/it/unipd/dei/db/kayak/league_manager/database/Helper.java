@@ -34,6 +34,13 @@ public class Helper {
 	}
 
 	public static String getVersion() {
+		
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
@@ -60,7 +67,6 @@ public class Helper {
 		} catch (SQLException ex) {
 			Logger lgr = Logger.getLogger(DML.class.getName());
 			lgr.log(Level.SEVERE, ex.getMessage(), ex);
-
 		} finally {
 			try {
 				if (rs != null) {

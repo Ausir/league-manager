@@ -71,7 +71,7 @@ public class PlayerListViewer {
 		tableLayout.addComponent(controlLayout);
 		tableLayout.addComponent(playerTable);
 		tableLayout.setExpandRatio(playerTable, 1);
-		//playerTable.setSizeFull();
+		playerTable.setSizeFull();
 
 		mainLayout.addComponent(tableLayout);
 		mainLayout.setExpandRatio(tableLayout, 1);
